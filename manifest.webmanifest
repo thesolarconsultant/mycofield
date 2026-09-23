@@ -1,0 +1,9 @@
+{
+  "name":"MycoField — Grassland Intelligence",
+  "short_name":"MycoField",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#08100c",
+  "theme_color":"#08100c",
+  "description":"3D terrain and field-observation prototype for general grassland fungi research."
+}
