@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.1
+
+### Added
+- Tap any coordinates (Exact Point card, attached-location panel, history records with a
+  private point) to open that spot in Google Earth with a pin. On phones this opens the
+  Google Earth app if it's installed. Opening the link shares those coordinates with Google.
+
 ## 2.2.0 — Exact Point Intelligence
 
 Built on the static prototype (the only source available in this repo and on the live deployment).
