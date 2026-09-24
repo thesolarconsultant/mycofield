@@ -29,18 +29,17 @@ Logo files live in `assets/` (`logo.png`, `logo-mark.png`).
 | Forecast + recent weather | Open-Meteo Forecast API (`past_days=14`, `forecast_days=10`) |
 | Historical weather | Open-Meteo Archive API (Forecast API past days for the last week) |
 | Elevation | Open-Meteo Elevation API (Copernicus DEM, ~90 m) |
+| Soil moisture, evapotranspiration | Open-Meteo land-surface model / FAO-56 ET₀ |
+| Habitat | OpenStreetMap land use via Overpass (or set in the field) |
 | Place search | OpenStreetMap Nominatim; UK postcodes via postcodes.io |
 | Map / terrain | OpenStreetMap tiles, MapLibre demo terrain DEM |
 
-## Model (experimental, `conditions-v0.2`)
-```
-rainScore = clamp(rain14 / 45 * 100)
-lowScore  = clamp(100 - |low - 8| * 12)
-persistence: m = clamp(m * 0.80 + min(dailyRain, 12) / 18, 0, 1)
-index = 0.40 rain + 0.30 low + 0.20 persistence + 0.10 terrain
-```
-Terrain Context is a hand-built heuristic (elevation 45%, slope 35%, aspect 20%) in
-`calculateTerrainScore()`. Nothing here is scientifically validated. The index is not a probability.
+## Model (experimental, `conditions-v0.3`)
+Rainfall 25% · modelled soil moisture 20% · water balance (rain − evapotranspiration) 15% ·
+7-night mean low 20% · terrain 10% · habitat 10% · frost penalty. Missing inputs are excluded
+and reported, never guessed. Full details, resolution limits and the validation method are in
+[`METHODOLOGY.md`](METHODOLOGY.md). Nothing here is scientifically validated yet; the Evidence
+panel on the History tab measures how well the index separates your finds from your blanks.
 
 ## Privacy
 Observations and any attached coordinates are stored only in this browser's localStorage

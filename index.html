@@ -146,6 +146,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pc-actions .btn{flex:1;padding:10px 12px;min-height:46px}
 .pc-actions .btn.icon{flex:0 0 46px;padding:0;font-size:16px}
 .sheet .metrics{margin-top:10px}.sheet .metric{padding:8px 9px}
+.habrow{margin-top:12px}.habrow label{margin-bottom:4px}.habrow .field{min-height:44px;padding:8px 12px;font-size:15px}
 .savearea{margin-top:12px;display:grid;gap:4px}
 .savearea label{margin:6px 0 2px}
 #pcCoords .earth{padding:0}
@@ -198,7 +199,21 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .bar b small{font-family:var(--body);font-weight:500;color:var(--muted);font-size:11px}
 .bar .track{grid-column:1/-1;height:8px;border-radius:8px;background:var(--stone-2);overflow:hidden}
 .bar .fill{height:100%;border-radius:8px;background:var(--moss)}
-.bar .fill.low{background:var(--amber)}
+.bar .fill.low{background:var(--amber)}.bar .fill.neg{background:var(--coral)}.bar.missing{opacity:.55}.bar.penalty b{color:var(--coral-ink)}
+.inputs{display:grid;gap:0}
+.inputs .in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) auto;gap:4px 10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line)}
+.inputs .in:last-child{border-bottom:0}
+.inputs .in b{font-size:13px;color:var(--forest)}.inputs .in span{font-family:var(--head);font-weight:700;font-size:13px;color:var(--forest)}
+.inputs .in small{grid-column:1/-1;color:var(--muted);font-size:11px}
+details.method summary{font-weight:700;color:var(--forest);cursor:pointer;font-size:15px}
+details.method p{font-size:13px;line-height:1.55;color:var(--text);margin:10px 0 0}
+.verdict{margin-top:12px;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.5;background:var(--stone-2);color:var(--forest)}
+.verdict:empty{display:none}.verdict b{font-family:var(--head)}
+.evtable{margin-top:10px;overflow-x:auto}
+.evtable table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+.evtable th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 6px 6px 0;border-bottom:1px solid var(--line-2)}
+.evtable td{padding:8px 6px 8px 0;border-bottom:1px solid var(--line);color:var(--text)}
+.evtable td:first-child{color:var(--forest);font-weight:600}
 .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .timebox{background:var(--stone-2);border-radius:16px;padding:12px}
 .timebox b{font-family:var(--head);font-weight:800;font-size:20px;color:var(--forest)}
@@ -281,7 +296,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="sh-head"><div class="ring sm" id="pcRing"><b id="pcScore">…</b></div><div class="sh-title"><span class="kicker">Exact point <span id="pcStatus" class="chip loading">Loading</span></span><h2 id="pcLabel">Analysing this point…</h2><p id="pcCoords"></p></div><div class="sh-tools"><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
 <div id="pcLoading" class="loadingbar"></div>
 <div class="strip" id="pcStrip"></div>
-<div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div></div>
+<div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcGrid"></p></div>
 <div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
 </div>
@@ -300,8 +315,19 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <form class="renameform" id="renameForm" hidden><input class="field" id="renameInput" maxlength="60" required aria-label="Area name" autocomplete="off"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="renameCancel">Cancel</button></form>
 <div class="cards"><div class="card"><h3>Current signal <span class="chip exp">Experimental</span></h3><div class="statnum" id="dashScore">—</div><div class="statlabel">Conditions index</div><div class="delta flat" id="dashTrend"></div><svg id="sparkScore" class="spark" aria-label="Conditions Index trend"></svg><div class="small">Index · today → +9 days</div></div><div class="card"><h3>Moisture memory <span class="chip" id="dashRainChip">—</span></h3><div class="statnum" id="dashRain">—</div><div class="statlabel">14-day rainfall</div><div class="small" id="dashRainSub" style="margin-top:8px"></div><svg id="sparkRain" class="spark" aria-label="Daily rainfall trend"></svg><div class="small">Daily rain · 14 days back → +9 days</div></div><div class="card"><h3>Night temperature</h3><div class="statnum" id="dashTemp">—</div><div class="statlabel">Latest overnight low</div><svg id="sparkTemp" class="spark" aria-label="Overnight low trend"></svg><div class="small">Daily low · 14 days back → +9 days</div></div></div>
 <div class="card" style="margin-top:12px"><h3>10-day outlook</h3><div class="forecast" id="forecast"><div class="small">Loading forecast…</div></div></div>
-<div class="card" style="margin-top:12px"><h3>Why this score <span class="chip exp" id="modelChip">conditions-v0.2</span></h3><div class="bars" id="breakdown"></div><div class="small" style="margin-top:14px">Hand-built prototype weighting (40 / 30 / 20 / 10). Thresholds are not scientifically validated.</div></div></div></section>
-<section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:20px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div></div></section>
+<div class="card" style="margin-top:12px"><h3>Why this score <span class="chip exp" id="modelChip">conditions-v0.2</span></h3><div class="bars" id="breakdown"></div><div class="small" style="margin-top:14px">Hand-built prototype weighting. Thresholds are not yet calibrated — see Evidence on the History tab.</div></div>
+<div class="card" style="margin-top:12px"><h3>Inputs &amp; data quality</h3><div class="inputs" id="inputsTable"></div></div>
+<details class="card method" style="margin-top:12px"><summary>How the index works</summary>
+<p><b>What it is.</b> An experimental 0–100 summary of whether recent conditions look favourable for grassland fungi in general. It is not a probability and does not predict any species.</p>
+<p><b>Inputs (model conditions-v0.3).</b> Recent rainfall (25%): 45 mm in 14 days scores full marks. Modelled soil moisture at 3–27 cm (20%): 15% volumetric scores 0, 40% scores full marks. Water balance (15%): a 50 mm soil bucket topped up by rain and drained by FAO-56 reference evapotranspiration. Cool nights (20%): the 7-night mean low, best at 8°C, losing 12 points per degree away. Terrain (10%): elevation, slope and aspect from a 90 m elevation model. Habitat (10%): OpenStreetMap land-use mapping, or what you set in the field. Each frost night in the last 7 days subtracts 5 points (up to 15).</p>
+<p><b>Missing data.</b> If an input is unavailable its weight is shared across the others, and the card shows how complete the inputs were. Nothing is filled in with guessed values.</p>
+<p><b>Resolution — read this.</b> Weather comes from models with grid squares a few kilometres across (the historical archive is coarser, roughly 10–25 km). Spots inside the same grid square get identical weather, so differences between nearby spots come only from terrain and habitat. Elevation is 90 m resolution; small banks and hollows are invisible. OpenStreetMap habitat mapping is patchy in places.</p>
+<p><b>How to trust it.</b> Every threshold above is a starting guess. Log finds <i>and</i> blanks, run Evidence on the History tab, and use the separation score (AUC) to see whether the index actually distinguishes them. Around 0.5 means it doesn't; above 0.7 is useful. The thresholds should be re-set from your records once there are enough of them.</p>
+<p><b>Sources.</b> Open-Meteo forecast, archive (ERA5) and elevation APIs; Copernicus DEM; OpenStreetMap via Overpass; postcodes.io and Nominatim for search.</p>
+</details></div></section>
+<section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:20px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div>
+<div class="card" style="margin-top:12px" id="evidenceCard"><h3>Evidence <span class="chip exp">Model check</span></h3><div class="small" id="evidenceSub">Does the index actually separate your finds from your blanks?</div><div class="pc-actions"><button class="btn" id="analyseAll" type="button">Analyse all records</button></div><div class="small" id="evidenceProgress" aria-live="polite"></div><div id="evidenceVerdict" class="verdict"></div><div id="evidence" class="evtable"></div></div>
+<div class="card" style="margin-top:12px"><h3>Export your data</h3><div class="pc-actions"><button class="btn secondary" id="exportCsv" type="button">CSV</button><button class="btn secondary" id="exportJson" type="button">JSON</button><button class="btn secondary" id="exportGeo" type="button">GeoJSON</button></div><div class="small" style="margin-top:10px">Exports include your private coordinates — share them carefully.</div></div></div></section>
 <section class="view" id="view-log"><div class="page"><div class="eyebrow">Field notes</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome — blanks included. Records stay in this browser in the prototype.</div><form class="card" id="logForm" style="margin-top:20px"><div class="attached" id="attachedPoint" hidden><div><strong><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div></div><div style="margin-top:14px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn lime" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:14px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
 </main>
 <nav aria-label="Main">
@@ -315,14 +341,18 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs';
 
 // ---------- constants ----------
-const MODEL_VERSION = 'conditions-v0.2';
+const MODEL_VERSION = 'conditions-v0.3';
 const TZ = 'Europe/London';
 const TERRAIN_RADIUS_M = 60;
 const FLAT_SLOPE_DEG = 2;
 const WEATHER_TTL = 60 * 60 * 1000;
 const TERRAIN_TTL = 30 * 24 * 60 * 60 * 1000;
 const RECENT_HISTORY_TTL = 6 * 60 * 60 * 1000;
-const DAILY_VARS = 'temperature_2m_min,temperature_2m_max,precipitation_sum,weather_code';
+const DAILY_VARS = 'temperature_2m_min,temperature_2m_max,precipitation_sum,weather_code,et0_fao_evapotranspiration';
+// Modelled volumetric soil moisture (m³/m³). Forecast and archive models use different depth bands.
+const SOIL_VARS_FORECAST = ['soil_moisture_3_to_9cm', 'soil_moisture_9_to_27cm'];
+const SOIL_VARS_ARCHIVE = ['soil_moisture_0_to_7cm', 'soil_moisture_7_to_28cm'];
+const HABITAT_TTL = 90 * 864e5;
 const RECORDS_KEY = 'mycofield-history-v2';
 const COMPASS = ['N','NE','E','SE','S','SW','W','NW'];
 
@@ -463,40 +493,83 @@ async function cachedJSON(key, url, ttl, {force = false} = {}) {
 }
 
 // ---------- weather engine ----------
-function toDays(daily) {
+// Daily mean of the hourly soil-moisture bands, keyed by local date.
+function dailySoilFromHourly(hourly, vars) {
+  if (!hourly?.time) return {};
+  const acc = {};
+  hourly.time.forEach((t, i) => {
+    const vals = vars.map(v => hourly[v]?.[i]).filter(Number.isFinite);
+    if (vals.length) (acc[t.slice(0, 10)] ||= []).push(vals.reduce((a, b) => a + b, 0) / vals.length);
+  });
+  return Object.fromEntries(Object.entries(acc).map(([d, a]) => [d, a.reduce((x, y) => x + y, 0) / a.length]));
+}
+function toDays(daily, soilByDay = {}) {
   return daily.time.map((date, i) => ({
     date,
     rain: daily.precipitation_sum?.[i] ?? null,
     low: daily.temperature_2m_min?.[i] ?? null,
     high: daily.temperature_2m_max?.[i] ?? null,
-    code: daily.weather_code?.[i] ?? null
+    code: daily.weather_code?.[i] ?? null,
+    et0: daily.et0_fao_evapotranspiration?.[i] ?? null,
+    soil: soilByDay[date] ?? null
   }));
 }
 function sumRain(days, i, n) { let s = 0; for (let j = Math.max(0, i - n + 1); j <= i; j++) s += days[j].rain || 0; return round1(s); }
+// v0.2 moisture memory — kept as a fallback when evapotranspiration is unavailable.
 function calculateMoisturePersistence(rains) {
   let m = 0;
   return rains.map(r => (m = clamp(m * 0.80 + Math.min(r || 0, 12) / 18, 0, 1)));
 }
-// Adds rolling rain totals + persistence to each day.
+// Simple soil-water bucket: yesterday's store + rain − reference evapotranspiration (FAO-56 ET₀),
+// capped at BUCKET_MM. Starts half full; the first ~2 weeks of any series are spin-up.
+const BUCKET_MM = 50;
 function enrichDays(days) {
   const persistence = calculateMoisturePersistence(days.map(d => d.rain));
-  days.forEach((d, i) => { d.rain7 = sumRain(days, i, 7); d.rain14 = sumRain(days, i, 14); d.rain30 = sumRain(days, i, 30); d.persistence = persistence[i]; });
+  const hasEt = days.some(d => Number.isFinite(d.et0));
+  let bucket = BUCKET_MM / 2;
+  days.forEach((d, i) => {
+    const w7 = days.slice(Math.max(0, i - 6), i + 1), w14 = days.slice(Math.max(0, i - 13), i + 1);
+    d.rain7 = sumRain(days, i, 7); d.rain14 = sumRain(days, i, 14); d.rain30 = sumRain(days, i, 30);
+    d.persistence = persistence[i];
+    if (hasEt) { bucket = clamp(bucket + (d.rain || 0) - (Number.isFinite(d.et0) ? d.et0 : 0), 0, BUCKET_MM); d.balance = bucket / BUCKET_MM; }
+    else d.balance = null;
+    const lows = w7.map(x => x.low).filter(Number.isFinite);
+    d.low7 = lows.length ? lows.reduce((a, b) => a + b, 0) / lows.length : null;
+    d.frost7 = w7.filter(x => Number.isFinite(x.low) && x.low <= 0).length;
+    d.wet14 = w14.filter(x => (x.rain || 0) >= 1).length;
+    d.et7 = round1(w7.reduce((a, x) => a + (Number.isFinite(x.et0) ? x.et0 : 0), 0));
+    // Soil moisture: that day's value, else the most recent earlier day that has one.
+    d.soilNow = Number.isFinite(d.soil) ? d.soil : (i > 0 ? days[i - 1].soilNow : null);
+  });
   return days;
 }
 function latestLow(days, i) { for (let j = i; j >= 0; j--) if (Number.isFinite(days[j].low)) return days[j].low; return null; }
+// Environment used by the scoring engine for day i of a series.
+function envAt(days, i) {
+  const d = days[i];
+  return {rain14: d.rain14, soil: d.soilNow, balance: d.balance, persistence: d.persistence, low7: d.low7, frost7: d.frost7};
+}
+function weatherSummary(days, i) {
+  const d = days[i];
+  return {rain7: d.rain7, rain14: d.rain14, rain30: d.rain30, latestLow: latestLow(days, i), low7: d.low7 == null ? null : round1(d.low7),
+    frost7: d.frost7, wet14: d.wet14, et7: d.et7, soil: d.soilNow == null ? null : Math.round(d.soilNow * 1000) / 1000,
+    balance: d.balance == null ? null : Math.round(d.balance * 100) / 100, persistence: Math.round(d.persistence * 100) / 100};
+}
+// The weather model grid point Open-Meteo actually used for these coordinates.
+function gridCell(data, lat, lon) {
+  if (!Number.isFinite(data?.latitude)) return null;
+  return {lat: data.latitude, lon: data.longitude, elevation: data.elevation ?? null, km: round1(distanceKm([lon, lat], [data.longitude, data.latitude]))};
+}
+const sameCell = (a, b) => !!a && !!b && Math.abs(a.lat - b.lat) < 1e-4 && Math.abs(a.lon - b.lon) < 1e-4;
 
 async function fetchPointWeather(lat, lon, opts) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&daily=${DAILY_VARS}&past_days=14&forecast_days=10&timezone=${encodeURIComponent(TZ)}`;
-  const res = await cachedJSON(`weather:${lat.toFixed(3)}:${lon.toFixed(3)}:${todayISO()}`, url, WEATHER_TTL, opts);
-  const days = enrichDays(toDays(res.data.daily));
+  // 30 past days so the water-balance bucket has spun up before "today".
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&daily=${DAILY_VARS}&hourly=${SOIL_VARS_FORECAST.join(',')}&past_days=30&forecast_days=10&timezone=${encodeURIComponent(TZ)}`;
+  const res = await cachedJSON(`weather3:${lat.toFixed(3)}:${lon.toFixed(3)}:${todayISO()}`, url, WEATHER_TTL, opts);
+  const days = enrichDays(toDays(res.data.daily, dailySoilFromHourly(res.data.hourly, SOIL_VARS_FORECAST)));
   let todayIdx = days.findIndex(d => d.date === todayISO());
-  if (todayIdx < 0) todayIdx = Math.min(14, days.length - 1);
-  const t = days[todayIdx];
-  return {
-    status: res.status, fetchedAt: res.fetchedAt, days, todayIdx,
-    rain7: t.rain7, rain14: t.rain14, rain30: t.rain30,
-    latestLow: latestLow(days, todayIdx), persistence: round1(t.persistence * 100) / 100
-  };
+  if (todayIdx < 0) todayIdx = Math.min(30, days.length - 1);
+  return {status: res.status, fetchedAt: res.fetchedAt, days, todayIdx, cell: gridCell(res.data, lat, lon), ...weatherSummary(days, todayIdx)};
 }
 
 // ---------- terrain engine ----------
@@ -536,25 +609,98 @@ async function analyseTerrain(lat, lon, opts) {
   return {status, ...terrain, score: calculateTerrainScore(terrain)};
 }
 
+// ---------- habitat engine (OpenStreetMap land-use mapping via Overpass) ----------
+// EXPERIMENTAL suitability scores for general grassland fungi. OSM mapping is uneven:
+// unmapped places are reported as unknown (and left out of the index), never guessed.
+const HABITAT_CLASSES = {
+  'semi-natural-grassland': {label: 'Semi-natural grassland', score: 100},
+  'amenity-grassland': {label: 'Amenity grass / lawn / churchyard', score: 70},
+  'heath-moor': {label: 'Heath & moorland', score: 60},
+  'farmland': {label: 'Farmland (pasture or arable)', score: 55},
+  'scrub': {label: 'Scrub', score: 35},
+  'wetland': {label: 'Wetland / bog', score: 35},
+  'woodland': {label: 'Woodland', score: 25},
+  'bare': {label: 'Bare rock / scree / quarry', score: 10},
+  'built': {label: 'Built-up', score: 10},
+  'water': {label: 'Water', score: 0}
+};
+// First matching rule wins: specific natural cover before broad land use.
+const HABITAT_RULES = [
+  ['water', t => t.natural === 'water' || t.landuse === 'reservoir' || t.landuse === 'basin'],
+  ['wetland', t => t.natural === 'wetland' || t.natural === 'bog'],
+  ['semi-natural-grassland', t => ['grassland', 'fell'].includes(t.natural) || t.landuse === 'meadow' || t.leisure === 'common'],
+  ['heath-moor', t => ['heath', 'moor'].includes(t.natural)],
+  ['scrub', t => t.natural === 'scrub'],
+  ['woodland', t => t.natural === 'wood' || t.landuse === 'forest'],
+  ['bare', t => ['bare_rock', 'scree', 'shingle'].includes(t.natural) || t.landuse === 'quarry'],
+  ['amenity-grassland', t => ['grass', 'village_green', 'recreation_ground', 'cemetery'].includes(t.landuse) || ['park', 'golf_course', 'pitch'].includes(t.leisure) || t.amenity === 'grave_yard'],
+  ['farmland', t => ['farmland', 'pasture', 'farmyard', 'orchard'].includes(t.landuse)],
+  ['built', t => ['residential', 'industrial', 'commercial', 'retail', 'construction', 'brownfield'].includes(t.landuse)]
+];
+function classifyHabitat(tagList) {
+  for (const [cls, test] of HABITAT_RULES) { const hit = tagList.find(test); if (hit) return {cls, tags: hit}; }
+  return null;
+}
+// Overpass fair use: at most one request per ~1.1 s, queued.
+let overpassChain = Promise.resolve(), lastOverpassAt = 0;
+function overpassSlot() {
+  const slot = overpassChain.then(() => new Promise(r => setTimeout(r, Math.max(0, 1100 - (Date.now() - lastOverpassAt))))).then(() => { lastOverpassAt = Date.now(); });
+  overpassChain = slot.catch(() => {});
+  return slot;
+}
+async function fetchHabitat(lat, lon, opts) {
+  const key = `habitat:${lat.toFixed(4)}:${lon.toFixed(4)}`;
+  if (opts?.force || !isFresh(key, HABITAT_TTL)) await overpassSlot();
+  const q = `[out:json][timeout:12];is_in(${lat.toFixed(6)},${lon.toFixed(6)})->.a;(area.a["landuse"];area.a["natural"];area.a["leisure"];area.a["amenity"="grave_yard"];);out tags;`;
+  const res = await cachedJSON(key, `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(q)}`, HABITAT_TTL, opts);
+  const hit = classifyHabitat((res.data.elements || []).map(e => e.tags || {}));
+  if (!hit) return {status: res.status, cls: null, label: 'Not mapped in OpenStreetMap', score: null, source: 'OpenStreetMap'};
+  const osmTag = ['natural', 'landuse', 'leisure', 'amenity'].filter(k => hit.tags[k]).map(k => `${k}=${hit.tags[k]}`)[0];
+  return {status: res.status, cls: hit.cls, ...HABITAT_CLASSES[hit.cls], osmTag, source: 'OpenStreetMap'};
+}
+// A habitat set in the field always overrides the mapped one.
+function effectiveHabitat(auto, override) {
+  if (override && HABITAT_CLASSES[override]) return {cls: override, ...HABITAT_CLASSES[override], source: 'Field-set', status: 'field'};
+  return auto || null;
+}
+
 // ---------- scoring engine (shared by areas, points, observations, history) ----------
+// conditions-v0.3. Each input gives a 0–100 sub-score; weights are renormalised over the inputs
+// that are actually available (missing inputs are reported, never filled with invented values).
+// All thresholds are EXPERIMENTAL until calibrated against logged finds and blanks.
+const MODEL = [
+  {key: 'rain', short: 'Rain', label: 'Recent rainfall (14 days)', weight: 0.25, score: e => Number.isFinite(e.rain14) ? clamp(e.rain14 / 45 * 100) : null},
+  {key: 'soil', short: 'Soil', label: 'Soil moisture, 3–27 cm (modelled)', weight: 0.20, score: e => Number.isFinite(e.soil) ? clamp((e.soil - 0.15) / (0.40 - 0.15) * 100) : null},
+  {key: 'balance', short: 'Balance', label: 'Water balance (rain − evaporation)', weight: 0.15, score: e => Number.isFinite(e.balance) ? e.balance * 100 : Number.isFinite(e.persistence) ? e.persistence * 100 : null},
+  {key: 'nights', short: 'Nights', label: 'Cool nights (7-night mean low)', weight: 0.20, score: e => Number.isFinite(e.low7) ? clamp(100 - Math.abs(e.low7 - 8) * 12) : null},
+  {key: 'terrain', short: 'Terrain', label: 'Terrain context', weight: 0.10, score: e => Number.isFinite(e.terrain) ? e.terrain : null},
+  {key: 'habitat', short: 'Habitat', label: 'Habitat (land cover)', weight: 0.10, score: e => Number.isFinite(e.habitat) ? e.habitat : null}
+];
+const FROST_PENALTY_PER_NIGHT = 5, FROST_PENALTY_MAX = 15;
 function conditionsLabel(score) {
   return score < 35 ? 'Weak environmental signal' : score < 55 ? 'Conditions developing' : score < 70 ? 'Moderate environmental signal' : score < 85 ? 'Strong environmental signal' : 'Very strong environmental signal';
 }
-function calculateConditionsIndex({rain14, low, persistence, terrain}) {
-  const terrainKnown = Number.isFinite(terrain);
-  const parts = {
-    rain: 0.40 * clamp((rain14 || 0) / 45 * 100),
-    nights: Number.isFinite(low) ? 0.30 * clamp(100 - Math.abs(low - 8) * 12) : 0,
-    persistence: 0.20 * clamp((persistence || 0) * 100),
-    terrain: 0.10 * (terrainKnown ? terrain : 50)
+function calculateConditionsIndex(env) {
+  const scored = MODEL.map(m => ({...m, s: m.score(env)}));
+  const avail = scored.filter(m => m.s != null);
+  const wsum = avail.reduce((a, m) => a + m.weight, 0) || 1;
+  const components = {}, max = {};
+  for (const m of avail) { components[m.key] = Math.round(m.weight / wsum * m.s); max[m.key] = Math.round(m.weight / wsum * 100); }
+  const frost = Math.min(FROST_PENALTY_MAX, (env.frost7 || 0) * FROST_PENALTY_PER_NIGHT);
+  if (frost) components.frost = -frost;
+  const score = Math.round(clamp(avail.reduce((a, m) => a + m.weight / wsum * m.s, 0) - frost));
+  return {
+    score, label: conditionsLabel(score), components, max,
+    missing: scored.filter(m => m.s == null).map(m => m.key),
+    completeness: Math.round(avail.reduce((a, m) => a + m.weight, 0) * 100),
+    balanceFallback: !Number.isFinite(env.balance) && Number.isFinite(env.persistence),
+    modelVersion: MODEL_VERSION
   };
-  const score = Math.round(parts.rain + parts.nights + parts.persistence + parts.terrain);
-  return {score, label: conditionsLabel(score), components: Object.fromEntries(Object.entries(parts).map(([k, v]) => [k, Math.round(v)])), terrainAssumed: !terrainKnown, modelVersion: MODEL_VERSION};
 }
 // Index for every day with a full 14-day window, plus trend (today vs next 3 days).
-function scoreSeries(weather, terrainScore) {
+function scoreSeries(weather, terrainScore, habitatScore) {
   const {days, todayIdx} = weather;
-  const series = days.map((d, i) => i < 13 ? null : calculateConditionsIndex({rain14: d.rain14, low: d.low ?? latestLow(days, i), persistence: d.persistence, terrain: terrainScore}).score);
+  const series = days.map((d, i) => i < 13 ? null : calculateConditionsIndex({...envAt(days, i), terrain: terrainScore, habitat: habitatScore}).score);
   const ahead = series.slice(todayIdx + 1, todayIdx + 4).filter(Number.isFinite);
   const avg = ahead.reduce((a, b) => a + b, 0) / (ahead.length || 1);
   const delta = ahead.length ? avg - series[todayIdx] : 0;
@@ -563,8 +709,15 @@ function scoreSeries(weather, terrainScore) {
 }
 const TREND_TEXT = {rising: '↑ rising', stable: '→ stable', falling: '↓ falling'};
 function explainParts(c) {
-  return [['Rain', c.components.rain], ['Cool nights', c.components.nights], ['Persistence', c.components.persistence], ['Terrain', c.components.terrain]];
+  return MODEL.filter(m => c.components[m.key] != null).map(m => [m.short, c.components[m.key]]).concat(c.components.frost ? [['Frost', c.components.frost]] : []);
 }
+const fmtSigned = v => (v < 0 ? '−' : '+') + Math.abs(v);
+const MISSING_TEXT = {rain: 'rainfall', soil: 'soil moisture', balance: 'water balance', nights: 'night temperatures', terrain: 'terrain', habitat: 'habitat'};
+function completenessText(c) {
+  return c.missing.length ? `${c.completeness}% of inputs · missing ${c.missing.map(k => MISSING_TEXT[k]).join(', ')}` : 'All inputs available';
+}
+const fmtSoil = v => Number.isFinite(v) ? `${Math.round(v * 100)}%` : '—';
+const fmtPct = v => Number.isFinite(v) ? `${Math.round(v * 100)}%` : '—';
 
 // ---------- map ----------
 const style = {version: 8, sources: {osm: {type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors', maxzoom: 19}, terrain: {type: 'raster-dem', url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json', tileSize: 256}}, layers: [{id: 'osm', type: 'raster', source: 'osm'}, {id: 'hillshade', type: 'hillshade', source: 'terrain', paint: {'hillshade-exaggeration': .45}}]};
@@ -646,19 +799,35 @@ async function loadArea(k, opts) {
   const [lon, lat] = a.center;
   state.areaData[k] = {...state.areaData[k], status: 'loading'};
   renderAreaMarkers(); if (k === state.selectedArea) renderSelectedArea();
+  // Habitat (Overpass) can be slow: score with weather + terrain first, then update.
+  const habitatP = fetchHabitat(lat, lon, opts).catch(habitatUnavailable);
   const [w, t] = await Promise.allSettled([fetchPointWeather(lat, lon, opts), analyseTerrain(lat, lon, opts)]);
-  const d = {status: 'error'};
+  const d = {status: 'error', habitatPending: true};
   if (t.status === 'fulfilled') d.terrain = t.value;
   if (w.status === 'fulfilled') {
     d.weather = w.value;
-    d.conditions = calculateConditionsIndex({rain14: d.weather.rain14, low: d.weather.latestLow, persistence: d.weather.persistence, terrain: d.terrain?.score});
-    Object.assign(d, scoreSeries(d.weather, d.terrain?.score));
     d.status = d.weather.status === 'live' && !d.terrain ? 'partial' : d.weather.status;
   } else {
     d.error = w.reason; d.status = w.reason?.status || 'error';
   }
   if (!areas[k]) return; // deleted while loading
+  scoreArea(k, d);
   state.areaData[k] = d;
+  refreshAreaViews(k);
+  d.habitatAuto = await habitatP; d.habitatPending = false;
+  if (!areas[k] || state.areaData[k] !== d) return;
+  scoreArea(k, d);
+  refreshAreaViews(k);
+}
+function habitatUnavailable(err) { return {cls: null, label: 'Habitat lookup unavailable', score: null, source: 'OpenStreetMap', status: err?.status || 'error', unavailable: true}; }
+// (Re)compute an area's index from its weather, terrain and habitat (field-set habitat wins).
+function scoreArea(k, d) {
+  d.habitat = effectiveHabitat(d.habitatAuto, areas[k]?.habitatOverride);
+  if (!d.weather) return;
+  d.conditions = calculateConditionsIndex({...envAt(d.weather.days, d.weather.todayIdx), terrain: d.terrain?.score, habitat: d.habitat?.score});
+  Object.assign(d, scoreSeries(d.weather, d.terrain?.score, d.habitat?.score));
+}
+function refreshAreaViews(k) {
   compareTrackedAreas(); renderAreaMarkers();
   if (k === state.selectedArea) renderSelectedArea();
   renderSignal();
@@ -727,7 +896,7 @@ function renderSelectedArea() {
     $('ring').style.setProperty('--score', c.score); $('ring').style.setProperty('--ringc', ringColor(c.score));
     $('scoreValue').textContent = c.score;
     $('scoreTitle').textContent = c.label;
-    $('scoreCopy').textContent = explainParts(c).map(([n, v]) => `${n} +${v}`).join(' · ');
+    $('scoreCopy').textContent = explainParts(c).map(([n, v]) => `${n} ${fmtSigned(v)}`).join(' · ') + (c.missing.length ? ` · ${completenessText(c)}` : '');
     $('trend').textContent = TREND_TEXT[d.trend];
     $('rain14').textContent = `${d.weather.rain14} mm`;
     $('night').textContent = Number.isFinite(d.weather.latestLow) ? `${round1(d.weather.latestLow)}°C` : '—';
@@ -773,8 +942,13 @@ function deltaHTML(d) {
 }
 // Brand "conditions card": labelled horizontal bars, value out of each component's maximum.
 function breakdownHTML(c) {
-  return [['Recent rainfall', c.components.rain, 40], ['Cool nights', c.components.nights, 30], ['Moisture persistence', c.components.persistence, 20], ['Terrain context', c.components.terrain, 10]]
-    .map(([label, v, max]) => `<div class="bar"><span>${label}</span><b>+${v}<small> / ${max}</small></b><div class="track"><div class="fill${v / max < 0.5 ? ' low' : ''}" style="width:${Math.round(v / max * 100)}%"></div></div></div>`).join('');
+  const rows = MODEL.map(m => {
+    if (c.components[m.key] == null) return `<div class="bar missing"><span>${m.label}</span><b><small>not available</small></b><div class="track"></div></div>`;
+    const v = c.components[m.key], max = c.max[m.key] || 1;
+    return `<div class="bar"><span>${m.label}</span><b>+${v}<small> / ${max}</small></b><div class="track"><div class="fill${v / max < 0.5 ? ' low' : ''}" style="width:${Math.round(v / max * 100)}%"></div></div></div>`;
+  });
+  if (c.components.frost) rows.push(`<div class="bar penalty"><span>Frost penalty (${-c.components.frost / FROST_PENALTY_PER_NIGHT} frost night${c.components.frost === -FROST_PENALTY_PER_NIGHT ? '' : 's'}, 7 days)</span><b>${fmtSigned(c.components.frost)}</b><div class="track"><div class="fill neg" style="width:${Math.round(-c.components.frost / FROST_PENALTY_MAX * 100)}%"></div></div></div>`);
+  return rows.join('') + `<div class="small" style="margin-top:4px">${completenessText(c)}${c.balanceFallback ? ' · water balance estimated without evaporation data' : ''}.</div>`;
 }
 
 // Multi-area tracker: every top-level area with its sub-areas nested underneath.
@@ -794,6 +968,9 @@ function trackerRow(k) {
   }
   if (d?.weather) bits.push(`${d.weather.rain14} mm`, Number.isFinite(d.weather.latestLow) ? `${round1(d.weather.latestLow)}°C` : '');
   if (d?.terrain && a.parentId) bits.push(`${d.terrain.elevation} m ${d.terrain.aspect === 'Flat' ? 'flat' : d.terrain.aspect}`);
+  if (d?.habitat?.cls) bits.push(shortHabitat(d.habitat.cls));
+  // Honesty: a sub-area in the same weather grid square as its parent can only differ by terrain/habitat.
+  if (a.parentId && sameCell(d?.weather?.cell, state.areaData[a.parentId]?.weather?.cell)) bits.push('same weather cell as parent');
   if (d && (d.status === 'error' || d.status === 'offline')) bits.push(STATUS_TEXT[d.status]);
   const series = c ? d.series.slice(d.weather.todayIdx) : [];
   const kicker = a.parentId ? `${ICON.pin}${esc(areas[a.parentId]?.name || '')}` : `${ICON.leaf}Tracked area`;
@@ -825,7 +1002,7 @@ function renderSignal() {
   if (!d?.conditions) {
     const loading = !d || d.status === 'loading';
     $('dashScore').textContent = loading ? '…' : '—'; $('dashTrend').textContent = loading ? 'Loading live weather…' : 'Live weather unavailable — cached data will be used when available';
-    $('breakdown').innerHTML = '';
+    $('breakdown').innerHTML = ''; renderInputs(null);
     $('dashRain').textContent = '—'; $('dashTemp').textContent = '—';
     setChip($('dashRainChip'), loading ? 'loading' : d.status);
     ['sparkScore', 'sparkRain', 'sparkTemp'].forEach(id => $(id).innerHTML = '');
@@ -837,17 +1014,19 @@ function renderSignal() {
   $('dashTrend').innerHTML = `${deltaHTML(d)}`;
   $('dashTrend').title = c.label;
   $('dashRain').textContent = `${w.rain14} mm`;
-  $('dashRainSub').textContent = `14-day rainfall · persistence ${Math.round(w.persistence * 100)}%`;
+  $('dashRainSub').textContent = `Soil moisture ${fmtSoil(w.soil)} · water balance ${fmtPct(w.balance)} · ${w.wet14} wet days of 14`;
   setChip($('dashRainChip'), w.status);
   $('dashTemp').textContent = Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—';
   spark($('sparkScore'), series.slice(w.todayIdx));
-  spark($('sparkRain'), w.days.map(x => x.rain));
-  spark($('sparkTemp'), w.days.map(x => x.low));
+  const from = Math.max(0, w.todayIdx - 14);
+  spark($('sparkRain'), w.days.slice(from).map(x => x.rain));
+  spark($('sparkTemp'), w.days.slice(from).map(x => x.low));
   $('forecast').innerHTML = w.days.slice(w.todayIdx, w.todayIdx + 10).map((x, j) => {
     const s = series[w.todayIdx + j];
     return `<div class="day"><b>${fmtDay(x.date)}</b><div class="n" style="color:${scoreColor(s)}">${s ?? '—'}</div><small>${Number.isFinite(x.low) ? round1(x.low) + '°C low' : '—'}<br>${round1(x.rain || 0)} mm · ${weatherText(x.code)}</small></div>`;
   }).join('');
   $('breakdown').innerHTML = breakdownHTML(c);
+  renderInputs(d);
 }
 
 // ---------- saved areas sheet (optional, off the main map) ----------
@@ -941,7 +1120,7 @@ function saveAreaFromPoint(e) {
   if (!r || !name) return;
   const id = newAreaId();
   areas[id] = {name, center: [round6(r.coordinates.lon), round6(r.coordinates.lat)], zoom: parentId ? 14.5 : 13, pitch: 60, parentId,
-    elev: r.terrain ? `${r.terrain.elevation} m` : null, createdAt: new Date().toISOString(), private: true};
+    elev: r.terrain ? `${r.terrain.elevation} m` : null, habitatOverride: r.habitatOverride || null, createdAt: new Date().toISOString(), private: true};
   closeSaveForm();
   refreshAreasUI();
   selectArea(id, false, true);
@@ -981,26 +1160,41 @@ async function analysePoint(lat, lon, {force = false, zoom = null, place = null}
   placePointMarker(lat, lon);
   renderPointLoading(lat, lon, place);
   revealPoint(lat, lon, zoom);
+  const habitatP = fetchHabitat(lat, lon, {force}).catch(habitatUnavailable);
   const [w, t] = await Promise.allSettled([fetchPointWeather(lat, lon, {force}), analyseTerrain(lat, lon, {force})]);
   if (token !== pointToken) return; // a newer tap superseded this one
-  const result = buildPointResult(lat, lon, w, t);
-  result.place = place;
+  let result = buildPointResult(lat, lon, w, t, {pending: true}, null, place);
   state.pointAnalysis = result;
   renderPointAnalysis(result);
   if (zoom == null) revealPoint(lat, lon);
+  const habitatAuto = await habitatP;
+  if (token !== pointToken) return;
+  result = buildPointResult(lat, lon, w, t, habitatAuto, state.pointAnalysis.habitatOverride, place);
+  state.pointAnalysis = result;
+  renderPointAnalysis(result);
 }
-function buildPointResult(lat, lon, w, t) {
+function buildPointResult(lat, lon, w, t, habitatAuto, habitatOverride = null, place = null) {
   const weather = w.status === 'fulfilled' ? w.value : null;
   const terrain = t.status === 'fulfilled' ? t.value : null;
-  const conditions = weather ? calculateConditionsIndex({rain14: weather.rain14, low: weather.latestLow, persistence: weather.persistence, terrain: terrain?.score}) : null;
+  const habitat = habitatAuto?.pending && !habitatOverride ? {pending: true} : effectiveHabitat(habitatAuto?.pending ? null : habitatAuto, habitatOverride);
+  const conditions = weather ? calculateConditionsIndex({...envAt(weather.days, weather.todayIdx), terrain: terrain?.score, habitat: habitat?.score}) : null;
   return {
-    coordinates: {lat, lon},
-    weather: weather && {rain7: weather.rain7, rain14: weather.rain14, rain30: weather.rain30, latestLow: weather.latestLow, persistence: weather.persistence, status: weather.status},
+    coordinates: {lat, lon}, place, _w: w, _t: t, _habitatAuto: habitatAuto, habitatOverride,
+    weather: weather && {...weatherSummary(weather.days, weather.todayIdx), status: weather.status, cell: weather.cell},
     terrain: terrain && {elevation: terrain.elevation, slope: terrain.slope, aspect: terrain.aspect, aspectDeg: terrain.aspectDeg, score: terrain.score, status: terrain.status},
+    habitat,
     conditions,
     errors: {weather: w.status === 'rejected' ? (w.reason?.status || 'error') : null, terrain: t.status === 'rejected' ? (t.reason?.status || 'error') : null},
-    metadata: {weatherSource: 'Open-Meteo Forecast', elevationSource: 'Open-Meteo Elevation', terrainRadiusM: TERRAIN_RADIUS_M, modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()}
+    metadata: {weatherSource: 'Open-Meteo Forecast', elevationSource: 'Open-Meteo Elevation (Copernicus 90 m)', habitatSource: habitat?.source || null, terrainRadiusM: TERRAIN_RADIUS_M, modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()}
   };
+}
+// Field correction: re-score the current point with a habitat chosen on the ground.
+function setPointHabitat(cls) {
+  const r = state.pointAnalysis;
+  if (!r || r.loading) return;
+  const next = buildPointResult(r.coordinates.lat, r.coordinates.lon, r._w, r._t, r._habitatAuto, cls || null, r.place);
+  state.pointAnalysis = next;
+  renderPointAnalysis(next);
 }
 function metricHTML(value, label, kind) {
   const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : kind === 'Live' ? 'live' : '';
@@ -1009,30 +1203,36 @@ function metricHTML(value, label, kind) {
 function stripHTML(items) { return items.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join(''); }
 function renderPointLoading(lat, lon, place) {
   $('pointCard').hidden = false; syncSheetState();
-  $('pcStrip').innerHTML = stripHTML([['…', '14-day rain'], ['…', 'night low'], ['…', 'elevation'], ['…', 'slope']]);
+  $('pcStrip').innerHTML = stripHTML([['…', '14-day rain'], ['…', 'soil moisture'], ['…', 'night low'], ['…', 'habitat']]);
   setChip($('pcStatus'), 'loading');
   $('pcRing').style.setProperty('--score', 0);
   $('pcScore').textContent = '…';
   $('pcLabel').textContent = 'Analysing this point…';
-  $('pcSub').textContent = 'Fetching weather, elevation and terrain shape';
+  $('pcSub').textContent = 'Fetching weather, soil moisture, elevation and habitat';
   $('pcLoading').hidden = false;
-  $('pcMetrics').innerHTML = ['14-day rainfall', 'overnight low', 'elevation', 'slope', 'aspect', 'terrain context'].map(l => metricHTML('…', l, 'Loading')).join('');
-  $('pcExplain').innerHTML = '';
+  $('pcMetrics').innerHTML = ['14-day rainfall', 'soil moisture', 'water balance', '7-night mean low', 'frost nights (7 d)', 'elevation', 'slope · aspect', 'terrain context', 'habitat'].map(l => metricHTML('…', l, 'Loading')).join('');
+  $('pcExplain').innerHTML = ''; $('pcGrid').textContent = '';
+  $('pcHabitat').innerHTML = '';
   $('pcCoords').innerHTML = (place ? `${esc(place)} · ` : '') + earthLink(lat, lon);
   $('pcUse').disabled = true; $('pcSave').disabled = true; closeSaveForm();
 }
+function habitatOptions(auto, override) {
+  const autoText = auto?.pending ? 'Auto — looking up…' : auto?.cls ? `Auto — ${auto.label} (OSM)` : `Auto — ${auto?.unavailable ? 'lookup unavailable' : 'not mapped'}`;
+  return `<option value="">${esc(autoText)}</option>` + Object.entries(HABITAT_CLASSES).map(([k, h]) => `<option value="${k}"${k === override ? ' selected' : ''}>${esc(h.label)}</option>`).join('');
+}
+function habitatKind(h) { return !h ? 'Unavailable' : h.pending ? 'Loading' : h.source === 'Field-set' ? 'Field-set' : h.cls ? 'OSM mapped' : 'Unavailable'; }
 function renderPointAnalysis(r) {
-  const {weather: w, terrain: t, conditions: c, errors} = r;
+  const {weather: w, terrain: t, habitat: h, conditions: c, errors} = r;
   $('pcLoading').hidden = true;
   $('pcUse').disabled = false; $('pcSave').disabled = false;
   const statuses = [w?.status, t?.status].filter(Boolean);
-  const overall = !w && !t ? (errors.weather === 'offline' ? 'offline' : 'error') : (!w || !t) ? 'partial' : statuses.includes('offline') ? 'offline' : statuses.every(s => s === 'cached') ? 'cached' : statuses.includes('cached') ? 'cached' : 'live';
+  const overall = !w && !t ? (errors.weather === 'offline' ? 'offline' : 'error') : (!w || !t) ? 'partial' : statuses.includes('offline') ? 'offline' : statuses.includes('cached') ? 'cached' : 'live';
   setChip($('pcStatus'), overall);
   if (c) {
     $('pcRing').style.setProperty('--score', c.score); $('pcRing').style.setProperty('--ringc', ringColor(c.score));
     $('pcScore').textContent = c.score;
     $('pcLabel').textContent = c.label;
-    $('pcSub').textContent = `Experimental index · ${MODEL_VERSION}${c.terrainAssumed ? ' · terrain unavailable, neutral 50 used' : ''}`;
+    $('pcSub').textContent = `Experimental index · ${MODEL_VERSION} · ${completenessText(c)}${h?.pending ? ' · habitat still loading' : ''}`;
   } else {
     $('pcRing').style.setProperty('--score', 0);
     $('pcScore').textContent = '—';
@@ -1043,20 +1243,28 @@ function renderPointAnalysis(r) {
   const tKind = t ? 'Calculated' : 'Unavailable';
   $('pcMetrics').innerHTML = [
     metricHTML(w ? `${w.rain14} mm` : '—', '14-day rainfall', wKind),
-    metricHTML(w && Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—', 'overnight low', wKind),
+    metricHTML(w ? fmtSoil(w.soil) : '—', 'soil moisture (vol.)', w && Number.isFinite(w.soil) ? 'Modelled' : 'Unavailable'),
+    metricHTML(w ? fmtPct(w.balance) : '—', 'water balance', w && Number.isFinite(w.balance) ? 'Calculated' : 'Unavailable'),
+    metricHTML(w && Number.isFinite(w.low7) ? `${w.low7}°C` : '—', '7-night mean low', w ? 'Calculated' : 'Unavailable'),
+    metricHTML(w ? String(w.frost7) : '—', 'frost nights (7 d)', w ? 'Calculated' : 'Unavailable'),
     metricHTML(t ? `${t.elevation} m` : '—', 'elevation', t ? (t.status === 'live' ? 'Live' : 'Cached') : 'Unavailable'),
-    metricHTML(t ? `${t.slope}°` : '—', 'slope', tKind),
-    metricHTML(t ? t.aspect : '—', 'aspect', tKind),
-    metricHTML(t ? `${t.score}/100` : '—', 'terrain context', t ? 'Experimental' : 'Unavailable')
+    metricHTML(t ? `${t.slope}° ${t.aspect === 'Flat' ? 'flat' : t.aspect}` : '—', 'slope · aspect', tKind),
+    metricHTML(t ? `${t.score}/100` : '—', 'terrain context', t ? 'Experimental' : 'Unavailable'),
+    metricHTML(h?.pending ? '…' : h?.cls ? esc(shortHabitat(h.cls)) : '—', 'habitat', habitatKind(h))
   ].join('');
-  $('pcExplain').innerHTML = c ? explainParts(c).map(([n, v]) => `<span>${n} <b>+${v}</b></span>`).join('') + (w ? `<span>Moisture memory <b>${Math.round(w.persistence * 100)}%</b></span>` : '') : '';
+  $('pcExplain').innerHTML = c ? explainParts(c).map(([n, v]) => `<span>${n} <b>${fmtSigned(v)}</b></span>`).join('') : '';
+  $('pcHabitat').innerHTML = habitatOptions(r._habitatAuto, r.habitatOverride);
+  const cell = w?.cell;
+  $('pcGrid').textContent = cell ? `Weather comes from the model grid point ${cell.km} km away. Nearby spots in the same grid square get identical weather — differences between them come only from terrain and habitat.` : '';
   $('pcCoords').innerHTML = `${r.place ? esc(r.place) + ' · ' : ''}${earthLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} <span title="Private — stays on this device" aria-label="private">🔒</span>`;
   $('pcStrip').innerHTML = stripHTML([
     [w ? `${w.rain14} mm` : '—', '14-day rain'],
+    [w ? fmtSoil(w.soil) : '—', 'soil moisture'],
     [w && Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—', 'night low'],
-    [t ? `${t.elevation} m` : '—', 'elevation'],
-    [t ? `${t.slope}° ${t.aspect === 'Flat' ? '' : t.aspect}`.trim() : '—', t ? 'slope · aspect' : 'slope']]);
+    [h?.pending ? '…' : h?.cls ? esc(shortHabitat(h.cls)) : '—', h?.source === 'Field-set' ? 'habitat (set)' : 'habitat']]);
 }
+const SHORT_HABITAT = {'semi-natural-grassland': 'Grassland', 'amenity-grassland': 'Amenity grass', 'heath-moor': 'Heath/moor', farmland: 'Farmland', scrub: 'Scrub', wetland: 'Wetland', woodland: 'Woodland', bare: 'Bare/rock', built: 'Built-up', water: 'Water'};
+const shortHabitat = cls => SHORT_HABITAT[cls] || '—';
 // Pan so the analysed point sits in the visible map area above the card.
 function revealPoint(lat, lon, zoom = null) {
   const cardH = $('pointCard').offsetHeight, mapH = $('map').offsetHeight;
@@ -1111,11 +1319,18 @@ function loadRecords() {
 function saveRecords(records = state.records) {
   try { localStorage.setItem(RECORDS_KEY, JSON.stringify(records)); return true; } catch { return false; }
 }
+// Environmental state at the moment of logging — kept with the record so later model versions
+// never rewrite what was known at the time.
+function snapshotFrom(source, analysedAt, w, c, habitat, cell) {
+  return {source, analysedAt, analysedForDate: todayISO(), rain7: w.rain7, rain14: w.rain14, rain30: w.rain30, latestLow: w.latestLow, low7: w.low7, frost7: w.frost7,
+    wet14: w.wet14, soil: w.soil, balance: w.balance, persistence: w.persistence, habitat: habitat?.cls ? {cls: habitat.cls, source: habitat.source} : null,
+    gridCell: cell ? {lat: cell.lat, lon: cell.lon} : null, conditionsIndex: c?.score ?? null, components: c?.components ?? null, completeness: c?.completeness ?? null, modelVersion: MODEL_VERSION};
+}
 function buildSnapshot(date, areaKey) {
   const p = state.attachedPoint;
-  if (p?.weather) return {source: 'exact-point', analysedAt: p.metadata.calculatedAt, analysedForDate: todayISO(), rain7: p.weather.rain7, rain14: p.weather.rain14, rain30: p.weather.rain30, latestLow: p.weather.latestLow, persistence: p.weather.persistence, conditionsIndex: p.conditions?.score ?? null, components: p.conditions?.components ?? null, modelVersion: MODEL_VERSION};
+  if (p?.weather) return snapshotFrom('exact-point', p.metadata.calculatedAt, p.weather, p.conditions, p.habitat, p.weather.cell);
   const d = state.areaData[areaKey];
-  if (!p && d?.conditions && date === todayISO()) return {source: 'area-centre', analysedAt: new Date(d.weather.fetchedAt).toISOString(), analysedForDate: todayISO(), rain7: d.weather.rain7, rain14: d.weather.rain14, rain30: d.weather.rain30, latestLow: d.weather.latestLow, persistence: d.weather.persistence, conditionsIndex: d.conditions.score, components: d.conditions.components, modelVersion: MODEL_VERSION};
+  if (!p && d?.conditions && date === todayISO()) return snapshotFrom('area-centre', new Date(d.weather.fetchedAt).toISOString(), d.weather, d.conditions, d.habitat, d.weather.cell);
   return null;
 }
 function saveObservation(e) {
@@ -1133,6 +1348,7 @@ function saveObservation(e) {
     notes: $('obsNotes').value.trim() || `${$('obsHabitat').value.trim() || 'habitat'} · ${$('obsGround').value}`,
     location: p ? {lat: round6(p.coordinates.lat), lon: round6(p.coordinates.lon), visibility: 'private'} : null,
     terrain: p?.terrain ? {elevation: p.terrain.elevation, slope: p.terrain.slope, aspect: p.terrain.aspect, terrainScore: p.terrain.score, radiusM: TERRAIN_RADIUS_M} : null,
+    habitatClass: p?.habitat?.cls ? {cls: p.habitat.cls, source: p.habitat.source} : null,
     weatherSnapshot: buildSnapshot($('obsDate').value, k),
     modelVersion: MODEL_VERSION
   };
@@ -1165,45 +1381,51 @@ function observationCoords(rec) {
   return {lat: f[1], lon: f[0], source: `${areaLabel(state.selectedArea)} centre (fallback)`};
 }
 async function fetchHistoricalWeather(lat, lon, endDate) {
-  const start = addDays(endDate, -29), age = daysBetween(endDate, todayISO());
+  // 45 days so the water-balance bucket spins up before the 30-day window we report.
+  const start = addDays(endDate, -44), age = daysBetween(endDate, todayISO());
   if (age < 0) throw Object.assign(new Error('Observation date is in the future'), {status: 'error'});
   // The archive lags ~5 days; recent dates come from the forecast API's past data.
   const recent = age <= 7;
   const base = recent ? 'https://api.open-meteo.com/v1/forecast' : 'https://archive-api.open-meteo.com/v1/archive';
-  const url = `${base}?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&start_date=${start}&end_date=${endDate}&daily=${DAILY_VARS}&timezone=${encodeURIComponent(TZ)}`;
-  const res = await cachedJSON(`hist:${lat.toFixed(3)}:${lon.toFixed(3)}:${endDate}`, url, recent ? RECENT_HISTORY_TTL : Infinity);
-  return {...res, source: recent ? 'Open-Meteo Forecast (past days)' : 'Open-Meteo Archive', days: enrichDays(toDays(res.data.daily))};
+  const soilVars = recent ? SOIL_VARS_FORECAST : SOIL_VARS_ARCHIVE;
+  const url = `${base}?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&start_date=${start}&end_date=${endDate}&daily=${DAILY_VARS}&hourly=${soilVars.join(',')}&timezone=${encodeURIComponent(TZ)}`;
+  const res = await cachedJSON(`hist3:${lat.toFixed(3)}:${lon.toFixed(3)}:${endDate}`, url, recent ? RECENT_HISTORY_TTL : Infinity);
+  return {...res, source: recent ? 'Open-Meteo Forecast (past days)' : 'Open-Meteo Archive (ERA5)', cell: gridCell(res.data, lat, lon),
+    days: enrichDays(toDays(res.data.daily, dailySoilFromHourly(res.data.hourly, soilVars)))};
 }
 async function analyseHistoricalObservation(rec) {
   const {lat, lon, source} = observationCoords(rec);
-  const [w, t] = await Promise.allSettled([
+  const [w, t, hb] = await Promise.allSettled([
     fetchHistoricalWeather(lat, lon, rec.date),
-    rec.terrain ? Promise.resolve({score: rec.terrain.terrainScore}) : analyseTerrain(lat, lon)
+    rec.terrain ? Promise.resolve({score: rec.terrain.terrainScore, elevation: rec.terrain.elevation}) : analyseTerrain(lat, lon),
+    rec.habitatClass?.source === 'Field-set' ? Promise.resolve(null) : fetchHabitat(lat, lon).catch(habitatUnavailable)
   ]);
   if (w.status === 'rejected') throw w.reason;
-  const days = w.value.days, i = days.length - 1, last7 = days.slice(-7).map(d => d.low).filter(Number.isFinite);
-  const avgLow7 = last7.length ? round1(last7.reduce((a, b) => a + b, 0) / last7.length) : null;
-  const terrainScore = t.status === 'fulfilled' ? t.value.score : undefined;
-  const c = calculateConditionsIndex({rain14: days[i].rain14, low: latestLow(days, i), persistence: days[i].persistence, terrain: terrainScore});
+  const days = w.value.days, i = days.length - 1, sum = weatherSummary(days, i);
+  const terrain = t.status === 'fulfilled' ? t.value : null;
+  const habitat = rec.habitatClass?.source === 'Field-set' ? effectiveHabitat(null, rec.habitatClass.cls) : (hb.value || null);
+  const c = calculateConditionsIndex({...envAt(days, i), terrain: terrain?.score, habitat: habitat?.score});
   return {
-    coordsSource: source, weatherSource: w.value.source, status: w.value.status,
-    rain7: days[i].rain7, rain14: days[i].rain14, rain30: days[i].rain30,
-    avgLow7, wetDays14: days.slice(-14).filter(d => (d.rain || 0) >= 1).length,
-    persistence: round1(days[i].persistence * 100) / 100,
-    conditionsIndex: c.score, label: c.label, components: c.components, terrainAssumed: c.terrainAssumed,
+    coordsSource: source, weatherSource: w.value.source, status: w.value.status, gridCell: w.value.cell,
+    rain7: sum.rain7, rain14: sum.rain14, rain30: sum.rain30, avgLow7: sum.low7, wetDays14: sum.wet14, frost7: sum.frost7,
+    soil: sum.soil, balance: sum.balance, et7: sum.et7, persistence: sum.persistence,
+    elevation: terrain?.elevation ?? null, terrainScore: terrain?.score ?? null,
+    habitat: habitat?.cls ? {cls: habitat.cls, label: habitat.label, source: habitat.source, score: habitat.score} : null,
+    conditionsIndex: c.score, label: c.label, components: c.components, max: c.max, missing: c.missing, completeness: c.completeness,
     modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()
   };
 }
 function renderRewind(rec, h, status) {
   $('rewindTitle').textContent = `Rewind — ${fmtDate(rec.date)} ${rec.result === 'positive' ? 'observation' : 'blank'}`;
-  if (status === 'loading') { setChip($('rewindChip'), 'loading'); $('rewindSub').textContent = `${rec.area} · rebuilding 30 days of weather…`; $('rewind').innerHTML = ''; return; }
+  if (status === 'loading') { setChip($('rewindChip'), 'loading'); $('rewindSub').textContent = `${rec.area} · rebuilding the weather, soil and habitat before this record…`; $('rewind').innerHTML = ''; return; }
   if (status === 'error' || status === 'offline') { setChip($('rewindChip'), status); $('rewindSub').textContent = `${rec.area} · historical weather ${status === 'offline' ? 'needs a connection' : 'failed to load'}. Tap Analyse to retry.`; $('rewind').innerHTML = ''; return; }
   setChip($('rewindChip'), 'hist', `Historical${h.status === 'live' ? '' : ' · ' + STATUS_TEXT[h.status]}`);
-  $('rewindSub').textContent = `${rec.area} · ${h.coordsSource} · ${h.weatherSource}`;
+  $('rewindSub').textContent = `${rec.area} · ${h.coordsSource} · ${h.weatherSource}${h.gridCell ? ` · grid point ${h.gridCell.km} km away` : ''}`;
   $('rewind').innerHTML = [
     [`${h.rain7} mm`, 'rain previous 7 days'], [`${h.rain14} mm`, 'rain previous 14 days'], [`${h.rain30} mm`, 'rain previous 30 days'],
-    [h.avgLow7 != null ? `${h.avgLow7}°C` : '—', 'avg overnight low, 7 days'], [h.wetDays14, 'wet days (≥1 mm), 14 days'], [`${Math.round(h.persistence * 100)}%`, 'moisture persistence · calculated'],
-    [h.conditionsIndex, `Conditions Index on the day · experimental${h.terrainAssumed ? ' · neutral terrain' : ''}`], [rec.result === 'positive' ? 'Yes' : 'No', 'fruiting observed']
+    [h.avgLow7 != null ? `${h.avgLow7}°C` : '—', '7-night mean low'], [h.wetDays14, 'wet days (≥1 mm), 14 days'], [h.frost7 ?? '—', 'frost nights, 7 days'],
+    [fmtSoil(h.soil), 'soil moisture · modelled'], [fmtPct(h.balance ?? null), 'water balance · calculated'], [h.habitat ? esc(shortHabitat(h.habitat.cls)) : '—', `habitat · ${h.habitat?.source || 'unknown'}`],
+    [h.conditionsIndex, `Conditions Index on the day · ${h.modelVersion || 'v0.2'}`], [h.completeness != null ? `${h.completeness}%` : '—', 'inputs available'], [rec.result === 'positive' ? 'Yes' : 'No', 'fruiting observed']
   ].map(([v, l]) => `<div class="timebox"><b>${v}</b><span>${l}</span></div>`).join('');
 }
 async function onAnalyseClick(e) {
@@ -1219,7 +1441,7 @@ async function onAnalyseClick(e) {
   } catch (err) {
     renderRewind(rec, null, err.status === 'offline' ? 'offline' : 'error');
   }
-  renderHistory();
+  renderHistory(); renderEvidence();
 }
 
 // ---------- place search ----------
@@ -1307,6 +1529,120 @@ function selectSearchResult(i) {
   analysePoint(r.lat, r.lon, {zoom: clamp(zoom ?? 13, 9, 15), place: r.name});
 }
 
+// ---------- evidence: does the index separate finds from blanks? ----------
+const EVIDENCE_VARS = [
+  ['conditionsIndex', 'Conditions Index', v => round1(v)],
+  ['rain14', 'Rain, 14 days', v => `${round1(v)} mm`], ['rain30', 'Rain, 30 days', v => `${round1(v)} mm`],
+  ['soil', 'Soil moisture', fmtSoil], ['balance', 'Water balance', fmtPct],
+  ['avgLow7', '7-night mean low', v => `${round1(v)}°C`], ['wetDays14', 'Wet days of 14', v => round1(v)], ['frost7', 'Frost nights of 7', v => round1(v)],
+  ['elevation', 'Elevation', v => `${Math.round(v)} m`], ['habitatScore', 'Habitat score', v => Math.round(v)]
+];
+// Mann–Whitney AUC: the chance a random find has a higher value than a random blank (ties count half).
+function auc(pos, neg) {
+  if (!pos.length || !neg.length) return null;
+  let wins = 0;
+  for (const a of pos) for (const b of neg) wins += a > b ? 1 : a === b ? 0.5 : 0;
+  return wins / (pos.length * neg.length);
+}
+const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const evValue = (h, key) => key === 'habitatScore' ? h.habitat?.score ?? null : h[key];
+function aucText(a) { return a == null ? '—' : a.toFixed(2); }
+function renderEvidence() {
+  const analysed = state.records.filter(r => r.historical?.modelVersion === MODEL_VERSION);
+  const pos = analysed.filter(r => r.result === 'positive'), neg = analysed.filter(r => r.result !== 'positive');
+  const stale = state.records.length - analysed.length;
+  $('analyseAll').textContent = evidenceRunning ? 'Analysing…' : stale ? `Analyse ${stale} record${stale === 1 ? '' : 's'}` : 'All records analysed';
+  $('analyseAll').disabled = evidenceRunning || !stale;
+  const idx = auc(pos.map(r => r.historical.conditionsIndex), neg.map(r => r.historical.conditionsIndex));
+  let verdict;
+  if (!pos.length || !neg.length) verdict = `Log <b>both</b> finds and blanks and analyse them to test the index. So far: ${pos.length} find${pos.length === 1 ? '' : 's'}, ${neg.length} blank${neg.length === 1 ? '' : 's'} analysed.`;
+  else {
+    // Strength is distance from 0.5; below 0.5 means the index points the wrong way.
+    const dist = Math.abs(idx - 0.5), strength = dist < 0.1 ? 'no useful separation' : dist < 0.2 ? 'weak separation' : dist < 0.3 ? 'useful separation' : 'strong separation';
+    const direction = dist < 0.1 ? '' : idx > 0.5 ? ' — finds score higher, as intended' : ' — but finds score <b>lower</b> than blanks, so the index is pointing the wrong way and its thresholds need re-setting';
+    verdict = `<b>Index AUC ${aucText(idx)}</b>: ${strength}${direction}. AUC is the chance a random find scored higher than a random blank (0.5 = coin flip, 1.0 = perfect, 0.0 = perfectly backwards).`;
+    if (pos.length < 10 || neg.length < 10) verdict += ` <br><b>Provisional:</b> only ${pos.length} finds and ${neg.length} blanks — aim for at least 10 of each (30+ for thresholds to be re-set with confidence).`;
+  }
+  $('evidenceVerdict').innerHTML = verdict;
+  if (!pos.length || !neg.length) { $('evidence').innerHTML = ''; return; }
+  const rows = EVIDENCE_VARS.map(([key, label, fmt]) => {
+    const pv = pos.map(r => evValue(r.historical, key)).filter(Number.isFinite), nv = neg.map(r => evValue(r.historical, key)).filter(Number.isFinite);
+    const mp = mean(pv), mn = mean(nv), a = auc(pv, nv);
+    return `<tr><td>${label}</td><td>${mp == null ? '—' : fmt(mp)} <small>(${pv.length})</small></td><td>${mn == null ? '—' : fmt(mn)} <small>(${nv.length})</small></td><td>${aucText(a)}</td></tr>`;
+  }).join('');
+  $('evidence').innerHTML = `<table><thead><tr><th>Input</th><th>Finds avg</th><th>Blanks avg</th><th>AUC</th></tr></thead><tbody>${rows}</tbody></table><div class="small" style="margin-top:8px">AUC above 0.5 means finds tend to have higher values; below 0.5, lower. Values far from 0.5 either way are informative.</div>`;
+}
+let evidenceRunning = false;
+async function analyseAllRecords() {
+  if (evidenceRunning) return;
+  const todo = state.records.filter(r => r.historical?.modelVersion !== MODEL_VERSION);
+  if (!todo.length) return;
+  evidenceRunning = true; renderEvidence();
+  let done = 0, failed = 0;
+  for (const rec of todo) {
+    $('evidenceProgress').textContent = `Analysing ${done + failed + 1} of ${todo.length}…`;
+    try { rec.historical = await analyseHistoricalObservation(rec); done++; saveRecords(); }
+    catch { failed++; }
+  }
+  evidenceRunning = false;
+  $('evidenceProgress').textContent = `Analysed ${done} record${done === 1 ? '' : 's'}${failed ? ` · ${failed} failed (check your connection and try again)` : ''}.`;
+  renderHistory(); renderEvidence();
+}
+
+// ---------- exports ----------
+function exportRows() {
+  return state.records.map(r => {
+    const h = r.historical || {}, snap = r.weatherSnapshot || {};
+    return {
+      id: r.id, date: r.date, result: r.result, area: r.area,
+      latitude: r.location?.lat ?? '', longitude: r.location?.lon ?? '', location_visibility: r.location?.visibility ?? '',
+      elevation_m: r.terrain?.elevation ?? h.elevation ?? '', slope_deg: r.terrain?.slope ?? '', aspect: r.terrain?.aspect ?? '',
+      habitat_class: r.habitatClass?.cls ?? h.habitat?.cls ?? '', habitat_source: r.habitatClass?.source ?? h.habitat?.source ?? '',
+      habitat_notes: r.habitat ?? '', ground: r.ground ?? '', notes: r.notes ?? '',
+      rain7_mm: h.rain7 ?? '', rain14_mm: h.rain14 ?? '', rain30_mm: h.rain30 ?? '', low7_c: h.avgLow7 ?? '', wet_days_14: h.wetDays14 ?? '', frost_nights_7: h.frost7 ?? '',
+      soil_moisture_vol: h.soil ?? '', water_balance: h.balance ?? '', conditions_index: h.conditionsIndex ?? '', inputs_pct: h.completeness ?? '', model_version: h.modelVersion ?? '',
+      logged_index: snap.conditionsIndex ?? '', logged_model_version: snap.modelVersion ?? '', created_at: r.createdAt ?? ''
+    };
+  });
+}
+function csvCell(v) { const t = String(v ?? ''); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; }
+function downloadFile(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], {type}));
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+function exportData(kind) {
+  const stamp = todayISO(), rows = exportRows();
+  if (kind === 'csv') {
+    const cols = Object.keys(rows[0] || {id: ''});
+    downloadFile(`mycofield-observations-${stamp}.csv`, [cols.join(','), ...rows.map(r => cols.map(c => csvCell(r[c])).join(','))].join('\n'), 'text/csv');
+  } else if (kind === 'json') {
+    downloadFile(`mycofield-observations-${stamp}.json`, JSON.stringify({exportedAt: new Date().toISOString(), modelVersion: MODEL_VERSION, records: state.records}, null, 2), 'application/json');
+  } else {
+    const features = rows.filter(r => r.latitude !== '').map(({latitude, longitude, ...props}) => ({type: 'Feature', geometry: {type: 'Point', coordinates: [longitude, latitude]}, properties: props}));
+    downloadFile(`mycofield-observations-${stamp}.geojson`, JSON.stringify({type: 'FeatureCollection', features}, null, 2), 'application/geo+json');
+  }
+  toast(`Exported ${kind === 'geojson' ? rows.filter(r => r.latitude !== '').length : rows.length} records.`);
+}
+
+// ---------- Conditions: inputs & data-quality table ----------
+function renderInputs(d) {
+  const w = d?.weather, t = d?.terrain, h = d?.habitat;
+  if (!w) { $('inputsTable').innerHTML = '<div class="small">Waiting for live data…</div>'; return; }
+  const kind = w.status === 'live' ? 'Live' : w.status === 'offline' ? 'Offline cache' : 'Cached';
+  const rows = [
+    ['Rainfall, 14 days', `${w.rain14} mm`, kind, 'Open-Meteo forecast model, daily totals'],
+    ['Soil moisture, 3–27 cm', fmtSoil(w.soil), Number.isFinite(w.soil) ? 'Modelled' : 'Unavailable', 'Open-Meteo land-surface model (volumetric water content)'],
+    ['Water balance', fmtPct(w.balance), Number.isFinite(w.balance) ? 'Calculated' : 'Unavailable', `50 mm bucket: rain minus FAO-56 evapotranspiration (${w.et7} mm evaporated in 7 days)`],
+    ['7-night mean low', Number.isFinite(w.low7) ? `${w.low7}°C` : '—', 'Calculated', `Latest night ${Number.isFinite(w.latestLow) ? round1(w.latestLow) + '°C' : '—'} · ${w.frost7} frost night${w.frost7 === 1 ? '' : 's'} in 7 days`],
+    ['Terrain', t ? `${t.elevation} m · ${t.slope}° ${t.aspect === 'Flat' ? 'flat' : t.aspect}` : '—', t ? 'Experimental' : 'Unavailable', 'Copernicus 90 m elevation model, 5 samples 60 m apart'],
+    ['Habitat', h?.cls ? HABITAT_CLASSES[h.cls].label : d.habitatPending ? 'Looking up…' : 'Unknown', h?.source === 'Field-set' ? 'Field-set' : h?.cls ? 'OSM mapped' : 'Unavailable', h?.osmTag ? `OpenStreetMap: ${h.osmTag}` : h?.source === 'Field-set' ? 'Set by you in the field' : 'Not mapped here in OpenStreetMap — left out of the index'],
+    ['Weather grid point', w.cell ? `${w.cell.km} km away` : '—', 'Info', 'Spots in the same model grid square share identical weather']
+  ];
+  $('inputsTable').innerHTML = rows.map(([l, v, k, note]) => `<div class="in"><b>${l}</b><span>${esc(String(v))}</span><em class="chip ${k === 'Live' ? 'live' : k === 'Unavailable' ? 'error' : k === 'Experimental' ? 'exp' : 'calc'}">${k}</em><small>${esc(note)}</small></div>`).join('');
+}
+
 // ---------- views + wiring ----------
 function switchView(name) {
   document.body.dataset.view = name;
@@ -1336,6 +1672,11 @@ function init() {
   $('areaClose').onclick = closeAreaCard;
   $('areaDetails').onclick = () => { switchView('dashboard'); focusArea(state.selectedArea); };
   $('areaAnalyse').onclick = () => { const a = areas[state.selectedArea]; if (a) analysePoint(a.center[1], a.center[0], {place: a.name}); };
+  $('pcHabitat').onchange = e => setPointHabitat(e.target.value);
+  $('analyseAll').onclick = analyseAllRecords;
+  $('exportCsv').onclick = () => exportData('csv');
+  $('exportJson').onclick = () => exportData('json');
+  $('exportGeo').onclick = () => exportData('geojson');
   $('pcMoreBtn').onclick = () => setPointExpanded(!$('pointCard').classList.contains('expanded'));
   sheetGestures($('pointCard'), {tap: () => setPointExpanded(!$('pointCard').classList.contains('expanded')), up: () => setPointExpanded(true), down: () => $('pointCard').classList.contains('expanded') ? setPointExpanded(false) : clearPointAnalysis()});
   sheetGestures($('areaCard'), {down: closeAreaCard});
@@ -1363,7 +1704,7 @@ function init() {
   $('removeLocation').onclick = () => { state.attachedPoint = null; renderAttachedPoint(); toast('Private location removed.'); };
 
   state.records = loadRecords();
-  renderHistory();
+  renderHistory(); renderEvidence();
   $('history').addEventListener('click', onAnalyseClick);
   $('obsDate').value = todayISO();
   $('logForm').onsubmit = saveObservation;

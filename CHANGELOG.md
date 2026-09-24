@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.7.0 — Conditions model v0.3 and evidence
+
+### Added
+- **Soil moisture** (Open-Meteo land-surface model, 3–27 cm) as an input.
+- **Water balance**: 50 mm soil bucket, rain minus FAO-56 evapotranspiration, replacing the
+  rain-only moisture memory (kept as a fallback). Forecast now fetches 30 past days for spin-up.
+- **7-night mean low** instead of a single night, and a **frost penalty** (−5 per frost night, max −15).
+- **Habitat** from OpenStreetMap land-use mapping (Overpass, throttled, cached 90 days), with a
+  field override on the point sheet that is carried into saved areas and observations.
+- **Missing inputs are no longer filled with neutral values**: weights are shared across
+  available inputs and every score shows its completeness.
+- **Weather grid honesty**: each analysis shows how far away the model grid point is;
+  sub-areas that share their parent's grid cell are flagged.
+- **Evidence panel** (History): analyse all records under the current model, then compare finds
+  vs blanks per input with averages and AUC, with an explicit verdict and direction.
+- **Exports**: CSV, JSON and GeoJSON of all observations with their environmental data.
+- **Inputs & data quality** table and "How the index works" on the Conditions tab;
+  `METHODOLOGY.md` documents the model in full.
+
+### Changed
+- Model version is now `conditions-v0.3`. History rewinds use 45 days of archive weather plus
+  archive soil moisture, and record their model version, grid cell and habitat source.
+
 ## 2.6.1 — Locked, minimal navigation
 
 ### Changed
