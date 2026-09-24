@@ -169,6 +169,8 @@ body.gated{overflow:hidden}.sync-form .field{flex:1 1 220px;min-height:48px;heig
 .savearea{margin-top:12px;display:grid;gap:4px}
 .savearea label{margin:6px 0 2px}
 #pcCoords .earth{padding:0}
+button.earth{font:inherit;color:var(--moss-ink);font-weight:600;background:none;border:0;border-bottom:1.5px dashed rgba(67,117,21,.45);cursor:copy;display:inline-flex;align-items:center;gap:4px;padding:3px 0;border-radius:0;-webkit-tap-highlight-color:transparent}
+button.earth .cp{width:13px;height:13px;stroke-width:2;opacity:.75}
 #strongestCard{display:flex;gap:12px;align-items:center;width:100%;margin-top:12px;text-align:left;border:0;border-radius:16px;padding:12px 14px;background:rgba(167,216,46,.18);color:var(--text)}
 #strongestCard .n{font-family:var(--head);font-weight:800;font-size:26px;color:var(--moss-ink);min-width:40px}
 #strongestCard strong{color:var(--moss-ink);display:block;font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
@@ -457,14 +459,24 @@ function distanceKm([lon1, lat1], [lon2, lat2]) {
   const r = Math.PI / 180, a = Math.sin((lat2 - lat1) * r / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin((lon2 - lon1) * r / 2) ** 2;
   return 12742 * Math.asin(Math.sqrt(a));
 }
-// Opens Google Earth (app on iOS/Android if installed) with a pin on the point.
-function googleEarthUrl(lat, lon, elevation) {
-  const la = lat.toFixed(6), lo = lon.toFixed(6), alt = Number.isFinite(elevation) ? Math.round(elevation) : 0;
-  return `https://earth.google.com/web/search/${la},${lo}/@${la},${lo},${alt}a,1200d,35y,0h,60t,0r`;
+// Coordinates are tap-to-copy (paste into Google Maps, Earth, OS Maps or a message).
+// The copied value is always 5 decimal places (~1 m), whatever precision is shown.
+function coordLink(lat, lon, elevation, dp = 5) {
+  const shown = fmtCoord(lat, lon, dp), full = fmtCoord(lat, lon, 5);
+  return `<button type="button" class="earth" data-copy="${full}" title="Copy coordinates" aria-label="Copy coordinates ${full}">${shown}<svg class="i cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></button>`;
 }
-function earthLink(lat, lon, elevation, dp = 5) {
-  return `<a class="earth" href="${googleEarthUrl(lat, lon, elevation)}" target="_blank" rel="noopener noreferrer" title="Open in Google Earth" aria-label="Open ${fmtCoord(lat, lon, dp)} in Google Earth">${fmtCoord(lat, lon, dp)}</a>`;
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch {}
+  try {
+    const t = document.createElement('textarea'); t.value = text; t.setAttribute('readonly', ''); t.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(t); t.select(); const ok = document.execCommand('copy'); t.remove(); return ok;
+  } catch { return false; }
 }
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button.earth[data-copy]'); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  toast(await copyText(b.dataset.copy) ? `Copied ${b.dataset.copy}` : `Couldn’t copy — ${b.dataset.copy}`);
+});
 function nearestArea(lat, lon) {
   return Object.entries(areas).sort((a, b) => distanceKm(a[1].center, [lon, lat]) - distanceKm(b[1].center, [lon, lat]))[0][0];
 }
@@ -1236,7 +1248,7 @@ function renderSignal() {
   $('dashArea').textContent = `Detail below: ${areaLabel(k)}.`;
   $('focusName').textContent = a.name;
   const [lon, lat] = a.center;
-  $('focusSub').innerHTML = `${a.parentId ? `Sub-area of ${esc(areas[a.parentId]?.name)}` : `${childrenOf(k).length} sub-area${childrenOf(k).length === 1 ? '' : 's'}`} · ${earthLink(lat, lon, d?.terrain?.elevation, 4)}`;
+  $('focusSub').innerHTML = `${a.parentId ? `Sub-area of ${esc(areas[a.parentId]?.name)}` : `${childrenOf(k).length} sub-area${childrenOf(k).length === 1 ? '' : 's'}`} · ${coordLink(lat, lon, d?.terrain?.elevation, 4)}`;
   if (!d?.conditions) {
     const loading = !d || d.status === 'loading';
     $('dashScore').textContent = loading ? '…' : '—'; $('dashTrend').textContent = loading ? 'Loading live weather…' : 'Live weather unavailable — cached data will be used when available';
@@ -1452,7 +1464,7 @@ function renderPointLoading(lat, lon, place) {
   $('pcMetrics').innerHTML = ['14-day rainfall', 'soil moisture', 'water balance', '7-night mean low', 'frost nights (7 d)', 'elevation', 'slope · aspect', 'terrain context', 'habitat', 'grazing'].map(l => metricHTML('…', l, 'Loading')).join('');
   $('pcExplain').innerHTML = ''; $('pcGrid').textContent = ''; $('pcLand').textContent = '';
   $('pcHabitat').innerHTML = '';
-  $('pcCoords').innerHTML = (place ? `${esc(place)} · ` : '') + earthLink(lat, lon);
+  $('pcCoords').innerHTML = (place ? `${esc(place)} · ` : '') + coordLink(lat, lon);
   $('pcUse').disabled = true; $('pcSave').disabled = true; closeSaveForm();
 }
 function habitatOptions(auto, override) {
@@ -1497,7 +1509,7 @@ function renderPointAnalysis(r) {
   $('pcHabitat').innerHTML = habitatOptions(r._habitatAuto, r.habitatOverride);
   const cell = w?.cell;
   $('pcGrid').textContent = cell ? `Weather comes from the model grid point ${cell.km} km away. Nearby spots in the same grid square get identical weather — differences between them come only from terrain and habitat.` : '';
-  $('pcCoords').innerHTML = `${r.place ? esc(r.place) + ' · ' : ''}${earthLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} <span title="Private — stays on this device" aria-label="private">🔒</span>`;
+  $('pcCoords').innerHTML = `${r.place ? esc(r.place) + ' · ' : ''}${coordLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} <span title="Private — stays on this device" aria-label="private">🔒</span>`;
   $('pcStrip').innerHTML = stripHTML([
     [w ? `${w.rain14} mm` : '—', '14-day rain'],
     [w ? fmtSoil(w.soil) : '—', 'soil moisture'],
@@ -1534,7 +1546,7 @@ function renderAttachedPoint() {
   const r = state.attachedPoint;
   $('attachedPoint').hidden = !r;
   if (!r) return;
-  $('attachedCoords').innerHTML = earthLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation, 4);
+  $('attachedCoords').innerHTML = coordLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation, 4);
   $('attachedTerrain').textContent = r.terrain ? `${r.terrain.elevation} m · ${r.terrain.aspect === 'Flat' ? 'flat ground' : r.terrain.aspect + ' aspect'} · ${r.terrain.slope}° slope` : 'Terrain unavailable for this point';
 }
 
@@ -1606,7 +1618,7 @@ const round6 = v => Math.round(v * 1e6) / 1e6;
 function renderHistory() {
   $('history').innerHTML = state.records.slice().reverse().map(r => {
     const bits = [fmtDate(r.date), esc(r.notes || 'No notes')];
-    if (r.location) bits.push(earthLink(r.location.lat, r.location.lon, r.terrain?.elevation, 4));
+    if (r.location) bits.push(coordLink(r.location.lat, r.location.lon, r.terrain?.elevation, 4));
     return `<div class="record"><div class="dot ${r.result === 'positive' ? 'positive' : 'blank'}"></div><div><b>${esc(r.area)}</b><p>${bits.join(' · ')}</p></div><div class="acts">${r.location ? `<span class="tag">${ICON.lock}private point</span>` : ''}${r.historical ? `<span class="tag">${ICON.leaf}idx ${r.historical.conditionsIndex ?? '—'}</span>` : ''}<span class="tag ${r.result === 'positive' ? 'pos' : 'neg'}">${r.result === 'positive' ? 'observed' : 'blank'}</span><button class="analyse" type="button" data-id="${esc(r.id)}">Analyse</button></div></div>`;
   }).join('') || '<div class="small">No observations yet.</div>';
 }

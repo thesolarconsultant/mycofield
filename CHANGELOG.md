@@ -13,6 +13,10 @@
   in and keep working offline; expired access shows a renew screen. Account card shows the expiry.
 - Sign-in links also work when the app is already open in the same tab.
 
+### Changed
+- Coordinates are now **tap-to-copy** (with a copy icon and a “Copied” confirmation) instead of
+  opening Google Earth. Always copies 5 decimal places (~1 m), ready to paste into any map app.
+
 ## 2.10.0 — Account & sync (Supabase)
 
 ### Added
