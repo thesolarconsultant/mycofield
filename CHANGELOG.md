@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.4.0 — Multi-area tracking and sub-areas
+
+### Added
+- **Signal is now a tracker for every area at once.** Each area shows its live index, trend
+  arrow, 10-day index sparkline, 14-day rain and overnight low; sub-areas are nested under
+  their parent. Sort by index or A–Z. Tap a row to see its full detail below.
+- **Sub-areas**: tap or search a spot on the map → **Save area** → name it and choose
+  "Sub-area of …" (nearest area pre-selected) or "New top-level area". Each gets its own
+  weather, elevation, slope, aspect and index. Sub-area markers hide when zoomed out.
+- **Editable areas**: rename or delete any area (including the four built-ins) from the
+  Signal page. Deleting a parent also deletes its sub-areas; observations are always kept.
+- Areas are stored on this device (`mycofield-areas-v1`); saved spots are private.
+- Observations record the full label (e.g. "Merthyr Tydfil › North slope") and the area
+  centre, so Analyse still works after an area is deleted.
+- Strongest tracked area compares every area and sub-area.
+- Areas load 4 at a time to keep weather API use polite as the list grows.
+
+### Changed
+- Exact Point card: Refresh and Close moved to icon buttons in the header; the actions row is
+  now Use in field log + Save area.
+
 ## 2.3.0 — Place search
 
 ### Added

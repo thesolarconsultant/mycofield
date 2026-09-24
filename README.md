@@ -9,7 +9,10 @@ A static, installable PWA: `index.html` + `sw.js` + `manifest.webmanifest`. No b
 - **Exact Point Intelligence**: tap any point for live weather, elevation, slope, aspect,
   experimental Terrain Context and Conditions Index. Coordinates open in Google Earth.
 - **Search**: towns, landmarks, UK postcodes or `lat, lon`; the result is analysed as an exact point. Send it to the field log as a private location.
-- **Signal**: live index, trend, 10-day outlook, sparklines and a score breakdown.
+- **Signal**: tracks every area and sub-area at once (index, trend, sparkline, rain, low), with
+  full detail — 10-day outlook, sparklines, score breakdown — for the focused area.
+- **Areas & sub-areas**: save any analysed spot as a new area or as a sub-area of an existing one;
+  rename or delete areas from Signal.
 - **History**: observation log (positives *and* blanks) with Analyse, which rebuilds the
   30 days of weather before each record.
 - **Log**: field observations with optional private coordinates and an environmental snapshot.
@@ -35,7 +38,7 @@ Terrain Context is a hand-built heuristic (elevation 45%, slope 35%, aspect 20%)
 
 ## Privacy
 Observations and any attached coordinates are stored only in this browser's localStorage
-(`mycofield-history-v2`). Nothing is uploaded.
+(`mycofield-history-v2`); saved areas in `mycofield-areas-v1`. Nothing is uploaded.
 
 ## Run locally
     python3 -m http.server 8000
