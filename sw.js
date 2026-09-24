@@ -1,5 +1,5 @@
 // Bump CACHE on every release so old index.html versions are dropped.
-const CACHE = 'mycofield-v2.2.1';
+const CACHE = 'mycofield-v2.3.0';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -16,8 +16,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  // Weather/elevation APIs are cached by the app itself (with live/cached/offline labels).
-  if (new URL(e.request.url).hostname.endsWith('open-meteo.com')) return;
+  // Weather, elevation and search APIs are cached by the app itself (with live/cached/offline labels).
+  if (/(^|\.)(open-meteo\.com|nominatim\.openstreetmap\.org|api\.postcodes\.io)$/.test(new URL(e.request.url).hostname)) return;
   // Network-first so new deployments are picked up; cache is the offline fallback.
   e.respondWith(
     fetch(e.request)

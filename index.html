@@ -11,7 +11,7 @@
 :root{--bg:#08100c;--panel:#0f1a14;--panel2:#13221a;--ink:#f2f7f3;--muted:#9eb0a4;--line:rgba(255,255,255,.09);--accent:#9bea65;--accent2:#d6ff6b;--warn:#f4c45f;--bad:#ed765d;--info:#8fc4d6;--glass:rgba(10,18,13,.86)}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}[hidden]{display:none!important}header{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(8,16,12,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}.brand{display:flex;gap:10px;align-items:center}.mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,var(--accent2),var(--accent));color:#08100c;display:grid;place-items:center;font-weight:900}.brand b{font-size:14px;letter-spacing:.13em}.brand small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.pill{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 12px;border-radius:999px;min-width:44px}.view{display:none}.view.active{display:block}.mapwrap{height:calc(100vh - 126px);min-height:480px;position:relative}@supports(height:100dvh){.mapwrap{height:calc(100dvh - 126px - env(safe-area-inset-bottom))}}#map{position:absolute;inset:0}.overlay{position:absolute;top:14px;left:14px;right:14px;z-index:5;display:grid;gap:9px;pointer-events:none}.overlay>*{pointer-events:auto}.row{display:flex;gap:8px}.select,.field{width:100%;border:1px solid var(--line);background:var(--glass);color:var(--ink);border-radius:15px;padding:12px 13px;outline:none}.score{max-width:440px;background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.3)}.scoretop{display:flex;justify-content:space-between;gap:10px;align-items:center}.scoremain{display:flex;gap:12px;align-items:center}.ring{--score:0;width:66px;height:66px;flex:none;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ringc,var(--accent)) calc(var(--score)*1%),rgba(255,255,255,.08) 0);position:relative}.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0b1510}.ring b{z-index:1;font-size:20px}.score h2{font-size:16px;margin:0 0 4px}.score p{font-size:11px;color:var(--muted);margin:0}.trend{font-size:11px;color:var(--accent);font-weight:800;white-space:nowrap;text-align:right}.trend .chip{margin-top:6px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:11px}.metric{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:13px;padding:9px;min-width:0}.metric b{display:block;font-size:13px}.metric span{font-size:9px;color:var(--muted)}.metric em{display:block;font-style:normal;font-size:8px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px;color:var(--info)}.metric em.exp{color:var(--warn)}.metric em.err{color:var(--bad)}.bottom{position:absolute;left:14px;right:14px;bottom:14px;z-index:5;display:flex;justify-content:space-between;align-items:end;gap:8px;pointer-events:none}.mapcard{pointer-events:auto;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:10px 12px;backdrop-filter:blur(18px);color:var(--ink);text-align:left}.mapcard strong{font-size:11px}.mapcard small{display:block;font-size:9px;color:var(--muted);margin-top:3px}.strongest{display:flex;gap:10px;align-items:center;max-width:300px;flex:1;min-width:0}.toggle{display:flex;flex:none}.mapwrap .maplibregl-ctrl-bottom-right,.mapwrap .maplibregl-ctrl-bottom-left{bottom:78px}.strongest .n{font-size:22px;font-weight:850;color:var(--accent2)}.strongest strong{color:var(--accent2);display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase}.strongest b{font-size:12px}.toggle button{border:0;background:transparent;color:var(--muted);padding:8px 9px;border-radius:10px;min-height:36px}.toggle button.active{background:var(--accent);color:#07100a;font-weight:800}.chip{display:inline-block;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 7px;border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.03);white-space:nowrap}.chip.live{color:var(--accent);border-color:rgba(155,234,101,.35)}.chip.cached,.chip.hist,.chip.calc{color:var(--info);border-color:rgba(143,196,214,.3)}.chip.loading,.chip.exp,.chip.partial{color:var(--warn);border-color:rgba(244,196,95,.3)}.chip.offline,.chip.error{color:var(--bad);border-color:rgba(237,118,93,.35)}button.chip{cursor:pointer}
 .amk{display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px 6px 8px;border-radius:999px;background:var(--glass);border:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:700;white-space:nowrap;backdrop-filter:blur(8px);box-shadow:0 6px 20px rgba(0,0,0,.35)}.amk i{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}.amk .s{color:var(--muted);font-weight:800}.amk.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(155,234,101,.28),0 6px 20px rgba(0,0,0,.35)}.amk.selected i{background:var(--accent)}.amk.strongest .s{color:var(--accent2)}.amk.strongest i{background:var(--accent2);box-shadow:0 0 0 3px rgba(214,255,107,.25)}.amk .star{display:none;color:var(--accent2)}.amk.strongest .star{display:inline}
 .pmk{width:22px;height:22px;border-radius:50%;background:var(--accent2);border:4px solid #07100a;box-shadow:0 0 0 2px var(--accent2),0 8px 24px rgba(0,0,0,.5);position:relative;pointer-events:none}.pmk:after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px solid var(--accent2);animation:pulse 1.8s ease-out infinite}@keyframes pulse{from{transform:scale(.45);opacity:.9}to{transform:scale(1.5);opacity:0}}@media(prefers-reduced-motion:reduce){.pmk:after{animation:none;opacity:.4}}
-.pointcard{position:absolute;left:14px;right:14px;bottom:14px;z-index:7;max-width:460px;max-height:calc(100% - 84px);overflow:auto;background:var(--glass);border:1px solid rgba(214,255,107,.22);border-radius:22px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.45)}.pc-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.pc-main{display:flex;gap:12px;align-items:center}.pc-main h2{font-size:16px;margin:0 0 4px}.pc-main p{font-size:11px;color:var(--muted);margin:0}.pc-explain{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.pc-explain span{font-size:10px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted)}.pc-explain span b{color:var(--ink)}.pc-coords{font-size:11px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}.earth{color:var(--accent);text-decoration:none;border-bottom:1px dashed rgba(155,234,101,.5);display:inline-block;padding:4px 0;font-variant-numeric:tabular-nums}.earth:after{content:" ↗";font-size:.9em}.earth:hover,.earth:focus-visible{color:var(--accent2);border-bottom-style:solid}.pc-actions{display:flex;gap:8px;margin-top:12px}.pc-actions .btn{flex:1;min-height:44px;padding:10px 8px}.mapwrap.point-open .score,.mapwrap.point-open .bottom,.mapwrap.point-open .maplibregl-ctrl-bottom-right,.mapwrap.point-open .maplibregl-ctrl-bottom-left{display:none}.pointcard .ring{width:58px;height:58px}.pointcard .ring b{font-size:19px}.pointcard .metrics{margin-top:10px}.pointcard .metric{padding:7px 8px}.loadingbar{height:3px;border-radius:3px;margin-top:10px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:load 1.1s linear infinite}@keyframes load{from{background-position:200% 0}to{background-position:-200% 0}}
+.pointcard{position:absolute;left:14px;right:14px;bottom:14px;z-index:7;max-width:460px;max-height:calc(100% - 84px);overflow:auto;background:var(--glass);border:1px solid rgba(214,255,107,.22);border-radius:22px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.45)}.pc-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.pc-main{display:flex;gap:12px;align-items:center}.pc-main h2{font-size:16px;margin:0 0 4px}.pc-main p{font-size:11px;color:var(--muted);margin:0}.pc-explain{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.pc-explain span{font-size:10px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted)}.pc-explain span b{color:var(--ink)}.pc-coords{font-size:11px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}.earth{color:var(--accent);text-decoration:none;border-bottom:1px dashed rgba(155,234,101,.5);display:inline-block;padding:4px 0;font-variant-numeric:tabular-nums}.earth:after{content:" ↗";font-size:.9em}.earth:hover,.earth:focus-visible{color:var(--accent2);border-bottom-style:solid}.pc-actions{display:flex;gap:8px;margin-top:12px}.pc-actions .btn{flex:1;min-height:44px;padding:10px 8px}.pill.icon{display:grid;place-items:center;padding:9px}#searchCancel{flex:none;padding:9px 14px}#searchInput::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}.results{background:rgba(10,18,13,.97);border:1px solid var(--line);border-radius:18px;overflow:auto;max-height:52vh;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.35)}.results button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink);padding:12px 14px;min-height:50px}.results button:last-child{border-bottom:0}.results button:hover,.results button:focus-visible{background:rgba(155,234,101,.08);outline:none}.results b{font-size:13px}.results .kind{float:right;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-left:8px}.results small{display:block;color:var(--muted);font-size:10px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.results .msg{padding:13px 14px;font-size:11px;color:var(--muted)}.results .msg.err{color:var(--bad)}.mapwrap.searching .score,.mapwrap.searching .pointcard{display:none}.mapwrap.point-open .score,.mapwrap.point-open .bottom,.mapwrap.point-open .maplibregl-ctrl-bottom-right,.mapwrap.point-open .maplibregl-ctrl-bottom-left{display:none}.pointcard .ring{width:58px;height:58px}.pointcard .ring b{font-size:19px}.pointcard .metrics{margin-top:10px}.pointcard .metric{padding:7px 8px}.loadingbar{height:3px;border-radius:3px;margin-top:10px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:load 1.1s linear infinite}@keyframes load{from{background-position:200% 0}to{background-position:-200% 0}}
 .page{max-width:1100px;margin:auto;padding:22px 15px calc(94px + env(safe-area-inset-bottom))}.eyebrow{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:.14em;text-transform:uppercase}.title{font-size:28px;line-height:1.05;margin:6px 0}.sub{color:var(--muted);font-size:13px;max-width:720px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:16px}.card h3{margin:0 0 8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}.big{font-size:34px;font-weight:850;letter-spacing:-.04em}.small{color:var(--muted);font-size:11px}.spark{width:100%;height:56px;margin-top:9px}.forecast{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:8px;overflow:auto;padding-bottom:8px}.day{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}.day b{font-size:11px}.day .n{font-size:23px;font-weight:850;margin:10px 0 3px}.day small{color:var(--muted);font-size:9px}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.timebox{border:1px solid var(--line);border-radius:15px;padding:12px;background:rgba(255,255,255,.025)}.timebox b{font-size:17px}.timebox span{display:block;color:var(--muted);font-size:9px;margin-top:3px}.history{display:grid;gap:8px;margin-top:12px}.record{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--panel)}.dot{width:10px;height:10px;border-radius:50%}.dot.positive{background:var(--accent)}.dot.blank{background:var(--bad)}.record b{font-size:12px}.record p{font-size:10px;color:var(--muted);margin:3px 0 0}.record .acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.record .analyse{border:1px solid var(--line);background:transparent;color:var(--accent);border-radius:999px;padding:7px 11px;font-size:10px;font-weight:800;min-height:34px}.tag{font-size:9px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 7px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:10px;color:var(--muted);display:block;margin-bottom:5px}textarea{min-height:92px;resize:vertical}.btn{border:0;border-radius:13px;padding:11px 13px;background:var(--accent);color:#07100a;font-weight:850}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}.notice{border:1px solid rgba(155,234,101,.25);background:rgba(155,234,101,.06);border-radius:16px;padding:12px;font-size:10px;color:#dbeadf}.attached{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid rgba(214,255,107,.3);background:rgba(214,255,107,.06);border-radius:16px;padding:12px;margin-bottom:12px}.attached strong{font-size:10px;letter-spacing:.12em;color:var(--accent2)}.attached p{margin:4px 0 0;font-size:11px;color:var(--ink);font-variant-numeric:tabular-nums}.attached small{color:var(--muted);font-size:10px}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:60;background:var(--panel2);border:1px solid rgba(155,234,101,.35);color:var(--ink);padding:11px 15px;border-radius:14px;font-size:12px;box-shadow:0 12px 40px rgba(0,0,0,.4)}nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(7,13,9,.93);border-top:1px solid var(--line);backdrop-filter:blur(20px);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}nav button{border:0;background:transparent;color:var(--muted);border-radius:12px;padding:7px 4px;font-size:9px}nav button span{display:block;font-size:18px;margin-bottom:2px}nav button.active{color:var(--accent);background:rgba(155,234,101,.08)}@media(max-width:760px){.record{grid-template-columns:auto 1fr}.record .acts{grid-column:1/-1;justify-content:flex-start}.cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.score{max-width:none}.pointcard{max-width:none}}
 </style>
 </head>
@@ -19,7 +19,7 @@
 <header><div class="brand"><div class="mark">M</div><div><b>MYCOFIELD</b><small>GRASSLAND INTELLIGENCE</small></div></div><button id="installBtn" class="pill" hidden>Install</button></header>
 <main>
 <section class="view active" id="view-map"><div class="mapwrap" id="mapwrap"><div id="map"></div>
-<div class="overlay"><div class="row"><select id="areaSelect" class="select" aria-label="Tracked area"></select><button class="pill" id="flyBtn" aria-label="Fly to selected area">◎</button></div>
+<div class="overlay"><div class="row" id="areaRow"><select id="areaSelect" class="select" aria-label="Tracked area"></select><button class="pill icon" id="searchBtn" type="button" aria-label="Search places"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button><button class="pill" id="flyBtn" aria-label="Fly to selected area">◎</button></div><form class="row" id="searchRow" role="search" hidden><input class="field" id="searchInput" type="search" placeholder="Town, postcode, landmark or lat, lon" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="pill" type="button" id="searchCancel">Cancel</button></form><div class="results" id="searchResults" hidden aria-live="polite"></div>
 <div class="score"><div class="scoretop"><div class="scoremain"><div class="ring" id="ring"><b id="scoreValue">…</b></div><div><h2 id="scoreTitle">Loading live conditions…</h2><p id="scoreCopy">Fetching weather and terrain</p></div></div><div class="trend"><div id="trend"></div><span id="areaStatus" class="chip loading">Loading</span></div></div><div class="metrics"><div class="metric"><b id="rain14">—</b><span>14-day rainfall</span></div><div class="metric"><b id="night">—</b><span>overnight low</span></div><div class="metric"><b id="elev">—</b><span>elevation</span></div></div></div></div>
 <div class="bottom"><button class="mapcard strongest" id="strongestCard" type="button" aria-label="Fly to strongest tracked area"><div class="n" id="strongestScore">…</div><div><strong>★ Strongest tracked area</strong><b id="strongestName">Comparing areas…</b><small id="strongestSub">Tap the map anywhere to analyse a point</small></div></button><div class="mapcard toggle"><button id="terrainOn" class="active">3D</button><button id="terrainOff">Flat</button></div></div>
 <div class="pointcard" id="pointCard" hidden role="region" aria-label="Exact point intelligence" aria-live="polite">
@@ -142,7 +142,7 @@ async function fetchJSON(url, timeoutMs = 12000) {
   try {
     const r = await fetch(url, {signal: ctrl.signal});
     const body = await r.json().catch(() => null);
-    if (!r.ok || !body || body.error) throw new Error(body?.reason || `HTTP ${r.status}`);
+    if (!r.ok || !body || body.error) throw Object.assign(new Error(body?.reason || (typeof body?.error === 'string' && body.error) || `HTTP ${r.status}`), {httpStatus: r.status});
     return body;
   } finally { clearTimeout(timer); }
 }
@@ -309,6 +309,7 @@ function placePointMarker(lat, lon) {
 // Only deliberate taps on empty terrain analyse a point — never drag/zoom/rotate.
 map.on('click', e => {
   if (e.originalEvent?.target?.closest?.('.amk, .pmk, .maplibregl-ctrl')) return;
+  if (!$('searchRow').hidden) { closeSearch(); return; }
   analysePoint(e.lngLat.lat, e.lngLat.lng);
 });
 
@@ -431,16 +432,17 @@ function renderSignal() {
 
 // ---------- exact point intelligence ----------
 let pointToken = 0;
-async function analysePoint(lat, lon, {force = false} = {}) {
+async function analysePoint(lat, lon, {force = false, zoom = null, place = null} = {}) {
   const token = ++pointToken;
   state.mapMode = 'point';
-  state.pointAnalysis = {coordinates: {lat, lon}, loading: true};
+  state.pointAnalysis = {coordinates: {lat, lon}, place, loading: true};
   placePointMarker(lat, lon);
-  renderPointLoading(lat, lon);
-  revealPoint(lat, lon);
+  renderPointLoading(lat, lon, place);
+  revealPoint(lat, lon, zoom);
   const [w, t] = await Promise.allSettled([fetchPointWeather(lat, lon, {force}), analyseTerrain(lat, lon, {force})]);
   if (token !== pointToken) return; // a newer tap superseded this one
   const result = buildPointResult(lat, lon, w, t);
+  result.place = place;
   state.pointAnalysis = result;
   renderPointAnalysis(result);
 }
@@ -461,7 +463,7 @@ function metricHTML(value, label, kind) {
   const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : '';
   return `<div class="metric"><b>${value}</b><span>${label}</span><em class="${cls}">${kind}</em></div>`;
 }
-function renderPointLoading(lat, lon) {
+function renderPointLoading(lat, lon, place) {
   $('mapwrap').classList.add('point-open');
   $('pointCard').hidden = false;
   setChip($('pcStatus'), 'loading');
@@ -472,7 +474,7 @@ function renderPointLoading(lat, lon) {
   $('pcLoading').hidden = false;
   $('pcMetrics').innerHTML = ['14-day rainfall', 'overnight low', 'elevation', 'slope', 'aspect', 'terrain context'].map(l => metricHTML('…', l, 'Loading')).join('');
   $('pcExplain').innerHTML = '';
-  $('pcCoords').innerHTML = earthLink(lat, lon);
+  $('pcCoords').innerHTML = (place ? `${esc(place)} · ` : '') + earthLink(lat, lon);
   $('pcUse').disabled = true;
 }
 function renderPointAnalysis(r) {
@@ -504,13 +506,14 @@ function renderPointAnalysis(r) {
     metricHTML(t ? `${t.score}/100` : '—', 'terrain context', t ? 'Experimental' : 'Unavailable')
   ].join('');
   $('pcExplain').innerHTML = c ? explainParts(c).map(([n, v]) => `<span>${n} <b>+${v}</b></span>`).join('') + (w ? `<span>Moisture memory <b>${Math.round(w.persistence * 100)}%</b></span>` : '') : '';
-  $('pcCoords').innerHTML = `${earthLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} · 🔒 private`;
+  $('pcCoords').innerHTML = `${r.place ? esc(r.place) + ' · ' : ''}${earthLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} · 🔒 private`;
 }
 // Pan so the analysed point sits in the visible map area above the card.
-function revealPoint(lat, lon) {
+function revealPoint(lat, lon, zoom = null) {
   const cardH = $('pointCard').offsetHeight, mapH = $('map').offsetHeight;
-  const bottom = Math.min(cardH + 24, mapH - 140);
-  map.easeTo({center: [lon, lat], padding: {top: 70, bottom, left: 0, right: 0}, duration: 450});
+  const padding = {top: 70, bottom: Math.min(cardH + 24, mapH - 140), left: 0, right: 0};
+  if (zoom != null) map.flyTo({center: [lon, lat], zoom, padding, duration: 1400});
+  else map.easeTo({center: [lon, lat], padding, duration: 450});
 }
 function clearPointAnalysis() {
   if (state.pointAnalysis) map.easeTo({padding: {top: 0, bottom: 0, left: 0, right: 0}, duration: 300});
@@ -665,6 +668,91 @@ async function onAnalyseClick(e) {
   renderHistory();
 }
 
+// ---------- place search ----------
+// Coordinates are parsed locally; UK postcodes use postcodes.io; everything else uses
+// OpenStreetMap Nominatim (submit-only, max 1 request/second per its usage policy).
+const SEARCH_TTL = 7 * 864e5;
+const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i, OUTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?$/i;
+let lastNominatimAt = 0, searchToken = 0;
+function parseCoordinates(q) {
+  const m = q.match(/^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/);
+  if (!m) return null;
+  const lat = +m[1], lon = +m[2];
+  return Math.abs(lat) <= 90 && Math.abs(lon) <= 180 ? {lat, lon} : null;
+}
+const isFresh = (key, ttl) => { const h = cache.get(key); return !!h && Date.now() - h.fetchedAt < ttl; };
+async function searchPlaces(q) {
+  const c = parseCoordinates(q);
+  if (c) return [{name: 'Coordinates', detail: fmtCoord(c.lat, c.lon), lat: c.lat, lon: c.lon, zoom: 14, kind: 'coordinates'}];
+  const code = q.replace(/\s+/g, '').toUpperCase();
+  if (POSTCODE_RE.test(q.trim())) {
+    const {data} = await cachedJSON('geo:pc:' + code, `https://api.postcodes.io/postcodes/${encodeURIComponent(code)}`, SEARCH_TTL);
+    const r = data.result;
+    return [{name: r.postcode, detail: [r.admin_ward, r.admin_district, r.country].filter(Boolean).join(', '), lat: r.latitude, lon: r.longitude, zoom: 15, kind: 'postcode'}];
+  }
+  if (OUTCODE_RE.test(q.trim())) {
+    try {
+      const {data} = await cachedJSON('geo:oc:' + code, `https://api.postcodes.io/outcodes/${encodeURIComponent(code)}`, SEARCH_TTL);
+      const r = data.result;
+      return [{name: r.outcode, detail: [].concat(r.admin_district || []).join(', '), lat: r.latitude, lon: r.longitude, zoom: 12.5, kind: 'postcode area'}];
+    } catch { /* not an outcode — fall through to place search */ }
+  }
+  const key = 'geo:q:' + q.trim().toLowerCase();
+  if (!isFresh(key, SEARCH_TTL)) {
+    const wait = 1000 - (Date.now() - lastNominatimAt);
+    if (wait > 0) await new Promise(r => setTimeout(r, wait));
+    lastNominatimAt = Date.now();
+  }
+  const {data} = await cachedJSON(key, `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=en-GB&q=${encodeURIComponent(q.trim())}`, SEARCH_TTL);
+  return data.map(r => ({name: r.name || r.display_name.split(',')[0], detail: r.display_name, lat: +r.lat, lon: +r.lon, kind: (r.type || r.category || '').replace(/_/g, ' '), bbox: r.boundingbox?.map(Number)}));
+}
+function openSearch() {
+  $('areaRow').hidden = true; $('searchRow').hidden = false;
+  $('mapwrap').classList.add('searching');
+  $('searchInput').focus();
+}
+function closeSearch() {
+  searchToken++;
+  $('searchRow').hidden = true; $('areaRow').hidden = false; $('searchResults').hidden = true;
+  $('mapwrap').classList.remove('searching');
+  $('searchInput').blur();
+}
+let searchResults = [];
+function renderSearchMessage(text, isError = false) {
+  $('searchResults').hidden = false;
+  $('searchResults').innerHTML = `<div class="msg${isError ? ' err' : ''}">${esc(text)}</div>`;
+}
+async function runSearch(e) {
+  e.preventDefault();
+  const q = $('searchInput').value.trim();
+  if (q.length < 2) return;
+  const token = ++searchToken;
+  renderSearchMessage('Searching…');
+  try {
+    const results = await searchPlaces(q);
+    if (token !== searchToken) return;
+    searchResults = results;
+    if (!results.length) return renderSearchMessage(`No places found for “${q}”.`);
+    if (results.length === 1 && results[0].kind === 'coordinates') return selectSearchResult(0);
+    $('searchResults').innerHTML = results.map((r, i) => `<button type="button" data-i="${i}"><span class="kind">${esc(r.kind)}</span><b>${esc(r.name)}</b><small>${esc(r.detail)}</small></button>`).join('');
+  } catch (err) {
+    if (token !== searchToken) return;
+    const msg = err.status === 'offline' ? 'Search needs a connection.' : POSTCODE_RE.test(q) && err.httpStatus === 404 ? 'Postcode not found.' : 'Search unavailable — try again.';
+    renderSearchMessage(msg, true);
+  }
+}
+function selectSearchResult(i) {
+  const r = searchResults[i];
+  if (!r) return;
+  closeSearch();
+  let zoom = r.zoom;
+  if (zoom == null && r.bbox) {
+    const [s, n, w, e] = r.bbox;
+    zoom = map.cameraForBounds([[w, s], [e, n]], {padding: 40})?.zoom;
+  }
+  analysePoint(r.lat, r.lon, {zoom: clamp(zoom ?? 13, 9, 15), place: r.name});
+}
+
 // ---------- views + wiring ----------
 function switchView(name) {
   document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x.dataset.view === name));
@@ -687,8 +775,13 @@ function init() {
   document.querySelectorAll('nav button').forEach(b => b.onclick = () => switchView(b.dataset.view));
 
   $('pcUse').onclick = usePointInObservation;
-  $('pcRefresh').onclick = () => { const c = state.pointAnalysis?.coordinates; if (c) analysePoint(c.lat, c.lon, {force: true}); };
+  $('pcRefresh').onclick = () => { const c = state.pointAnalysis?.coordinates; if (c) analysePoint(c.lat, c.lon, {force: true, place: state.pointAnalysis.place}); };
   $('pcClose').onclick = clearPointAnalysis;
+  $('searchBtn').onclick = openSearch;
+  $('searchCancel').onclick = closeSearch;
+  $('searchRow').onsubmit = runSearch;
+  $('searchInput').addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+  $('searchResults').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) selectSearchResult(+b.dataset.i); });
   $('removeLocation').onclick = () => { state.attachedPoint = null; renderAttachedPoint(); toast('Private location removed.'); };
 
   state.records = loadRecords();

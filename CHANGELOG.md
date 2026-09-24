@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.0 — Place search
+
+### Added
+- Search button on the Map: find a town, landmark, UK postcode, postcode area (e.g. CF47)
+  or raw coordinates (`51.83, -3.42`). Picking a result flies the map there and runs
+  Exact Point Intelligence on it; the card shows the place name.
+- Sources: postcodes.io for UK postcodes, OpenStreetMap Nominatim for everything else
+  (search on submit only, max 1 request/second, results cached 7 days). Coordinates are
+  parsed on the device. Search terms are sent to those services.
+- Clear messages for no results, postcode not found, offline and service errors.
+
 ## 2.2.1
 
 ### Added

@@ -7,7 +7,8 @@ A static, installable PWA: `index.html` + `sw.js` + `manifest.webmanifest`. No b
 - **Map**: MapLibre 3D terrain over OpenStreetMap, 3D/flat toggle, four tracked research areas
   with live Conditions Index markers and a strongest-area card.
 - **Exact Point Intelligence**: tap any point for live weather, elevation, slope, aspect,
-  experimental Terrain Context and Conditions Index. Send it to the field log as a private location.
+  experimental Terrain Context and Conditions Index. Coordinates open in Google Earth.
+- **Search**: towns, landmarks, UK postcodes or `lat, lon`; the result is analysed as an exact point. Send it to the field log as a private location.
 - **Signal**: live index, trend, 10-day outlook, sparklines and a score breakdown.
 - **History**: observation log (positives *and* blanks) with Analyse, which rebuilds the
   30 days of weather before each record.
@@ -19,6 +20,7 @@ A static, installable PWA: `index.html` + `sw.js` + `manifest.webmanifest`. No b
 | Forecast + recent weather | Open-Meteo Forecast API (`past_days=14`, `forecast_days=10`) |
 | Historical weather | Open-Meteo Archive API (Forecast API past days for the last week) |
 | Elevation | Open-Meteo Elevation API (Copernicus DEM, ~90 m) |
+| Place search | OpenStreetMap Nominatim; UK postcodes via postcodes.io |
 | Map / terrain | OpenStreetMap tiles, MapLibre demo terrain DEM |
 
 ## Model (experimental, `conditions-v0.2`)
