@@ -143,7 +143,25 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pc-explain span{font-size:11px;background:var(--stone-2);border-radius:999px;padding:5px 10px;color:var(--muted)}
 .pc-explain span b{color:var(--forest)}
 .pc-actions{display:flex;gap:8px;margin-top:12px}
-.sync-form{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.sync-form .field{flex:1 1 220px;min-height:48px;height:48px;resize:none}.sync-form .btn{flex:0 0 auto;white-space:nowrap}
+.sync-form{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.gate{position:fixed;inset:0;z-index:90;background:rgba(11,61,46,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+.gate[hidden]{display:none}@media(min-width:700px){.gate{align-items:center}}
+.gate-card{background:var(--off);color:var(--ink);border-radius:24px;max-width:440px;width:100%;padding:22px 20px;box-shadow:var(--shadow-lg);max-height:calc(100dvh - 32px);overflow:auto}
+.gate-logo{height:46px;display:block;margin:0 auto 10px}
+.gate-card h2{font-family:var(--head);font-size:24px;line-height:1.15;margin:6px 0 8px;color:var(--forest)}
+.gate-card p{margin:0 0 10px;line-height:1.45}
+.wt-progress{display:flex;gap:6px;margin:4px 0 14px}.wt-progress i{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden;position:relative}
+.wt-progress i.done::after,.wt-progress i.on::after{content:'';position:absolute;inset:0;background:var(--moss);transform-origin:left}
+.wt-progress i.on::after{animation:wtfill var(--wt-dur,7.5s) linear forwards}
+@keyframes wtfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.gate-card .btn{width:100%}
+.trial-pill{position:fixed;top:calc(env(safe-area-inset-top) + 70px);left:50%;transform:translateX(-50%);z-index:70;background:var(--forest);color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);white-space:nowrap}
+.trial-pill b{color:var(--lime)}
+.pw-price{font-size:15px}.pw-price b{font-family:var(--head);font-size:30px;color:var(--forest);margin-right:4px}
+.pw-list{padding-left:18px;margin:6px 0 14px;font-size:14px;line-height:1.5}
+.pw-fine{font-size:11.5px;color:var(--muted);margin-top:12px!important}
+.pw-link{background:none;border:0;color:var(--forest);text-decoration:underline;font:inherit;font-size:13px;padding:6px 0;cursor:pointer}
+body.gated{overflow:hidden}.sync-form .field{flex:1 1 220px;min-height:48px;height:48px;resize:none}.sync-form .btn{flex:0 0 auto;white-space:nowrap}
 .pc-actions .btn{flex:1;padding:10px 12px;min-height:46px}
 .pc-actions .btn.icon{flex:0 0 46px;padding:0;font-size:16px}
 .sheet .metrics{margin-top:10px}.sheet .metric{padding:8px 9px}
@@ -338,6 +356,16 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <button data-view="history" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/></svg>History</button>
 <button data-view="log" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/></svg>Notes</button>
 </nav>
+<div class="gate" id="walkthrough" hidden role="dialog" aria-modal="true" aria-labelledby="wtTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><div class="wt-progress" id="wtProgress" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2 id="wtTitle"></h2><p id="wtText"></p><button class="btn lime" id="wtNext" type="button">Next</button></div></div>
+<div class="trial-pill" id="trialPill" hidden role="timer" aria-live="off">Free look · <b id="trialLeft">0:30</b></div>
+<div class="gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
+<h2 id="pwTitle">Keep reading the ground.</h2>
+<p class="pw-price"><b>£8</b> for 3 months · one payment, no subscription</p>
+<ul class="pw-list"><li>Conditions for any spot you tap: rain, soil moisture, cold nights, frost</li><li>Official habitat maps across Great Britain, and grazing in Wales</li><li>Unlimited saved areas, finds and blanks, synced to your account</li></ul>
+<div id="pwSignIn"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p></div>
+<div id="pwPay" hidden><a class="btn lime" id="pwPayBtn" href="#" rel="noopener">Pay £8 securely with Stripe</a><p class="small" id="pwPayNote" style="margin-top:8px"></p></div>
+<div id="pwChecking" hidden><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
+<p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds.</p></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
 import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs';
@@ -362,6 +390,10 @@ const RECORDS_KEY = 'mycofield-history-v2';
 const SUPABASE_URL = 'https://abgbzdairkgakmqscvyo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
 const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
+// Paid access: a Stripe Payment Link (one-off £8 → 90 days). Empty = paywall off, app fully open.
+const STRIPE_PAYMENT_LINK = '';
+const WALKTHROUGH_SECONDS = 30, TRIAL_SECONDS = 30;
+const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v1';
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
 let session = readJSON(AUTH_KEY, null);
@@ -1895,23 +1927,23 @@ async function ensureFreshSession() {
 // Magic-link sign-in lands back here with the session in the URL fragment.
 function consumeAuthRedirect() {
   const h = new URLSearchParams(location.hash.slice(1));
-  if (!h.get('access_token') && !h.get('error_description')) return;
+  if (!h.get('access_token') && !h.get('error_description')) return false;
   history.replaceState(null, '', location.pathname + location.search);
-  if (h.get('error_description')) { toast(`Sign-in failed: ${h.get('error_description')}`); return; }
+  if (h.get('error_description')) { toast(`Sign-in failed: ${h.get('error_description')}`); return false; }
   setSession({access_token: h.get('access_token'), refresh_token: h.get('refresh_token'), expires_at: +h.get('expires_at') || undefined, expires_in: +h.get('expires_in') || 3600});
   toast('Signed in — syncing your data.');
+  return true;
 }
-async function requestSignIn(e) {
-  e.preventDefault();
-  const email = $('syncEmail').value.trim(); if (!email) return;
-  $('syncEmailBtn').disabled = true;
+async function sendSignInEmail(email, btn) {
+  btn.disabled = true;
   try {
     await sbFetch(`/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin + location.pathname)}`, {method: 'POST', body: {email, create_user: true}, auth: false});
-    sync.pendingEmail = email; renderSync();
-    toast('Check your email for the sign-in link or code.');
+    sync.pendingEmail = email; renderSync(); renderPaywall();
+    toast('Check your email and tap Log In.');
   } catch (err) { toast(`Could not send the email: ${err.message}`); }
-  finally { $('syncEmailBtn').disabled = false; }
+  finally { btn.disabled = false; }
 }
+function requestSignIn(e) { e.preventDefault(); const email = $('syncEmail').value.trim(); if (email) sendSignInEmail(email, $('syncEmailBtn')); }
 async function verifyCode(e) {
   e.preventDefault();
   const token = $('syncCode').value.replace(/\s/g, ''); if (!token || !sync.pendingEmail) return;
@@ -2022,7 +2054,7 @@ function renderSync() {
   chip.textContent = st[0]; chip.className = `chip ${st[1]}`;
   $('syncSub').textContent = !syncEnabled() ? 'Cloud sync is not configured in this build.'
     : !signedIn ? (sync.pendingEmail ? `We emailed ${sync.pendingEmail}. Open that email and tap Log In — you’ll come straight back here signed in. (Check junk if it’s not there.)` : 'Sign in to back up your areas and records and keep them in sync across your devices. Your locations stay private to your account.')
-    : `Signed in as ${session.user?.email || 'your account'}${sync.lastAt ? ` · last synced ${new Date(sync.lastAt).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}` : ''}${sync.state === 'error' && sync.error ? ` · ${sync.error}` : ''}${sync.state === 'offline' ? ' · will sync when you are back online' : ''}`;
+    : `Signed in as ${session.user?.email || 'your account'}${paywallOn() && hasAccess() ? ` · access until ${fmtLongDate(cachedAccess().paidUntil)}` : ''}${sync.lastAt ? ` · last synced ${new Date(sync.lastAt).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}` : ''}${sync.state === 'error' && sync.error ? ` · ${sync.error}` : ''}${sync.state === 'offline' ? ' · will sync when you are back online' : ''}`;
 }
 function initSync() {
   $('syncEmailForm').onsubmit = requestSignIn;
@@ -2032,10 +2064,117 @@ function initSync() {
   $('syncNow').onclick = () => runSync();
   $('syncSignOut').onclick = signOut;
   if (syncEnabled()) consumeAuthRedirect();
+  // Email link opened while the app is already open in this tab: only the #fragment changes.
+  window.addEventListener('hashchange', () => { if (syncEnabled() && consumeAuthRedirect()) { sync.pendingEmail = null; renderSync(); runSync(); startGate(); } });
   renderSync();
   if (syncEnabled() && session) runSync();
   window.addEventListener('online', () => scheduleSync(500));
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') scheduleSync(500); });
+}
+
+
+// ---------- paid access: walkthrough → 30-second free look → paywall ----------
+// Access is granted only by the Stripe webhook (supabase/functions/stripe-webhook) writing the
+// user's paid_until; the app reads its own row. The expiry is cached so paid users keep working
+// offline in the field. The free look is per device.
+const paywallOn = () => !!STRIPE_PAYMENT_LINK && syncEnabled();
+function cachedAccess() { const a = readJSON(ACCESS_KEY, null); return a && session?.user?.id && a.userId === session.user.id ? a : null; }
+const hasAccess = () => { const a = cachedAccess(); return !!a?.paidUntil && Date.parse(a.paidUntil) > Date.now(); };
+const fmtLongDate = t => new Date(t).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
+async function refreshAccess() {
+  if (!session) return false;
+  if (!session.user?.id) setSession({...session, user: await sbFetch('/auth/v1/user')});
+  const rows = await sbFetch('/rest/v1/entitlements?select=paid_until');
+  writeJSON(ACCESS_KEY, {userId: session.user.id, paidUntil: rows?.[0]?.paid_until || null, checkedAt: Date.now()});
+  renderSync();
+  return hasAccess();
+}
+const gate = {timer: null, trialTimer: null, slide: 0, checking: false};
+const SLIDES = [
+  ['Read the pattern, not one day.', 'Grassland fungi respond to weeks of weather, not today’s forecast. MycoField reads the last month for any spot you choose.'],
+  ['Tap any hillside.', 'Rain, modelled soil moisture, cold nights and frost for that exact point, rolled into one Conditions Index.'],
+  ['Know the ground.', 'Official habitat maps pick out old, unimproved grassland, and in Wales whether it’s grazed.'],
+  ['Log finds and blanks.', 'Your own records test the index against what you actually find, so it keeps getting sharper.']
+];
+function openApp() { $('walkthrough').hidden = $('paywall').hidden = $('trialPill').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
+function showWalkthrough() {
+  document.body.classList.add('gated'); $('walkthrough').hidden = false; gate.slide = -1; nextSlide();
+}
+function nextSlide() {
+  clearTimeout(gate.timer);
+  gate.slide++;
+  if (gate.slide >= SLIDES.length) { finishWalkthrough(); return; }
+  const [t, x] = SLIDES[gate.slide], dur = WALKTHROUGH_SECONDS / SLIDES.length;
+  $('wtTitle').textContent = t; $('wtText').textContent = x;
+  $('wtProgress').style.setProperty('--wt-dur', `${dur}s`);
+  [...$('wtProgress').children].forEach((el, i) => { el.className = i < gate.slide ? 'done' : ''; });
+  const on = $('wtProgress').children[gate.slide]; void on.offsetWidth; on.className = 'on';
+  $('wtNext').textContent = gate.slide === SLIDES.length - 1 ? 'Try it — enter your postcode' : 'Next';
+  gate.timer = setTimeout(nextSlide, dur * 1000);
+}
+function finishWalkthrough() {
+  const t = readJSON(TRIAL_KEY, {});
+  writeJSON(TRIAL_KEY, {...t, walkthroughDone: true, trialEndsAt: t.trialEndsAt || Date.now() + TRIAL_SECONDS * 1000});
+  $('walkthrough').hidden = true; document.body.classList.remove('gated');
+  startTrial();
+  switchView('map'); openSearch(); $('searchInput').placeholder = 'Enter your postcode'; $('searchInput').focus();
+}
+function startTrial() {
+  const endsAt = readJSON(TRIAL_KEY, {}).trialEndsAt;
+  const tick = () => {
+    const left = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+    $('trialLeft').textContent = `0:${String(left).padStart(2, '0')}`;
+    if (left <= 0) { clearInterval(gate.trialTimer); $('trialPill').hidden = true; showPaywall(); }
+  };
+  $('trialPill').hidden = false; tick(); clearInterval(gate.trialTimer); gate.trialTimer = setInterval(tick, 250);
+}
+function showPaywall() {
+  closeSearch?.();
+  document.body.classList.add('gated'); $('paywall').hidden = false; $('walkthrough').hidden = true; renderPaywall();
+}
+function renderPaywall() {
+  if ($('paywall').hidden) return;
+  const signedIn = !!session, a = cachedAccess(), expired = !!a?.paidUntil && Date.parse(a.paidUntil) <= Date.now();
+  $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : expired ? 'Your 3 months are up.' : 'Keep reading the ground.';
+  $('pwChecking').hidden = !gate.checking;
+  $('pwSignIn').hidden = gate.checking || signedIn;
+  $('pwEmailForm').hidden = !!sync.pendingEmail;
+  $('pwSignInNote').textContent = sync.pendingEmail ? `We emailed ${sync.pendingEmail}. Open it and tap Log In — you’ll come straight back here. (Check junk if it’s not there.)` : 'We’ll email you a sign-in link. Your account holds your access and your records.';
+  $('pwPay').hidden = gate.checking || !signedIn;
+  if (signedIn) {
+    const q = new URLSearchParams({client_reference_id: session.user?.id || '', ...(session.user?.email ? {prefilled_email: session.user.email} : {})});
+    $('pwPayBtn').href = `${STRIPE_PAYMENT_LINK}${STRIPE_PAYMENT_LINK.includes('?') ? '&' : '?'}${q}`;
+    $('pwPayBtn').textContent = expired ? 'Renew — £8 for 3 more months' : 'Pay £8 securely with Stripe';
+    $('pwPayNote').innerHTML = `Signed in as ${esc(session.user?.email || 'your account')} · <button class="pw-link" id="pwSignOut" type="button">not you?</button>`;
+    $('pwSignOut').onclick = () => { setSession(null); try { localStorage.removeItem(ACCESS_KEY); } catch {} sync.pendingEmail = null; renderSync(); renderPaywall(); };
+  }
+}
+// Back from Stripe (?paid=1): the webhook usually lands within seconds; poll for up to 3 minutes.
+async function confirmPayment() {
+  gate.checking = true; showPaywall();
+  for (let i = 0; i < 60; i++) {
+    try { if (await refreshAccess()) { gate.checking = false; openApp(); toast(`You’re in — access until ${fmtLongDate(cachedAccess().paidUntil)}.`); return; } } catch {}
+    await new Promise(r => setTimeout(r, 3000));
+  }
+  gate.checking = false; renderPaywall();
+  $('pwPayNote').textContent = 'Payment not confirmed yet. If you paid, it can take a minute — reopen the app, or contact us with your receipt.';
+}
+async function startGate() {
+  if (!paywallOn()) return;
+  const paidReturn = new URLSearchParams(location.search).get('paid') === '1';
+  if (paidReturn) history.replaceState(null, '', location.pathname + location.hash);
+  if (session && paidReturn) { confirmPayment(); return; }
+  if (session && hasAccess()) { openApp(); refreshAccess().then(ok => { if (!ok && navigator.onLine) showPaywall(); }).catch(() => {}); return; }
+  if (session) { try { if (await refreshAccess()) { openApp(); return; } } catch {} }
+  const t = readJSON(TRIAL_KEY, {});
+  if (!t.walkthroughDone) showWalkthrough();
+  else if (t.trialEndsAt && Date.now() < t.trialEndsAt) startTrial();
+  else showPaywall();
+}
+function initGate() {
+  $('wtNext').onclick = nextSlide;
+  $('pwEmailForm').onsubmit = e => { e.preventDefault(); const email = $('pwEmail').value.trim(); if (email) sendSignInEmail(email, $('pwEmailBtn')); };
+  startGate();
 }
 
 // ---------- views + wiring ----------
@@ -2107,6 +2246,7 @@ function init() {
 
   window.addEventListener('online', () => { if (areasRequested && Object.values(state.areaData).some(d => !d.conditions || d.status !== 'live')) loadAllAreas(); });
   initSync();
+  initGate();
 }
 init();
 

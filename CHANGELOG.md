@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.11.0 — Paid access (ready, switched off until the Stripe link is set)
+
+### Added
+- New visitors get a 30-second walkthrough (auto-advancing, skippable), then a 30-second free
+  look with postcode search focused, then a paywall: sign in by email, then pay £8 once for
+  3 months through a Stripe Payment Link (account id + email passed to Stripe).
+- `supabase/paywall.sql`: `entitlements` (users can read only their own expiry) and `payments`
+  (idempotency). `supabase/functions/stripe-webhook`: verifies Stripe's signature (HMAC-SHA256,
+  5-minute replay window, constant-time compare) and extends access by 90 days.
+- Back from Stripe (`?paid=1`) the app confirms the payment and unlocks; paid users open straight
+  in and keep working offline; expired access shows a renew screen. Account card shows the expiry.
+- Sign-in links also work when the app is already open in the same tab.
+
 ## 2.10.0 — Account & sync (Supabase)
 
 ### Added
