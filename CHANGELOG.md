@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.10.0 — Account & sync (Supabase)
+
+### Added
+- **Sign in by email** (History → Account & sync): a one-tap link or a code from the email, no
+  passwords. Works in the installed home-screen app too, where email links open in the browser.
+- **Cloud backup and sync** of saved areas, sub-areas and every find and blank between devices.
+  Local-first: the app keeps working offline and syncs when back online, when reopened, and a
+  few seconds after any change. Existing on-device data is uploaded on first sign-in; built-in
+  demo records never are. Deletions sync; an unsynced change on this device wins over the server.
+- `supabase/schema.sql`: tables, triggers and **row-level security** so each account can only
+  read and write its own rows; no access for signed-out visitors.
+- No Supabase SDK: Auth and PostgREST are called directly with `fetch`.
+
 ## 2.9.0 — Land & grazing across Great Britain
 
 ### Added

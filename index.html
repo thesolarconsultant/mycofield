@@ -326,10 +326,10 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <p><b>How to trust it.</b> Every threshold above is a starting guess. Log finds <i>and</i> blanks, run Evidence on the History tab, and use the separation score (AUC) to see whether the index actually distinguishes them. Around 0.5 means it doesn't; above 0.7 is useful. The thresholds should be re-set from your records once there are enough of them.</p>
 <p><b>Sources.</b> Open-Meteo forecast, archive (ERA5) and elevation APIs; Copernicus DEM; OpenStreetMap via Overpass; Natural Resources Wales LANDMAP, grassland-fungi potential habitat and access-land layers via DataMapWales (contains Natural Resources Wales information © Natural Resources Wales and database right); Natural England Priority Habitat Inventory, Living England and registered common land, and the Rural Payments Agency Crop Map of England (© Natural England / RPA); NatureScot Habitat Map of Scotland (© NatureScot) — all under the Open Government Licence; postcodes.io and Nominatim for search.</p>
 </details></div></section>
-<section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:20px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div>
+<section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" id="syncCard" style="margin-top:20px"><h3>Account &amp; sync <span class="chip" id="syncChip">Off</span></h3><div class="small" id="syncSub"></div><form id="syncEmailForm" class="pc-actions"><input class="field" id="syncEmail" type="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><button class="btn" id="syncEmailBtn" type="submit">Email me a sign-in link</button></form><form id="syncCodeForm" class="pc-actions" hidden><input class="field" id="syncCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" type="submit">Sign in</button><button class="btn secondary" type="button" id="syncCodeBack">Use a different email</button></form><div class="pc-actions" id="syncSignedIn" hidden><button class="btn" id="syncNow" type="button">Sync now</button><button class="btn secondary" id="syncSignOut" type="button">Sign out</button></div></div><div class="card" style="margin-top:12px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div>
 <div class="card" style="margin-top:12px" id="evidenceCard"><h3>Evidence <span class="chip exp">Model check</span></h3><div class="small" id="evidenceSub">Does the index actually separate your finds from your blanks?</div><div class="pc-actions"><button class="btn" id="analyseAll" type="button">Analyse all records</button></div><div class="small" id="evidenceProgress" aria-live="polite"></div><div id="evidenceVerdict" class="verdict"></div><div id="evidence" class="evtable"></div></div>
 <div class="card" style="margin-top:12px"><h3>Export your data</h3><div class="pc-actions"><button class="btn secondary" id="exportCsv" type="button">CSV</button><button class="btn secondary" id="exportJson" type="button">JSON</button><button class="btn secondary" id="exportGeo" type="button">GeoJSON</button></div><div class="small" style="margin-top:10px">Exports include your private coordinates — share them carefully.</div></div></div></section>
-<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field notes</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome — blanks included. Records stay in this browser in the prototype.</div><form class="card" id="logForm" style="margin-top:20px"><div class="attached" id="attachedPoint" hidden><div><strong><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div><div><label for="obsGrazing">Grazing</label><select class="field" id="obsGrazing"><option value="">Not sure</option><option value="now">Stock grazing now</option><option value="this-year">Grazed this year (dung, short sward)</option><option value="ungrazed">Ungrazed for years (long, rank sward)</option><option value="mown">Mown / cut, not grazed</option></select></div><div><label for="obsAnimal">Grazed by</label><select class="field" id="obsAnimal"><option value="">Not sure / n/a</option><option value="sheep">Sheep</option><option value="cattle">Cattle</option><option value="horses">Horses / ponies</option><option value="mixed">Mixed stock</option><option value="wild">Rabbits / deer only</option></select></div></div><div style="margin-top:14px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn lime" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:14px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
+<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field notes</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome — blanks included. Records are saved on this device, and backed up to your account when you sign in (History tab).</div><form class="card" id="logForm" style="margin-top:20px"><div class="attached" id="attachedPoint" hidden><div><strong><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div><div><label for="obsGrazing">Grazing</label><select class="field" id="obsGrazing"><option value="">Not sure</option><option value="now">Stock grazing now</option><option value="this-year">Grazed this year (dung, short sward)</option><option value="ungrazed">Ungrazed for years (long, rank sward)</option><option value="mown">Mown / cut, not grazed</option></select></div><div><label for="obsAnimal">Grazed by</label><select class="field" id="obsAnimal"><option value="">Not sure / n/a</option><option value="sheep">Sheep</option><option value="cattle">Cattle</option><option value="horses">Horses / ponies</option><option value="mixed">Mixed stock</option><option value="wild">Rabbits / deer only</option></select></div></div><div style="margin-top:14px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn lime" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:14px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
 </main>
 <nav aria-label="Main">
 <button class="active" data-view="map" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>Map</button>
@@ -356,6 +356,15 @@ const SOIL_VARS_ARCHIVE = ['soil_moisture_0_to_7cm', 'soil_moisture_7_to_28cm'];
 const HABITAT_TTL = 90 * 864e5;
 const LAND_TTL = 180 * 864e5;
 const RECORDS_KEY = 'mycofield-history-v2';
+// Supabase (optional cloud backup + sync). The anon key is public by design: row-level security
+// in supabase/schema.sql is what keeps each user's rows private. Never put the service_role key here.
+const SUPABASE_URL = 'https://abgbzdairkgakmqscvyo.supabase.co';
+const SUPABASE_ANON_KEY = '';
+const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
+const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+// Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
+let session = readJSON(AUTH_KEY, null);
+const sync = {state: 'off', lastAt: null, error: null, running: null, again: false, timer: null, applying: false};
 const COMPASS = ['N','NE','E','SE','S','SW','W','NW'];
 
 // Built-in broad research/reference areas — seeded on first run, then fully editable.
@@ -371,7 +380,7 @@ function loadAreas() {
   try { const a = JSON.parse(localStorage.getItem(AREAS_KEY) || 'null'); if (a && typeof a === 'object' && Object.keys(a).length) return a; } catch {}
   return JSON.parse(JSON.stringify(BUILT_IN_AREAS));
 }
-function saveAreas() { try { localStorage.setItem(AREAS_KEY, JSON.stringify(areas)); return true; } catch { return false; } }
+function saveAreas() { try { localStorage.setItem(AREAS_KEY, JSON.stringify(areas)); scheduleSync(); return true; } catch { return false; } }
 let areas = loadAreas();
 // One level of nesting: top-level areas, each with optional sub-areas (saved spots).
 const topLevelAreas = () => Object.keys(areas).filter(k => !areas[k].parentId);
@@ -1516,7 +1525,7 @@ function loadRecords() {
   return DEFAULT_RECORDS.map(r => ({...r}));
 }
 function saveRecords(records = state.records) {
-  try { localStorage.setItem(RECORDS_KEY, JSON.stringify(records)); return true; } catch { return false; }
+  try { localStorage.setItem(RECORDS_KEY, JSON.stringify(records)); scheduleSync(); return true; } catch { return false; }
 }
 // Environmental state at the moment of logging — kept with the record so later model versions
 // never rewrite what was known at the time.
@@ -1855,6 +1864,177 @@ function renderInputs(d) {
   $('inputsTable').innerHTML = rows.map(([l, v, k, note]) => `<div class="in"><b>${l}</b><span>${esc(String(v))}</span><em class="chip ${k === 'Live' ? 'live' : k === 'Unavailable' ? 'error' : k === 'Experimental' ? 'exp' : 'calc'}">${k}</em><small>${esc(note)}</small></div>`).join('');
 }
 
+
+// ---------- account & sync (Supabase, no SDK: Auth + PostgREST over fetch) ----------
+// Local-first: the app always reads and writes localStorage; sync copies changes to and from the
+// user's own rows. Change detection is by content hash against the last synced version, so no
+// save path needs to remember what it changed. Conflicts: a change made on this device since the
+// last sync is kept and pushed; otherwise the newer server copy is applied. Deletions sync as
+// tombstones.
+const syncEnabled = () => !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+const writeJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+function hashOf(v) { const t = JSON.stringify(v) ?? ''; let h = 5381; for (let i = 0; i < t.length; i++) h = (h * 33 ^ t.charCodeAt(i)) >>> 0; return h.toString(36) + t.length.toString(36); }
+async function sbFetch(path, {method = 'GET', body, headers = {}, auth = true} = {}) {
+  if (auth) await ensureFreshSession();
+  const r = await fetch(SUPABASE_URL + path, {method, headers: {apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json',
+    ...(auth && session ? {Authorization: `Bearer ${session.access_token}`} : {}), ...headers}, body: body == null ? undefined : JSON.stringify(body)});
+  const text = await r.text(), data = text ? (() => { try { return JSON.parse(text); } catch { return text; } })() : null;
+  if (!r.ok) throw Object.assign(new Error(data?.msg || data?.message || data?.error_description || data?.error || `HTTP ${r.status}`), {httpStatus: r.status});
+  return data;
+}
+function setSession(s) {
+  session = s ? {access_token: s.access_token, refresh_token: s.refresh_token, expires_at: s.expires_at || Math.floor(Date.now() / 1000) + (s.expires_in || 3600), user: s.user ? {id: s.user.id, email: s.user.email} : session?.user} : null;
+  if (session) writeJSON(AUTH_KEY, session); else { try { localStorage.removeItem(AUTH_KEY); } catch {} }
+}
+async function ensureFreshSession() {
+  if (!session?.refresh_token || session.expires_at * 1000 > Date.now() + 60000) return;
+  try { setSession(await sbFetch('/auth/v1/token?grant_type=refresh_token', {method: 'POST', body: {refresh_token: session.refresh_token}, auth: false})); }
+  catch (err) { if (err.httpStatus >= 400 && err.httpStatus < 500) { setSession(null); renderSync(); } throw err; }
+}
+// Magic-link sign-in lands back here with the session in the URL fragment.
+function consumeAuthRedirect() {
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (!h.get('access_token') && !h.get('error_description')) return;
+  history.replaceState(null, '', location.pathname + location.search);
+  if (h.get('error_description')) { toast(`Sign-in failed: ${h.get('error_description')}`); return; }
+  setSession({access_token: h.get('access_token'), refresh_token: h.get('refresh_token'), expires_at: +h.get('expires_at') || undefined, expires_in: +h.get('expires_in') || 3600});
+  toast('Signed in — syncing your data.');
+}
+async function requestSignIn(e) {
+  e.preventDefault();
+  const email = $('syncEmail').value.trim(); if (!email) return;
+  $('syncEmailBtn').disabled = true;
+  try {
+    await sbFetch(`/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin + location.pathname)}`, {method: 'POST', body: {email, create_user: true}, auth: false});
+    sync.pendingEmail = email; renderSync();
+    toast('Check your email for the sign-in link or code.');
+  } catch (err) { toast(`Could not send the email: ${err.message}`); }
+  finally { $('syncEmailBtn').disabled = false; }
+}
+async function verifyCode(e) {
+  e.preventDefault();
+  const token = $('syncCode').value.replace(/\s/g, ''); if (!token || !sync.pendingEmail) return;
+  try {
+    setSession(await sbFetch('/auth/v1/verify', {method: 'POST', body: {type: 'email', email: sync.pendingEmail, token}, auth: false}));
+    sync.pendingEmail = null; $('syncCode').value = '';
+    toast('Signed in — syncing your data.'); renderSync(); runSync();
+  } catch (err) { toast(`That code didn't work: ${err.message}`); }
+}
+async function signOut() {
+  if (!confirm('Sign out? Your data stays on this device and in your account.')) return;
+  try { await sbFetch('/auth/v1/logout', {method: 'POST'}); } catch {}
+  setSession(null); writeJSON(SYNC_KEY, {}); sync.state = 'off'; renderSync();
+}
+function scheduleSync(delay = 2500) {
+  if (sync.applying || !syncEnabled() || !session) return;
+  clearTimeout(sync.timer); sync.timer = setTimeout(runSync, delay);
+}
+const obsRow = (r, uid, deleted = false) => ({user_id: uid, id: r.id, data: deleted ? {} : r, deleted, obs_date: deleted ? null : r.date || null, result: deleted ? null : r.result || null, updated_at: new Date().toISOString()});
+const areaRow = (id, a, uid, deleted = false) => ({user_id: uid, id, data: deleted ? {} : a, deleted, updated_at: new Date().toISOString()});
+async function pullTable(table, since) {
+  const rows = [];
+  for (let page = 0; page < 50; page++) {
+    const batch = await sbFetch(`/rest/v1/${table}?select=id,data,deleted,synced_at&order=synced_at.asc,id.asc&limit=500&offset=${page * 500}${since ? `&synced_at=gt.${encodeURIComponent(since)}` : ''}`);
+    rows.push(...batch); if (batch.length < 500) break;
+  }
+  return rows;
+}
+async function pushRows(table, rows) {
+  for (let i = 0; i < rows.length; i += 200)
+    await sbFetch(`/rest/v1/${table}?on_conflict=user_id,id`, {method: 'POST', body: rows.slice(i, i + 200), headers: {Prefer: 'resolution=merge-duplicates,return=minimal'}});
+}
+async function syncOnce() {
+  if (!session.user?.id) { setSession({...session, user: await sbFetch('/auth/v1/user')}); renderSync(); }
+  const meta = readJSON(SYNC_KEY, {}), hashes = meta.hashes || {}, uid = session.user?.id;
+  if (!uid) throw new Error('No user id in session');
+  const [ra, ro] = await Promise.all([pullTable('areas', meta.areasSince), pullTable('observations', meta.obsSince)]);
+  // 1. Apply server changes unless this device changed the same item since the last sync.
+  const localObs = new Map(state.records.map(r => [r.id, r]));
+  const changedHere = (key, v) => v !== undefined && hashes[key] !== hashOf(v);
+  let areasChanged = false, obsChanged = false;
+  for (const row of ra) {
+    const key = `a:${row.id}`;
+    if (changedHere(key, areas[row.id])) continue;
+    if (row.deleted) {
+      if (areas[row.id] && Object.keys(areas).length > 1) { delete areas[row.id]; delete state.areaData?.[row.id]; areasChanged = true; }
+      delete hashes[key];
+    } else { if (hashOf(areas[row.id]) !== hashOf(row.data)) { areas[row.id] = row.data; areasChanged = true; } hashes[key] = hashOf(row.data); }
+  }
+  for (const row of ro) {
+    const key = `o:${row.id}`;
+    if (changedHere(key, localObs.get(row.id))) continue;
+    if (row.deleted) { if (localObs.delete(row.id)) obsChanged = true; delete hashes[key]; }
+    else { if (hashOf(localObs.get(row.id)) !== hashOf(row.data)) { localObs.set(row.id, row.data); obsChanged = true; } hashes[key] = hashOf(row.data); }
+  }
+  if (obsChanged) state.records = [...localObs.values()].sort((a, b) => String(a.createdAt || '').localeCompare(String(b.createdAt || '')));
+  // 2. Push local changes and deletions.
+  const pa = [], po = [];
+  for (const [id, a] of Object.entries(areas)) if (hashes[`a:${id}`] !== hashOf(a)) pa.push(areaRow(id, a, uid));
+  // Built-in demo records stay on the device; only real finds and blanks go to the account.
+  for (const r of state.records) if (!r.demo && hashes[`o:${r.id}`] !== hashOf(r)) po.push(obsRow(r, uid));
+  for (const key of Object.keys(hashes)) {
+    const [t, id] = [key.slice(0, 1), key.slice(2)];
+    if (t === 'a' && !areas[id]) pa.push(areaRow(id, null, uid, true));
+    if (t === 'o' && !localObs.has(id)) po.push(obsRow({id}, uid, true));
+  }
+  await pushRows('areas', pa); await pushRows('observations', po);
+  for (const r of pa) { if (r.deleted) delete hashes[`a:${r.id}`]; else hashes[`a:${r.id}`] = hashOf(r.data); }
+  for (const r of po) { if (r.deleted) delete hashes[`o:${r.id}`]; else hashes[`o:${r.id}`] = hashOf(r.data); }
+  // 3. Cursor = newest server timestamp seen; our own pushes come back once and match their hashes.
+  const newest = rows => rows.reduce((m, r) => r.synced_at > m ? r.synced_at : m, '');
+  writeJSON(SYNC_KEY, {hashes, areasSince: newest(ra) || meta.areasSince || null, obsSince: newest(ro) || meta.obsSince || null});
+  if (areasChanged || obsChanged) applySyncedLocally(areasChanged, obsChanged);
+  return {pulled: ra.length + ro.length, pushed: pa.length + po.length};
+}
+function applySyncedLocally(areasChanged, obsChanged) {
+  sync.applying = true;
+  try {
+    if (obsChanged) { saveRecords(); renderHistory(); renderEvidence(); }
+    if (areasChanged) {
+      if (!areas[state.selectedArea]) state.selectedArea = orderedAreaIds()[0];
+      refreshAreasUI();
+      if (areasRequested) for (const k of orderedAreaIds()) if (!state.areaData[k]) loadArea(k);
+    }
+  } finally { sync.applying = false; }
+}
+async function runSync() {
+  if (!syncEnabled() || !session) return;
+  if (sync.running) { sync.again = true; return sync.running; }
+  if (!navigator.onLine) { sync.state = 'offline'; renderSync(); return; }
+  sync.state = 'syncing'; renderSync();
+  sync.running = (async () => {
+    try { const r = await syncOnce(); sync.state = 'synced'; sync.lastAt = Date.now(); sync.error = null; return r; }
+    catch (err) { sync.state = session ? 'error' : 'off'; sync.error = err.message; }
+    finally { sync.running = null; renderSync(); if (sync.again) { sync.again = false; scheduleSync(500); } }
+  })();
+  return sync.running;
+}
+function renderSync() {
+  const card = $('syncCard'); if (!card) return;
+  card.hidden = !syncEnabled();
+  const signedIn = !!session, chip = $('syncChip');
+  $('syncEmailForm').hidden = signedIn || !!sync.pendingEmail || !syncEnabled();
+  $('syncCodeForm').hidden = signedIn || !sync.pendingEmail;
+  $('syncSignedIn').hidden = !signedIn;
+  const st = !syncEnabled() ? ['Not set up', 'error'] : !signedIn ? ['Off', ''] : sync.state === 'syncing' ? ['Syncing…', 'calc'] : sync.state === 'synced' ? ['Synced', 'live'] : sync.state === 'offline' ? ['Offline', 'error'] : sync.state === 'error' ? ['Sync error', 'error'] : ['Signed in', 'live'];
+  chip.textContent = st[0]; chip.className = `chip ${st[1]}`;
+  $('syncSub').textContent = !syncEnabled() ? 'Cloud sync is not configured in this build.'
+    : !signedIn ? (sync.pendingEmail ? `We emailed ${sync.pendingEmail}. Tap the link in that email, or type the code from it here.` : 'Sign in to back up your areas and records and keep them in sync across your devices. Your locations stay private to your account.')
+    : `Signed in as ${session.user?.email || 'your account'}${sync.lastAt ? ` · last synced ${new Date(sync.lastAt).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}` : ''}${sync.state === 'error' && sync.error ? ` · ${sync.error}` : ''}${sync.state === 'offline' ? ' · will sync when you are back online' : ''}`;
+}
+function initSync() {
+  $('syncEmailForm').onsubmit = requestSignIn;
+  $('syncCodeForm').onsubmit = verifyCode;
+  $('syncCodeBack').onclick = () => { sync.pendingEmail = null; renderSync(); };
+  $('syncNow').onclick = () => runSync();
+  $('syncSignOut').onclick = signOut;
+  if (syncEnabled()) consumeAuthRedirect();
+  renderSync();
+  if (syncEnabled() && session) runSync();
+  window.addEventListener('online', () => scheduleSync(500));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') scheduleSync(500); });
+}
+
 // ---------- views + wiring ----------
 function switchView(name) {
   document.body.dataset.view = name;
@@ -1923,6 +2103,7 @@ function init() {
   $('useMapCenter').onclick = () => { const c = map.getCenter(); $('obsNotes').value += ($('obsNotes').value ? '\n' : '') + `Map centre: ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`; };
 
   window.addEventListener('online', () => { if (areasRequested && Object.values(state.areaData).some(d => !d.conditions || d.status !== 'live')) loadAllAreas(); });
+  initSync();
 }
 init();
 

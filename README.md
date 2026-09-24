@@ -54,3 +54,14 @@ Then open http://localhost:8000
 
 ## Releasing
 Bump `CACHE` in `sw.js` and `VERSION` with each release so installed PWAs pick up the new build.
+
+## Account & sync (optional)
+Cloud backup uses Supabase (free tier is enough). One-time setup:
+1. Supabase → **SQL Editor** → paste and run [`supabase/schema.sql`](supabase/schema.sql).
+2. **Authentication → URL Configuration**: set Site URL to the app's address and add it to
+   Redirect URLs.
+3. **Authentication → Emails → Magic Link** template: add `{{ .Token }}` so the email also
+   contains a code (needed for the installed home-screen app).
+4. Put the project URL and the **anon/public** key in `SUPABASE_URL` / `SUPABASE_ANON_KEY` in
+   `index.html`. Never use the service_role key in the app. Until the key is set, the sync card
+   is hidden and the app is purely on-device.
