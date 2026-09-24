@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.6.0 — Mobile-first map
+
+### Changed
+- **Full-screen map on phones.** The Map tab hides the header, the area dropdown and the
+  always-on area card. One floating search bar (with the logo) sits at the top.
+- **Bottom sheets instead of cards.** Tapping the map, a search result or an area opens a
+  compact peek sheet (score, label, 4 key numbers, actions). Swipe up or tap ▴ for full
+  detail; swipe down or ✕ to dismiss. The map pans so the point stays visible.
+- **Saved areas are optional.** Hidden from the map by default and behind the Saved
+  (bookmark) button in the search bar: strongest area, list of areas and sub-areas, and a
+  "Show saved areas on the map" switch (remembered). Their weather only loads when you open
+  Saved or Conditions, so opening the app makes no area requests.
+- Single 3D/2D button (remembered), compass under it; zoom buttons only on desktop.
+- The map reopens where you left it.
+
+### Added
+- **My location** button: one tap analyses where you're standing (location is only
+  requested when you press it).
+
 ## 2.5.0 — Brand redesign
 
 ### Changed

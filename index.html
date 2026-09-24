@@ -90,35 +90,75 @@ label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:upperca
 textarea.field{min-height:96px;resize:vertical}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:60;background:var(--forest);color:#fff;padding:12px 18px;border-radius:999px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);max-width:calc(100% - 32px)}
 
-/* ---------- map view ---------- */
+/* ---------- map view (mobile-first: full-bleed map, floating search, bottom sheets) ---------- */
 .view{display:none}.view.active{display:block}
-.mapwrap{height:calc(100vh - var(--head-h) - var(--nav-h));min-height:480px;position:relative;background:var(--stone)}
-@supports(height:100dvh){.mapwrap{height:calc(100dvh - var(--head-h) - var(--nav-h) - env(safe-area-inset-bottom))}}
+body[data-view="map"] header{display:none}
+.mapwrap{height:calc(100vh - var(--nav-h));min-height:420px;position:relative;background:var(--stone);overflow:hidden}
+@supports(height:100dvh){.mapwrap{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-bottom))}}
 #map{position:absolute;inset:0}
-.overlay{position:absolute;top:14px;left:14px;right:14px;z-index:5;display:grid;gap:10px;pointer-events:none}
-.overlay>*{pointer-events:auto}
-.row{display:flex;gap:8px}
-.score,.mapcard,.pointcard,.results{background:rgba(255,255,255,.96);border:1px solid var(--line);box-shadow:var(--shadow-lg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.score{max-width:440px;border-radius:22px;padding:14px}
-.scoretop{display:flex;justify-content:space-between;gap:10px;align-items:center}
-.scoremain{display:flex;gap:12px;align-items:center;min-width:0}
-.score h2,.pc-main h2{font-family:var(--head);font-weight:700;font-size:16px;line-height:1.2;color:var(--forest);margin:0 0 4px}
-.score p,.pc-main p{font-size:12px;color:var(--muted);margin:0}
-.trend{font-size:12px;color:var(--moss-ink);font-weight:700;white-space:nowrap;text-align:right;display:grid;gap:6px;justify-items:end}
-.bottom{position:absolute;left:14px;right:14px;bottom:14px;z-index:5;display:flex;justify-content:space-between;align-items:end;gap:8px;pointer-events:none}
-.mapcard{pointer-events:auto;border-radius:18px;padding:10px 12px;color:var(--text);text-align:left}
-.strongest{display:flex;gap:12px;align-items:center;max-width:320px;flex:1;min-width:0}
-.strongest .n{font-family:var(--head);font-weight:800;font-size:26px;color:var(--moss-ink)}
-.strongest strong{color:var(--moss-ink);display:block;font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
-.strongest b{font-size:14px;color:var(--forest);display:block;margin-top:2px}
-.strongest small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
-.toggle{display:flex;flex:none;gap:2px;padding:4px;border-radius:999px}
-.toggle button{border:0;background:transparent;color:var(--muted);font-weight:600;padding:8px 14px;border-radius:999px;min-height:40px}
-.toggle button.active{background:var(--lime);color:var(--forest)}
-.mapwrap .maplibregl-ctrl-bottom-right,.mapwrap .maplibregl-ctrl-bottom-left{bottom:84px}
-.mapwrap.point-open .score,.mapwrap.point-open .bottom,.mapwrap.point-open .maplibregl-ctrl-bottom-right,.mapwrap.point-open .maplibregl-ctrl-bottom-left{display:none}
-.mapwrap.searching .score,.mapwrap.searching .pointcard{display:none}
-/* area markers */
+.topbar{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:9;display:grid;gap:8px}
+.searchbar{display:flex;align-items:center;gap:2px;background:var(--white);border:1px solid var(--line-2);border-radius:999px;box-shadow:var(--shadow-lg);height:52px;padding:0 6px 0 12px}
+.sb-logo{height:27px;width:auto;flex:none}
+#searchInput{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-size:16px;color:var(--forest);padding:0 8px}
+#searchInput::placeholder{color:var(--muted)}
+#searchInput::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.sb-btn{width:42px;height:42px;flex:none;border-radius:999px;border:0;background:transparent;color:var(--forest);display:grid;place-items:center}
+.sb-btn[aria-expanded="true"]{background:var(--lime)}
+.results{background:rgba(255,255,255,.98);border:1px solid var(--line);box-shadow:var(--shadow-lg);border-radius:20px;overflow:auto;max-height:55vh}
+.results button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--forest);padding:12px 16px;min-height:54px}
+.results button:last-child{border-bottom:0}
+.results button:hover,.results button:focus-visible{background:var(--stone-2);outline:none}
+.results b{font-size:14px;font-weight:600}
+.results .kind{float:right;font-size:9.5px;font-weight:600;color:var(--moss-ink);text-transform:uppercase;letter-spacing:.12em;margin-left:8px;background:rgba(167,216,46,.22);padding:3px 8px;border-radius:999px}
+.results small{display:block;color:var(--muted);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.results .msg{padding:14px 16px;font-size:13px;color:var(--muted)}
+.results .msg.err{color:var(--coral-ink)}
+.fabs{position:absolute;right:12px;top:calc(74px + env(safe-area-inset-top));z-index:6;display:grid;gap:8px}
+.fab{width:46px;height:46px;border-radius:15px;background:var(--white);border:1px solid var(--line-2);box-shadow:var(--shadow);color:var(--forest);font-weight:700;font-size:14px;display:grid;place-items:center}
+.fab[aria-pressed="true"]{background:var(--forest);color:#fff}
+.fab.busy svg{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.mapwrap .maplibregl-ctrl-top-right{top:calc(180px + env(safe-area-inset-top));right:2px}
+.mapwrap.sheet-open .maplibregl-ctrl-bottom-left,.mapwrap.searching .fabs,.mapwrap.searching .sheet{display:none}
+/* bottom sheets */
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:8;background:var(--white);border-radius:24px 24px 0 0;box-shadow:0 -12px 40px rgba(11,61,46,.2);padding:0 16px 16px;max-height:calc(100% - 76px - env(safe-area-inset-top));overflow:auto;overscroll-behavior:contain;transition:transform .18s ease-out}
+.handle{display:block;width:100%;height:24px;border:0;background:transparent;position:relative;touch-action:none;cursor:grab;margin:0}
+.handle:before{content:"";position:absolute;left:50%;top:9px;width:42px;height:5px;border-radius:5px;background:var(--line-2);transform:translateX(-50%)}
+.sh-head{display:flex;gap:12px;align-items:center}
+.sh-title{flex:1;min-width:0}
+.sh-title h2{font-family:var(--head);font-weight:700;font-size:16px;line-height:1.2;color:var(--forest);margin:3px 0 2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.sh-title p{margin:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-tools{display:flex;gap:6px;flex:none}
+.kicker{display:flex;gap:6px;align-items:center;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--moss-ink);white-space:nowrap}
+.kicker .chip{padding:2px 7px;font-size:8.5px}
+.ring.sm{width:54px;height:54px}.ring.sm:after{inset:6px}.ring.sm b{font-size:18px}
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
+.strip div{background:var(--stone-2);border-radius:12px;padding:8px 9px;min-width:0}
+.strip b{display:block;font-family:var(--head);font-weight:700;font-size:14px;color:var(--forest);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip span{display:block;font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap}
+.sh-note{font-size:12px;color:var(--muted);margin:10px 0 0}
+.pc-more{display:none}
+.sheet.expanded .pc-more{display:block}.sheet.expanded #pcStrip{display:none}
+.pc-explain{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pc-explain span{font-size:11px;background:var(--stone-2);border-radius:999px;padding:5px 10px;color:var(--muted)}
+.pc-explain span b{color:var(--forest)}
+.pc-actions{display:flex;gap:8px;margin-top:12px}
+.pc-actions .btn{flex:1;padding:10px 12px;min-height:46px}
+.pc-actions .btn.icon{flex:0 0 46px;padding:0;font-size:16px}
+.sheet .metrics{margin-top:10px}.sheet .metric{padding:8px 9px}
+.savearea{margin-top:12px;display:grid;gap:4px}
+.savearea label{margin:6px 0 2px}
+#pcCoords .earth{padding:0}
+#strongestCard{display:flex;gap:12px;align-items:center;width:100%;margin-top:12px;text-align:left;border:0;border-radius:16px;padding:12px 14px;background:rgba(167,216,46,.18);color:var(--text)}
+#strongestCard .n{font-family:var(--head);font-weight:800;font-size:26px;color:var(--moss-ink);min-width:40px}
+#strongestCard strong{color:var(--moss-ink);display:block;font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+#strongestCard b{font-size:14px;color:var(--forest);display:block;margin-top:2px}
+#strongestCard small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.switch{display:flex;align-items:center;gap:10px;margin:12px 2px 4px;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--forest);cursor:pointer}
+.switch input{appearance:none;-webkit-appearance:none;width:44px;height:26px;border-radius:999px;background:var(--stone);position:relative;flex:none;margin:0;cursor:pointer;transition:background .15s}
+.switch input:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .15s}
+.switch input:checked{background:var(--moss)}
+.switch input:checked:after{transform:translateX(18px)}
+/* markers */
 .amk{display:flex;align-items:center;gap:6px;min-height:36px;padding:6px 12px 6px 9px;border-radius:999px;background:var(--white);border:1px solid var(--line-2);color:var(--forest);font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 6px 18px rgba(11,61,46,.2)}
 .amk i{width:9px;height:9px;border-radius:50%;background:var(--moss);flex:none}
 .amk .s{font-family:var(--head);font-weight:800;color:var(--moss-ink)}
@@ -128,38 +168,13 @@ textarea.field{min-height:96px;resize:vertical}
 .amk.selected i{background:var(--lime)}.amk.selected .s{color:var(--lime)}
 .amk.sub{min-height:30px;padding:4px 10px 4px 7px;font-size:11px;font-weight:500}
 .amk.sub i{width:7px;height:7px;background:var(--sage)}
-.mapwrap.far .amk.sub{display:none}
+.mapwrap.far .amk.sub:not(.active){display:none}
+.mapwrap:not(.show-areas) .amk:not(.active){display:none}
 .pmk{width:24px;height:24px;border-radius:50%;background:var(--lime);border:5px solid var(--forest);box-shadow:0 8px 22px rgba(11,61,46,.45);pointer-events:none}
 .pmk:after{content:"";position:absolute;inset:-16px;border-radius:50%;border:3px solid var(--moss);animation:pulse 1.8s ease-out infinite}
 @keyframes pulse{from{transform:scale(.45);opacity:.9}to{transform:scale(1.5);opacity:0}}
-@media(prefers-reduced-motion:reduce){.pmk:after{animation:none;opacity:.4}.loadingbar{animation:none}}
-/* point card */
-.pointcard{position:absolute;left:14px;right:14px;bottom:14px;z-index:7;max-width:460px;max-height:calc(100% - 84px);overflow:auto;border-radius:24px;padding:16px}
-.pc-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
-.pc-tools{display:flex;gap:6px;align-items:center}.pc-head .eyebrow{font-size:10px;letter-spacing:.14em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.pc-main{display:flex;gap:12px;align-items:center}
-.pc-explain{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.pc-explain span{font-size:11px;background:var(--stone-2);border-radius:999px;padding:5px 10px;color:var(--muted)}
-.pc-explain span b{color:var(--forest)}
-.pc-coords{font-size:12px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}
-.pc-actions{display:flex;gap:8px;margin-top:14px}
-.pc-actions .btn{flex:1;padding:10px 12px}
-.pointcard .metric{padding:8px 9px}
-.savearea{margin-top:12px;display:grid;gap:4px}
-.savearea label{margin:6px 0 2px}
-/* search */
-.results{border-radius:20px;overflow:auto;max-height:52vh}
-.results button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--forest);padding:12px 16px;min-height:54px}
-.results button:last-child{border-bottom:0}
-.results button:hover,.results button:focus-visible{background:var(--stone-2);outline:none}
-.results b{font-size:14px;font-weight:600}
-.results .kind{float:right;font-size:9.5px;font-weight:600;color:var(--moss-ink);text-transform:uppercase;letter-spacing:.12em;margin-left:8px;background:rgba(167,216,46,.22);padding:3px 8px;border-radius:999px}
-.results small{display:block;color:var(--muted);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.results .msg{padding:14px 16px;font-size:13px;color:var(--muted)}
-.results .msg.err{color:var(--coral-ink)}
-#searchCancel{flex:none}
-#searchInput{border-radius:999px;box-shadow:var(--shadow);padding:0 20px}
-#searchInput::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+@media(prefers-reduced-motion:reduce){.pmk:after,.fab.busy svg{animation:none;opacity:.4}.loadingbar{animation:none}.sheet{transition:none}}
+@media(min-width:761px){.topbar{right:auto;width:440px}.sheet{left:14px;right:auto;bottom:14px;width:440px;border-radius:24px;max-height:calc(100% - 100px)}}
 
 /* ---------- pages ---------- */
 .page{max-width:1100px;margin:auto;padding:24px 16px calc(var(--nav-h) + 32px + env(safe-area-inset-bottom))}
@@ -238,30 +253,42 @@ nav button.active{background:var(--lime);color:var(--forest)}
 
 @media(max-width:760px){
   .cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}
-  .score,.pointcard{max-width:none}
   .record{grid-template-columns:auto 1fr}.record .acts{grid-column:1/-1;justify-content:flex-start}
   .title{font-size:28px}
 }
-@media(min-width:761px){nav{grid-template-columns:repeat(4,minmax(0,150px));justify-content:center}.overlay>.row,.overlay>.results{max-width:520px;width:100%}}
+@media(min-width:761px){nav{grid-template-columns:repeat(4,minmax(0,150px));justify-content:center}}
 @media(max-width:380px){.wordmark{font-size:18px}.brand img{height:34px}.trk{grid-template-columns:56px minmax(0,1fr) 14px}.trk-spark{display:none}}
 </style>
 </head>
-<body>
+<body data-view="map">
 <header><a class="brand" href="./" aria-label="MycoField home"><img src="./assets/logo-mark.png" alt="" width="53" height="40"><div><div class="wordmark">Myco<span>Field</span></div><small>GRASSLAND INTELLIGENCE</small></div></a><button id="installBtn" class="btn lime" style="min-height:40px;padding:8px 16px;font-size:13px" hidden>Install</button></header>
 <main>
 <section class="view active" id="view-map"><div class="mapwrap" id="mapwrap"><div id="map"></div>
-<div class="overlay"><div class="row" id="areaRow"><select id="areaSelect" class="select" aria-label="Tracked area"></select><button class="pill icon" id="searchBtn" type="button" aria-label="Search places"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button><button class="pill icon" id="flyBtn" type="button" aria-label="Fly to selected area"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button></div><form class="row" id="searchRow" role="search" hidden><input class="field" id="searchInput" type="search" placeholder="Town, postcode, landmark or lat, lon" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="pill" type="button" id="searchCancel">Cancel</button></form><div class="results" id="searchResults" hidden aria-live="polite"></div>
-<div class="score"><div class="scoretop"><div class="scoremain"><div class="ring" id="ring"><b id="scoreValue">…</b></div><div><h2 id="scoreTitle">Loading live conditions…</h2><p id="scoreCopy">Fetching weather and terrain</p></div></div><div class="trend"><div id="trend"></div><span id="areaStatus" class="chip loading">Loading</span></div></div><div class="metrics"><div class="metric"><b id="rain14">—</b><span>14-day rainfall</span></div><div class="metric"><b id="night">—</b><span>overnight low</span></div><div class="metric"><b id="elev">—</b><span>elevation</span></div></div></div></div>
-<div class="bottom"><button class="mapcard strongest" id="strongestCard" type="button" aria-label="Fly to strongest tracked area"><div class="n" id="strongestScore">…</div><div><strong>★ Strongest tracked area</strong><b id="strongestName">Comparing areas…</b><small id="strongestSub">Tap the map anywhere to analyse a point</small></div></button><div class="mapcard toggle"><button id="terrainOn" class="active" type="button">3D</button><button id="terrainOff" type="button">Flat</button></div></div>
-<div class="pointcard" id="pointCard" hidden role="region" aria-label="Exact point intelligence" aria-live="polite">
-<div class="pc-head"><span class="eyebrow">Exact point intelligence</span><span class="pc-tools"><span id="pcStatus" class="chip loading">Loading</span><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis" title="Refresh"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis" title="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></span></div>
-<div class="pc-main"><div class="ring" id="pcRing"><b id="pcScore">…</b></div><div><h2 id="pcLabel">Analysing this point…</h2><p id="pcSub">Fetching weather and terrain</p></div></div>
+<div class="topbar"><form class="searchbar" id="searchRow" role="search"><img class="sb-logo" src="./assets/logo-mark.png" alt="" width="35" height="27"><input id="searchInput" type="search" placeholder="Search place or postcode" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="sb-btn" type="button" id="searchCancel" hidden aria-label="Cancel search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="sb-btn" type="button" id="savedBtn" aria-label="Saved areas" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button></form><div class="results" id="searchResults" hidden aria-live="polite"></div></div>
+<div class="fabs"><button class="fab" id="terrainBtn" type="button" aria-pressed="true" aria-label="3D terrain on — switch to flat">3D</button><button class="fab" id="locateBtn" type="button" aria-label="Analyse my location"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></button></div>
+<div class="sheet" id="areaCard" hidden role="region" aria-label="Area summary">
+<button class="handle" type="button" aria-label="Area summary — swipe down to close"></button>
+<div class="sh-head"><div class="ring sm" id="ring"><b id="scoreValue">…</b></div><div class="sh-title"><span class="kicker"><span id="areaKicker">Saved area</span><span id="areaStatus" class="chip loading">Loading</span></span><h2 id="areaName"></h2><p id="scoreTitle">Loading live conditions…</p></div><div class="sh-tools"><button class="iconbtn" id="areaClose" type="button" aria-label="Close area summary"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
+<div class="strip"><div><b id="rain14">—</b><span>14-day rain</span></div><div><b id="night">—</b><span>night low</span></div><div><b id="elev">—</b><span>elevation</span></div><div><b id="trend">—</b><span>next 3 days</span></div></div>
+<p class="sh-note" id="scoreCopy"></p>
+<div class="pc-actions"><button class="btn" id="areaDetails" type="button">Conditions <span aria-hidden="true">→</span></button><button class="btn secondary" id="areaAnalyse" type="button">Analyse centre</button></div>
+</div>
+<div class="sheet" id="pointCard" hidden role="region" aria-label="Exact point intelligence" aria-live="polite">
+<button class="handle" type="button" id="pcHandle" aria-label="Show more detail" aria-expanded="false"></button>
+<div class="sh-head"><div class="ring sm" id="pcRing"><b id="pcScore">…</b></div><div class="sh-title"><span class="kicker">Exact point <span id="pcStatus" class="chip loading">Loading</span></span><h2 id="pcLabel">Analysing this point…</h2><p id="pcCoords"></p></div><div class="sh-tools"><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
 <div id="pcLoading" class="loadingbar"></div>
-<div class="metrics" id="pcMetrics"></div>
-<div class="pc-explain" id="pcExplain"></div>
-<div class="pc-coords" id="pcCoords"></div>
-<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Use in field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button></div>
+<div class="strip" id="pcStrip"></div>
+<div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div></div>
+<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
+</div>
+<div class="sheet tall" id="savedSheet" hidden role="dialog" aria-label="Saved areas">
+<button class="handle" type="button" aria-label="Saved areas — swipe down to close"></button>
+<div class="sh-head"><div class="sh-title"><span class="kicker">Optional</span><h2>Saved areas</h2></div><div class="sh-tools"><button class="iconbtn" id="savedClose" type="button" aria-label="Close saved areas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
+<button class="strongest" id="strongestCard" type="button" aria-label="Go to strongest tracked area"><span class="n" id="strongestScore">…</span><span><strong>★ Strongest tracked area</strong><b id="strongestName">Comparing areas…</b><small id="strongestSub"></small></span></button>
+<label class="switch"><input type="checkbox" id="showAreasToggle"><span>Show saved areas on the map</span></label>
+<div class="tracker" id="savedList"></div>
+<p class="small" style="margin:12px 2px 0">Save new areas from any analysed point with <b>Save area</b>.</p>
 </div>
 </div></section>
 <section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. <span id="dashArea"></span> Experimental research indicator only — not a probability or a guarantee of fruiting.</div>
@@ -538,10 +565,29 @@ function explainParts(c) {
 
 // ---------- map ----------
 const style = {version: 8, sources: {osm: {type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors', maxzoom: 19}, terrain: {type: 'raster-dem', url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json', tileSize: 256}}, layers: [{id: 'osm', type: 'raster', source: 'osm'}, {id: 'hillshade', type: 'hillshade', source: 'terrain', paint: {'hillshade-exaggeration': .45}}]};
-const map = new maplibregl.Map({container: 'map', style, center: areas[state.selectedArea].center, zoom: areas[state.selectedArea].zoom ?? 12, pitch: 62, bearing: -18, maxPitch: 85, attributionControl: false});
-map.addControl(new maplibregl.NavigationControl({visualizePitch: true}), 'bottom-right');
+// Open where the user left off (falls back to a south Wales overview).
+const CAMERA_KEY = 'mycofield-camera', DEFAULT_CAMERA = {center: [-3.33, 51.78], zoom: 9.6, pitch: 45, bearing: -12};
+function loadCamera() { try { const c = JSON.parse(localStorage.getItem(CAMERA_KEY)); if (c && Array.isArray(c.center)) return c; } catch {} return DEFAULT_CAMERA; }
+const pref = (key, fallback) => { try { const v = localStorage.getItem(key); return v == null ? fallback : v === '1'; } catch { return fallback; } };
+const setPref = (key, on) => { try { localStorage.setItem(key, on ? '1' : '0'); } catch {} };
+const map = new maplibregl.Map({container: 'map', style, ...loadCamera(), maxPitch: 85, attributionControl: false});
+// Pinch-zoom on phones; zoom buttons only on wider screens.
+map.addControl(new maplibregl.NavigationControl({visualizePitch: true, showZoom: matchMedia('(min-width: 761px)').matches}), 'top-right');
 map.addControl(new maplibregl.AttributionControl({compact: true}), 'bottom-left');
-map.on('load', () => map.setTerrain({source: 'terrain', exaggeration: 1.45}));
+let terrain3d = pref('mycofield-3d', true);
+map.on('load', () => setTerrain(terrain3d, false));
+map.on('moveend', () => {
+  try { const c = map.getCenter(); localStorage.setItem(CAMERA_KEY, JSON.stringify({center: [+c.lng.toFixed(5), +c.lat.toFixed(5)], zoom: +map.getZoom().toFixed(2), pitch: Math.round(map.getPitch()), bearing: Math.round(map.getBearing())})); } catch {}
+});
+function setTerrain(on, animate = true) {
+  terrain3d = on; setPref('mycofield-3d', on);
+  if (map.isStyleLoaded()) map.setTerrain(on ? {source: 'terrain', exaggeration: 1.45} : null);
+  if (animate) map.easeTo({pitch: on ? 60 : 0, duration: 600});
+  const b = $('terrainBtn');
+  b.textContent = on ? '3D' : '2D';
+  b.setAttribute('aria-pressed', on);
+  b.setAttribute('aria-label', on ? '3D terrain on — switch to flat' : 'Flat map — switch to 3D terrain');
+}
 
 const areaMarkers = {};
 // Creates/updates/removes markers so they always match the saved areas.
@@ -570,6 +616,7 @@ function renderAreaMarkers() {
   for (const [k, m] of Object.entries(areaMarkers)) {
     const el = m.getElement(), d = state.areaData[k];
     el.classList.toggle('selected', k === state.selectedArea);
+    el.classList.toggle('active', state.areaCardOpen && k === state.selectedArea);
     el.classList.toggle('strongest', k === state.strongestArea);
     el.querySelector('.s').textContent = d?.conditions ? d.conditions.score : d?.status === 'loading' || !d ? '…' : '—';
   }
@@ -584,7 +631,8 @@ function placePointMarker(lat, lon) {
 // Only deliberate taps on empty terrain analyse a point — never drag/zoom/rotate.
 map.on('click', e => {
   if (e.originalEvent?.target?.closest?.('.amk, .pmk, .maplibregl-ctrl')) return;
-  if (!$('searchRow').hidden) { closeSearch(); return; }
+  if ($('mapwrap').classList.contains('searching')) { closeSearch(); return; }
+  if (!$('savedSheet').hidden) { closeSaved(); return; }
   analysePoint(e.lngLat.lat, e.lngLat.lng);
 });
 
@@ -612,6 +660,10 @@ async function loadArea(k, opts) {
   if (k === state.selectedArea) renderSelectedArea();
   renderSignal();
 }
+// Saved areas are optional: their weather only loads once the user opens Saved,
+// Conditions, turns area markers on, or picks an area.
+let areasRequested = false;
+function ensureAreasLoaded() { if (areasRequested) return; areasRequested = true; loadAllAreas(); }
 // At most 4 areas load at once so many tracked areas don't flood the weather API.
 async function loadAllAreas(opts) {
   const queue = orderedAreaIds();
@@ -631,22 +683,40 @@ function compareTrackedAreas() {
     const pending = Object.values(state.areaData).some(d => d.status === 'loading');
     $('strongestScore').textContent = pending ? '…' : '—';
     $('strongestName').textContent = pending ? 'Comparing areas…' : 'Live weather unavailable';
-    $('strongestSub').textContent = pending ? 'Tap the map anywhere to analyse a point' : 'Check signal — cached data will be used when available';
+    $('strongestSub').textContent = pending ? 'Loading live weather for your areas' : 'Check signal — cached data will be used when available';
   }
 }
 
-function selectArea(k, fly = true) {
+// fly: move the map there; peek: open the small area sheet on the map.
+function selectArea(k, fly = true, peek = fly) {
+  if (!areas[k]) return;
   state.selectedArea = k; state.mapMode = 'saved-area';
-  $('areaSelect').value = k;
   if (!state.attachedPoint) $('obsArea').value = k;
   clearPointAnalysis();
+  if (peek) openAreaCard();
+  if (!state.areaData[k] && (peek || areasRequested)) loadArea(k);
   renderAreaMarkers(); renderSelectedArea(); renderSignal();
-  if (fly) { const a = areas[k]; map.flyTo({center: a.center, zoom: a.zoom ?? 13, pitch: a.pitch ?? 60, bearing: -18, duration: 1100}); }
+  if (fly) { const a = areas[k]; map.flyTo({center: a.center, zoom: a.zoom ?? 13, pitch: terrain3d ? (a.pitch ?? 60) : 0, bearing: -18, padding: {top: 80, bottom: peek ? 250 : 0, left: 0, right: 0}, duration: 1100}); }
+}
+function syncSheetState() {
+  $('mapwrap').classList.toggle('sheet-open', ['areaCard', 'pointCard', 'savedSheet'].some(id => !$(id).hidden));
+}
+function openAreaCard() {
+  closeSaved();
+  $('areaCard').hidden = false; state.areaCardOpen = true;
+  syncSheetState(); renderAreaMarkers();
+}
+function closeAreaCard() {
+  if (!state.areaCardOpen) return;
+  $('areaCard').hidden = true; state.areaCardOpen = false;
+  syncSheetState(); renderAreaMarkers();
 }
 
 function renderSelectedArea() {
   const k = state.selectedArea, a = areas[k], d = state.areaData[k] || {status: 'loading'};
   if (!a) return;
+  $('areaName').textContent = a.name;
+  $('areaKicker').textContent = a.parentId ? `Sub-area · ${areas[a.parentId]?.name || ''}` : 'Saved area';
   $('elev').textContent = a.elev || '—';
   const statusEl = $('areaStatus');
   if (d.conditions) {
@@ -664,7 +734,7 @@ function renderSelectedArea() {
     $('scoreValue').textContent = d.status === 'loading' ? '…' : '—';
     $('scoreTitle').textContent = d.status === 'loading' ? 'Loading live conditions…' : 'Live weather unavailable';
     $('scoreCopy').textContent = d.status === 'loading' ? `Fetching weather and terrain for ${a.name}` : 'Tap Retry when you have signal.';
-    $('trend').textContent = ''; $('rain14').textContent = '—'; $('night').textContent = '—';
+    $('trend').textContent = '—'; $('rain14').textContent = '—'; $('night').textContent = '—';
   }
   if (d.status === 'error' || d.status === 'offline') {
     statusEl.outerHTML = `<button id="areaStatus" class="chip ${d.status}" type="button">${STATUS_TEXT[d.status]} · Retry</button>`;
@@ -742,7 +812,7 @@ function focusArea(k) {
   $('focusHead').scrollIntoView({behavior: 'smooth', block: 'start'});
 }
 function renderSignal() {
-  renderTracker();
+  renderTracker(); renderSavedList();
   const k = state.selectedArea, d = state.areaData[k], a = areas[k];
   if (!a) return;
   $('dashArea').textContent = `Detail below: ${areaLabel(k)}.`;
@@ -777,18 +847,77 @@ function renderSignal() {
   $('breakdown').innerHTML = breakdownHTML(c);
 }
 
+// ---------- saved areas sheet (optional, off the main map) ----------
+function openSaved() {
+  closeSearch(); clearPointAnalysis(); closeAreaCard();
+  ensureAreasLoaded();
+  $('savedSheet').hidden = false; $('savedBtn').setAttribute('aria-expanded', 'true');
+  renderSavedList(); syncSheetState();
+}
+function closeSaved() {
+  if ($('savedSheet').hidden) return;
+  $('savedSheet').hidden = true; $('savedBtn').setAttribute('aria-expanded', 'false');
+  syncSheetState();
+}
+function renderSavedList() {
+  if ($('savedSheet').hidden) return;
+  $('savedList').innerHTML = sortAreaIds(topLevelAreas()).map(k => trackerRow(k) + sortAreaIds(childrenOf(k)).map(trackerRow).join('')).join('') || '<div class="small">No saved areas yet.</div>';
+}
+function setShowAreas(on) {
+  state.showAreas = on; setPref('mycofield-show-areas', on);
+  $('mapwrap').classList.toggle('show-areas', on);
+  $('showAreasToggle').checked = on;
+  if (on) ensureAreasLoaded();
+}
+
+// ---------- bottom-sheet gestures: tap/swipe the handle ----------
+function sheetGestures(sheet, {tap, up, down}) {
+  const handle = sheet.querySelector('.handle');
+  let y0 = null, moved = false, suppressClick = false;
+  handle.addEventListener('pointerdown', e => { y0 = e.clientY; moved = false; handle.setPointerCapture?.(e.pointerId); });
+  handle.addEventListener('pointermove', e => {
+    if (y0 == null) return;
+    const dy = e.clientY - y0;
+    if (Math.abs(dy) > 6) moved = true;
+    sheet.style.transform = dy > 0 ? `translateY(${dy}px)` : '';
+  });
+  const end = e => {
+    if (y0 == null) return;
+    const dy = e.clientY - y0; y0 = null; sheet.style.transform = '';
+    if (!moved) return;
+    suppressClick = true;
+    if (dy < -30) up?.(); else if (dy > 50) down?.();
+  };
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', () => { y0 = null; sheet.style.transform = ''; });
+  handle.addEventListener('click', () => { if (suppressClick) { suppressClick = false; return; } tap?.(); });
+}
+function setPointExpanded(on) {
+  $('pointCard').classList.toggle('expanded', on);
+  $('pcHandle').setAttribute('aria-expanded', on);
+  $('pcMoreBtn').textContent = on ? '▾' : '▴';
+  $('pcMoreBtn').setAttribute('aria-label', on ? 'Show less detail' : 'Show more detail');
+}
+
+// ---------- my location (only on explicit tap) ----------
+function locateMe() {
+  if (!navigator.geolocation) { toast('Location isn’t available on this device.'); return; }
+  const b = $('locateBtn'); b.classList.add('busy');
+  navigator.geolocation.getCurrentPosition(
+    pos => { b.classList.remove('busy'); analysePoint(pos.coords.latitude, pos.coords.longitude, {zoom: 14.5, place: 'My location'}); },
+    err => { b.classList.remove('busy'); toast(err.code === 1 ? 'Location permission denied — allow it in Settings.' : 'Couldn’t get your location — try again.'); },
+    {enableHighAccuracy: true, timeout: 12000, maximumAge: 30000});
+}
+
 // ---------- area editing ----------
 function refreshAreasUI() {
   saveAreas();
   renderAreaOptions(); syncAreaMarkers(); compareTrackedAreas(); renderSelectedArea(); renderSignal();
 }
 function renderAreaOptions() {
-  for (const sel of [$('areaSelect'), $('obsArea')]) {
-    const v = sel.value;
-    sel.innerHTML = orderedAreaIds().map(k => `<option value="${esc(k)}">${areas[k].parentId ? '\u00a0\u00a0└ ' : ''}${esc(areas[k].name)}</option>`).join('');
-    if (areas[v]) sel.value = v;
-  }
-  if (areas[state.selectedArea]) $('areaSelect').value = state.selectedArea;
+  const sel = $('obsArea'), v = sel.value;
+  sel.innerHTML = orderedAreaIds().map(k => `<option value="${esc(k)}">${areas[k].parentId ? '\u00a0\u00a0└ ' : ''}${esc(areas[k].name)}</option>`).join('');
+  if (areas[v]) sel.value = v;
 }
 function newAreaId() { return 'a-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 function openSaveForm() {
@@ -812,8 +941,7 @@ function saveAreaFromPoint(e) {
     elev: r.terrain ? `${r.terrain.elevation} m` : null, createdAt: new Date().toISOString(), private: true};
   closeSaveForm();
   refreshAreasUI();
-  selectArea(id, false);
-  loadArea(id);
+  selectArea(id, false, true);
   toast(parentId ? `Saved “${name}” under ${areas[parentId].name}.` : `Saved new area “${name}”.`);
 }
 function startRename() {
@@ -846,6 +974,7 @@ async function analysePoint(lat, lon, {force = false, zoom = null, place = null}
   const token = ++pointToken;
   state.mapMode = 'point';
   state.pointAnalysis = {coordinates: {lat, lon}, place, loading: true};
+  closeAreaCard(); closeSaved(); setPointExpanded(false);
   placePointMarker(lat, lon);
   renderPointLoading(lat, lon, place);
   revealPoint(lat, lon, zoom);
@@ -874,9 +1003,10 @@ function metricHTML(value, label, kind) {
   const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : kind === 'Live' ? 'live' : '';
   return `<div class="metric"><b>${value}</b><span>${label}</span><em class="${cls}">${kind}</em></div>`;
 }
+function stripHTML(items) { return items.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join(''); }
 function renderPointLoading(lat, lon, place) {
-  $('mapwrap').classList.add('point-open');
-  $('pointCard').hidden = false;
+  $('pointCard').hidden = false; syncSheetState();
+  $('pcStrip').innerHTML = stripHTML([['…', '14-day rain'], ['…', 'night low'], ['…', 'elevation'], ['…', 'slope']]);
   setChip($('pcStatus'), 'loading');
   $('pcRing').style.setProperty('--score', 0);
   $('pcScore').textContent = '…';
@@ -917,12 +1047,17 @@ function renderPointAnalysis(r) {
     metricHTML(t ? `${t.score}/100` : '—', 'terrain context', t ? 'Experimental' : 'Unavailable')
   ].join('');
   $('pcExplain').innerHTML = c ? explainParts(c).map(([n, v]) => `<span>${n} <b>+${v}</b></span>`).join('') + (w ? `<span>Moisture memory <b>${Math.round(w.persistence * 100)}%</b></span>` : '') : '';
-  $('pcCoords').innerHTML = `${r.place ? esc(r.place) + ' · ' : ''}${earthLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} · 🔒 private`;
+  $('pcCoords').innerHTML = `${r.place ? esc(r.place) + ' · ' : ''}${earthLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} <span title="Private — stays on this device" aria-label="private">🔒</span>`;
+  $('pcStrip').innerHTML = stripHTML([
+    [w ? `${w.rain14} mm` : '—', '14-day rain'],
+    [w && Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—', 'night low'],
+    [t ? `${t.elevation} m` : '—', 'elevation'],
+    [t ? `${t.slope}° ${t.aspect === 'Flat' ? '' : t.aspect}`.trim() : '—', t ? 'slope · aspect' : 'slope']]);
 }
 // Pan so the analysed point sits in the visible map area above the card.
 function revealPoint(lat, lon, zoom = null) {
   const cardH = $('pointCard').offsetHeight, mapH = $('map').offsetHeight;
-  const padding = {top: 70, bottom: Math.min(cardH + 24, mapH - 140), left: 0, right: 0};
+  const padding = {top: 80, bottom: Math.min(cardH + 24, mapH - 160), left: 0, right: 0};
   if (zoom != null) map.flyTo({center: [lon, lat], zoom, padding, duration: 1400});
   else map.easeTo({center: [lon, lat], padding, duration: 450});
 }
@@ -931,8 +1066,8 @@ function clearPointAnalysis() {
   pointToken++;
   state.pointAnalysis = null; state.mapMode = 'saved-area';
   pointMarker?.remove();
-  $('pointCard').hidden = true;
-  $('mapwrap').classList.remove('point-open');
+  $('pointCard').hidden = true; setPointExpanded(false); closeSaveForm();
+  syncSheetState();
 }
 function usePointInObservation() {
   const r = state.pointAnalysis;
@@ -1123,15 +1258,15 @@ async function searchPlaces(q) {
   return data.map(r => ({name: r.name || r.display_name.split(',')[0], detail: r.display_name, lat: +r.lat, lon: +r.lon, kind: (r.type || r.category || '').replace(/_/g, ' '), bbox: r.boundingbox?.map(Number)}));
 }
 function openSearch() {
-  $('areaRow').hidden = true; $('searchRow').hidden = false;
+  closeSaved();
   $('mapwrap').classList.add('searching');
-  $('searchInput').focus();
+  $('searchCancel').hidden = false;
 }
 function closeSearch() {
   searchToken++;
-  $('searchRow').hidden = true; $('areaRow').hidden = false; $('searchResults').hidden = true;
   $('mapwrap').classList.remove('searching');
-  $('searchInput').blur();
+  $('searchResults').hidden = true; $('searchCancel').hidden = true;
+  $('searchInput').value = ''; $('searchInput').blur();
 }
 let searchResults = [];
 function renderSearchMessage(text, isError = false) {
@@ -1171,6 +1306,8 @@ function selectSearchResult(i) {
 
 // ---------- views + wiring ----------
 function switchView(name) {
+  document.body.dataset.view = name;
+  if (name === 'dashboard') ensureAreasLoaded();
   document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x.dataset.view === name));
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
   if (name === 'map') setTimeout(() => map.resize(), 50);
@@ -1182,13 +1319,24 @@ function init() {
   renderAreaOptions();
   syncAreaMarkers();
   updateMarkerDensity();
-  selectArea('merthyr', false);
+  selectArea(state.selectedArea, false, false);
+  setTerrain(terrain3d, false);
+  setShowAreas(pref('mycofield-show-areas', false));
 
-  $('areaSelect').onchange = e => selectArea(e.target.value);
-  $('flyBtn').onclick = () => selectArea(state.selectedArea);
-  $('strongestCard').onclick = () => { if (state.strongestArea) selectArea(state.strongestArea); };
-  $('terrainOn').onclick = () => { map.setTerrain({source: 'terrain', exaggeration: 1.45}); map.easeTo({pitch: 65, duration: 600}); $('terrainOn').classList.add('active'); $('terrainOff').classList.remove('active'); };
-  $('terrainOff').onclick = () => { map.setTerrain(null); map.easeTo({pitch: 0, duration: 600}); $('terrainOff').classList.add('active'); $('terrainOn').classList.remove('active'); };
+  $('strongestCard').onclick = () => { if (state.strongestArea) { closeSaved(); selectArea(state.strongestArea); } };
+  $('terrainBtn').onclick = () => setTerrain(!terrain3d);
+  $('locateBtn').onclick = locateMe;
+  $('savedBtn').onclick = () => $('savedSheet').hidden ? openSaved() : closeSaved();
+  $('savedClose').onclick = closeSaved;
+  $('showAreasToggle').onchange = e => setShowAreas(e.target.checked);
+  $('savedList').addEventListener('click', e => { const b = e.target.closest('.trk'); if (b) { closeSaved(); selectArea(b.dataset.id); } });
+  $('areaClose').onclick = closeAreaCard;
+  $('areaDetails').onclick = () => { switchView('dashboard'); focusArea(state.selectedArea); };
+  $('areaAnalyse').onclick = () => { const a = areas[state.selectedArea]; if (a) analysePoint(a.center[1], a.center[0], {place: a.name}); };
+  $('pcMoreBtn').onclick = () => setPointExpanded(!$('pointCard').classList.contains('expanded'));
+  sheetGestures($('pointCard'), {tap: () => setPointExpanded(!$('pointCard').classList.contains('expanded')), up: () => setPointExpanded(true), down: () => $('pointCard').classList.contains('expanded') ? setPointExpanded(false) : clearPointAnalysis()});
+  sheetGestures($('areaCard'), {down: closeAreaCard});
+  sheetGestures($('savedSheet'), {down: closeSaved});
   document.querySelectorAll('nav button').forEach(b => b.onclick = () => switchView(b.dataset.view));
 
   $('pcUse').onclick = usePointInObservation;
@@ -1204,7 +1352,7 @@ function init() {
   $('renameForm').onsubmit = saveRename;
   $('renameCancel').onclick = () => $('renameForm').hidden = true;
   $('focusDelete').onclick = deleteArea;
-  $('searchBtn').onclick = openSearch;
+  $('searchInput').addEventListener('focus', openSearch);
   $('searchCancel').onclick = closeSearch;
   $('searchRow').onsubmit = runSearch;
   $('searchInput').addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
@@ -1218,8 +1366,7 @@ function init() {
   $('logForm').onsubmit = saveObservation;
   $('useMapCenter').onclick = () => { const c = map.getCenter(); $('obsNotes').value += ($('obsNotes').value ? '\n' : '') + `Map centre: ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`; };
 
-  window.addEventListener('online', () => { if (Object.values(state.areaData).some(d => !d.conditions || d.status !== 'live')) loadAllAreas(); });
-  loadAllAreas();
+  window.addEventListener('online', () => { if (areasRequested && Object.values(state.areaData).some(d => !d.conditions || d.status !== 'live')) loadAllAreas(); });
 }
 init();
 
