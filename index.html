@@ -356,10 +356,10 @@ const SOIL_VARS_ARCHIVE = ['soil_moisture_0_to_7cm', 'soil_moisture_7_to_28cm'];
 const HABITAT_TTL = 90 * 864e5;
 const LAND_TTL = 180 * 864e5;
 const RECORDS_KEY = 'mycofield-history-v2';
-// Supabase (optional cloud backup + sync). The anon key is public by design: row-level security
+// Supabase (optional cloud backup + sync). The publishable (anon) key is public by design: row-level security
 // in supabase/schema.sql is what keeps each user's rows private. Never put the service_role key here.
 const SUPABASE_URL = 'https://abgbzdairkgakmqscvyo.supabase.co';
-const SUPABASE_ANON_KEY = '';
+const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
 const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
