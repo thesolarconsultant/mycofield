@@ -2,46 +2,284 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08100c"><title>MycoField</title>
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="MycoField">
+<meta name="theme-color" content="#FAFAF6"><title>MycoField — Grassland Intelligence</title>
+<meta name="description" content="Environmental intelligence for grassland fungi research: weather, terrain and field observations at an exact point.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="MycoField">
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="./icon-192.png"><link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./favicon.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.css">
 <style>
-:root{--bg:#08100c;--panel:#0f1a14;--panel2:#13221a;--ink:#f2f7f3;--muted:#9eb0a4;--line:rgba(255,255,255,.09);--accent:#9bea65;--accent2:#d6ff6b;--warn:#f4c45f;--bad:#ed765d;--info:#8fc4d6;--glass:rgba(10,18,13,.86)}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}[hidden]{display:none!important}header{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(8,16,12,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}.brand{display:flex;gap:10px;align-items:center}.mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,var(--accent2),var(--accent));color:#08100c;display:grid;place-items:center;font-weight:900}.brand b{font-size:14px;letter-spacing:.13em}.brand small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.pill{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 12px;border-radius:999px;min-width:44px}.view{display:none}.view.active{display:block}.mapwrap{height:calc(100vh - 126px);min-height:480px;position:relative}@supports(height:100dvh){.mapwrap{height:calc(100dvh - 126px - env(safe-area-inset-bottom))}}#map{position:absolute;inset:0}.overlay{position:absolute;top:14px;left:14px;right:14px;z-index:5;display:grid;gap:9px;pointer-events:none}.overlay>*{pointer-events:auto}.row{display:flex;gap:8px}.select,.field{width:100%;border:1px solid var(--line);background:var(--glass);color:var(--ink);border-radius:15px;padding:12px 13px;outline:none}.score{max-width:440px;background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.3)}.scoretop{display:flex;justify-content:space-between;gap:10px;align-items:center}.scoremain{display:flex;gap:12px;align-items:center}.ring{--score:0;width:66px;height:66px;flex:none;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ringc,var(--accent)) calc(var(--score)*1%),rgba(255,255,255,.08) 0);position:relative}.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0b1510}.ring b{z-index:1;font-size:20px}.score h2{font-size:16px;margin:0 0 4px}.score p{font-size:11px;color:var(--muted);margin:0}.trend{font-size:11px;color:var(--accent);font-weight:800;white-space:nowrap;text-align:right}.trend .chip{margin-top:6px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:11px}.metric{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:13px;padding:9px;min-width:0}.metric b{display:block;font-size:13px}.metric span{font-size:9px;color:var(--muted)}.metric em{display:block;font-style:normal;font-size:8px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px;color:var(--info)}.metric em.exp{color:var(--warn)}.metric em.err{color:var(--bad)}.bottom{position:absolute;left:14px;right:14px;bottom:14px;z-index:5;display:flex;justify-content:space-between;align-items:end;gap:8px;pointer-events:none}.mapcard{pointer-events:auto;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:10px 12px;backdrop-filter:blur(18px);color:var(--ink);text-align:left}.mapcard strong{font-size:11px}.mapcard small{display:block;font-size:9px;color:var(--muted);margin-top:3px}.strongest{display:flex;gap:10px;align-items:center;max-width:300px;flex:1;min-width:0}.toggle{display:flex;flex:none}.mapwrap .maplibregl-ctrl-bottom-right,.mapwrap .maplibregl-ctrl-bottom-left{bottom:78px}.strongest .n{font-size:22px;font-weight:850;color:var(--accent2)}.strongest strong{color:var(--accent2);display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase}.strongest b{font-size:12px}.toggle button{border:0;background:transparent;color:var(--muted);padding:8px 9px;border-radius:10px;min-height:36px}.toggle button.active{background:var(--accent);color:#07100a;font-weight:800}.chip{display:inline-block;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 7px;border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.03);white-space:nowrap}.chip.live{color:var(--accent);border-color:rgba(155,234,101,.35)}.chip.cached,.chip.hist,.chip.calc{color:var(--info);border-color:rgba(143,196,214,.3)}.chip.loading,.chip.exp,.chip.partial{color:var(--warn);border-color:rgba(244,196,95,.3)}.chip.offline,.chip.error{color:var(--bad);border-color:rgba(237,118,93,.35)}button.chip{cursor:pointer}
-.amk{display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px 6px 8px;border-radius:999px;background:var(--glass);border:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:700;white-space:nowrap;backdrop-filter:blur(8px);box-shadow:0 6px 20px rgba(0,0,0,.35)}.amk i{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}.amk .s{color:var(--muted);font-weight:800}.amk.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(155,234,101,.28),0 6px 20px rgba(0,0,0,.35)}.amk.selected i{background:var(--accent)}.amk.strongest .s{color:var(--accent2)}.amk.strongest i{background:var(--accent2);box-shadow:0 0 0 3px rgba(214,255,107,.25)}.amk .star{display:none;color:var(--accent2)}.amk.strongest .star{display:inline}
-.pmk{width:22px;height:22px;border-radius:50%;background:var(--accent2);border:4px solid #07100a;box-shadow:0 0 0 2px var(--accent2),0 8px 24px rgba(0,0,0,.5);position:relative;pointer-events:none}.pmk:after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px solid var(--accent2);animation:pulse 1.8s ease-out infinite}@keyframes pulse{from{transform:scale(.45);opacity:.9}to{transform:scale(1.5);opacity:0}}@media(prefers-reduced-motion:reduce){.pmk:after{animation:none;opacity:.4}}
-.pointcard{position:absolute;left:14px;right:14px;bottom:14px;z-index:7;max-width:460px;max-height:calc(100% - 84px);overflow:auto;background:var(--glass);border:1px solid rgba(214,255,107,.22);border-radius:22px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.45)}.pc-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.pc-main{display:flex;gap:12px;align-items:center}.pc-main h2{font-size:16px;margin:0 0 4px}.pc-main p{font-size:11px;color:var(--muted);margin:0}.pc-explain{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.pc-explain span{font-size:10px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted)}.pc-explain span b{color:var(--ink)}.pc-coords{font-size:11px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}.earth{color:var(--accent);text-decoration:none;border-bottom:1px dashed rgba(155,234,101,.5);display:inline-block;padding:4px 0;font-variant-numeric:tabular-nums}.earth:after{content:" ↗";font-size:.9em}.earth:hover,.earth:focus-visible{color:var(--accent2);border-bottom-style:solid}.pc-actions{display:flex;gap:8px;margin-top:12px}.pc-actions .btn{flex:1;min-height:44px;padding:10px 8px}.tracker{display:grid;gap:6px;margin-top:10px}.trk{display:grid;grid-template-columns:minmax(0,1fr) 64px 34px 22px;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);border-radius:14px;padding:10px 12px;min-height:54px}.trk.sub{margin-left:18px;width:calc(100% - 18px);background:transparent;padding:8px 12px;min-height:46px}.trk.focused{border-color:var(--accent);background:rgba(155,234,101,.08)}.trk-name{min-width:0}.trk-name b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trk.sub .trk-name b{font-size:12px}.tree{color:var(--muted);margin-right:6px;font-weight:400}.trk-name small{display:block;color:var(--muted);font-size:10px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trk-spark{width:64px;height:24px;color:var(--accent)}.trk-score{font-size:20px;font-weight:850;text-align:right}.trk.sub .trk-score{font-size:17px}.trk-trend{font-size:13px;color:var(--muted);text-align:center}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:2px;flex:none}.seg button{border:0;background:transparent;color:var(--muted);font-size:10px;padding:6px 10px;border-radius:8px;min-height:30px}.seg button.active{background:var(--accent);color:#07100a;font-weight:800}.focus-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap;scroll-margin-top:76px}.focus-head h3{font-size:22px;margin:4px 0 3px}.focus-acts{display:flex;gap:6px;flex-wrap:wrap}.focus-acts .btn{padding:9px 11px;font-size:12px;min-height:40px}.btn.danger{background:transparent;border:1px solid rgba(237,118,93,.45);color:var(--bad)}.renameform{display:flex;gap:8px;margin-top:10px}.renameform .btn{flex:none}.amk.sub{min-height:28px;padding:4px 8px 4px 6px;font-size:10px;font-weight:600}.amk.sub i{width:7px;height:7px}.mapwrap.far .amk.sub{display:none}.pc-tools{display:flex;gap:6px;align-items:center}.iconbtn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink);font-size:15px;display:grid;place-items:center;flex:none}.savearea{margin-top:12px;display:grid;gap:4px}.savearea label{margin:4px 0 0}.btn:disabled{opacity:.5}.pill.icon{display:grid;place-items:center;padding:9px}#searchCancel{flex:none;padding:9px 14px}#searchInput::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}.results{background:rgba(10,18,13,.97);border:1px solid var(--line);border-radius:18px;overflow:auto;max-height:52vh;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.35)}.results button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink);padding:12px 14px;min-height:50px}.results button:last-child{border-bottom:0}.results button:hover,.results button:focus-visible{background:rgba(155,234,101,.08);outline:none}.results b{font-size:13px}.results .kind{float:right;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-left:8px}.results small{display:block;color:var(--muted);font-size:10px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.results .msg{padding:13px 14px;font-size:11px;color:var(--muted)}.results .msg.err{color:var(--bad)}.mapwrap.searching .score,.mapwrap.searching .pointcard{display:none}.mapwrap.point-open .score,.mapwrap.point-open .bottom,.mapwrap.point-open .maplibregl-ctrl-bottom-right,.mapwrap.point-open .maplibregl-ctrl-bottom-left{display:none}.pointcard .ring{width:58px;height:58px}.pointcard .ring b{font-size:19px}.pointcard .metrics{margin-top:10px}.pointcard .metric{padding:7px 8px}.loadingbar{height:3px;border-radius:3px;margin-top:10px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:load 1.1s linear infinite}@keyframes load{from{background-position:200% 0}to{background-position:-200% 0}}
-.page{max-width:1100px;margin:auto;padding:22px 15px calc(94px + env(safe-area-inset-bottom))}.eyebrow{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:.14em;text-transform:uppercase}.title{font-size:28px;line-height:1.05;margin:6px 0}.sub{color:var(--muted);font-size:13px;max-width:720px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:16px}.card h3{margin:0 0 8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}.big{font-size:34px;font-weight:850;letter-spacing:-.04em}.small{color:var(--muted);font-size:11px}.spark{width:100%;height:56px;margin-top:9px}.forecast{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:8px;overflow:auto;padding-bottom:8px}.day{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}.day b{font-size:11px}.day .n{font-size:23px;font-weight:850;margin:10px 0 3px}.day small{color:var(--muted);font-size:9px}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.timebox{border:1px solid var(--line);border-radius:15px;padding:12px;background:rgba(255,255,255,.025)}.timebox b{font-size:17px}.timebox span{display:block;color:var(--muted);font-size:9px;margin-top:3px}.history{display:grid;gap:8px;margin-top:12px}.record{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--panel)}.dot{width:10px;height:10px;border-radius:50%}.dot.positive{background:var(--accent)}.dot.blank{background:var(--bad)}.record b{font-size:12px}.record p{font-size:10px;color:var(--muted);margin:3px 0 0}.record .acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.record .analyse{border:1px solid var(--line);background:transparent;color:var(--accent);border-radius:999px;padding:7px 11px;font-size:10px;font-weight:800;min-height:34px}.tag{font-size:9px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 7px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:10px;color:var(--muted);display:block;margin-bottom:5px}textarea{min-height:92px;resize:vertical}.btn{border:0;border-radius:13px;padding:11px 13px;background:var(--accent);color:#07100a;font-weight:850}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}.notice{border:1px solid rgba(155,234,101,.25);background:rgba(155,234,101,.06);border-radius:16px;padding:12px;font-size:10px;color:#dbeadf}.attached{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid rgba(214,255,107,.3);background:rgba(214,255,107,.06);border-radius:16px;padding:12px;margin-bottom:12px}.attached strong{font-size:10px;letter-spacing:.12em;color:var(--accent2)}.attached p{margin:4px 0 0;font-size:11px;color:var(--ink);font-variant-numeric:tabular-nums}.attached small{color:var(--muted);font-size:10px}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:60;background:var(--panel2);border:1px solid rgba(155,234,101,.35);color:var(--ink);padding:11px 15px;border-radius:14px;font-size:12px;box-shadow:0 12px 40px rgba(0,0,0,.4)}nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(7,13,9,.93);border-top:1px solid var(--line);backdrop-filter:blur(20px);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}nav button{border:0;background:transparent;color:var(--muted);border-radius:12px;padding:7px 4px;font-size:9px}nav button span{display:block;font-size:18px;margin-bottom:2px}nav button.active{color:var(--accent);background:rgba(155,234,101,.08)}@media(max-width:760px){.record{grid-template-columns:auto 1fr}.record .acts{grid-column:1/-1;justify-content:flex-start}.cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.score{max-width:none}.pointcard{max-width:none}}
+/* ---------- MycoField brand tokens ---------- */
+:root{
+  --forest:#0B3D2E;--forest-2:#14523E;--moss:#6DAA2C;--moss-ink:#437515;--lime:#A7D82E;--stone:#E7E1D2;--stone-2:#F2EEE5;--off:#FAFAF6;--white:#fff;
+  --sky:#6EB8E8;--sky-ink:#1F6E9E;--sage:#8DAF7C;--amber:#F0B34E;--amber-ink:#8A5A0B;--slate:#475569;--coral:#D2694B;--coral-ink:#A8452B;
+  --ink:var(--forest);--text:#26352E;--muted:#5E6B64;--line:rgba(11,61,46,.10);--line-2:rgba(11,61,46,.18);
+  --good:var(--moss-ink);--warn:#B7791F;--bad:var(--coral-ink);--accent:var(--moss);
+  --shadow:0 6px 20px rgba(11,61,46,.08);--shadow-lg:0 18px 48px rgba(11,61,46,.18);
+  --head:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --nav-h:68px;--head-h:64px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--off);color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:30;height:var(--head-h);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(250,250,246,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.brand{display:flex;gap:10px;align-items:center;text-decoration:none}
+.brand img{height:40px;width:auto;display:block}
+.wordmark{font-family:var(--head);font-weight:800;font-size:21px;line-height:1;letter-spacing:-.02em;color:var(--forest)}
+.wordmark span{color:var(--moss)}
+.brand small{display:block;font-family:var(--body);font-weight:600;font-size:8.5px;letter-spacing:.26em;color:var(--forest);margin-top:4px}
+
+/* ---------- shared components ---------- */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--moss-ink)}
+.title{font-family:var(--head);font-weight:800;font-size:30px;line-height:1.04;letter-spacing:-.02em;color:var(--forest);margin:8px 0}
+.sub{color:var(--muted);font-size:14px;line-height:1.5;max-width:720px}
+.small{color:var(--muted);font-size:12px;line-height:1.45}
+.card{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 10px;font-size:15px;font-weight:700;color:var(--forest);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:12px 20px;min-height:48px;background:var(--forest);color:#fff;font-weight:600;font-size:15px;line-height:1.1;text-align:center}
+.btn:hover{background:var(--forest-2)}
+.btn.lime{background:var(--lime);color:var(--forest)}
+.btn.lime:hover{background:#B5E23F}
+.btn.secondary{background:var(--stone);color:var(--forest)}
+.btn.secondary:hover{background:#DDD5C2}
+.btn.danger{background:transparent;color:var(--coral-ink);box-shadow:inset 0 0 0 1.5px rgba(210,105,75,.55)}
+.btn:disabled{opacity:.45;cursor:default}
+.pill{display:grid;place-items:center;border:1px solid var(--line-2);background:var(--white);color:var(--forest);height:48px;min-width:48px;padding:0 14px;border-radius:999px;box-shadow:var(--shadow);font-weight:600}
+.pill.icon{padding:0}
+.iconbtn{width:40px;height:40px;border-radius:999px;border:0;background:var(--stone-2);color:var(--forest);display:grid;place-items:center;flex:none;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:5px 10px;background:var(--stone-2);color:var(--muted);white-space:nowrap;border:0}
+.chip.live{background:rgba(167,216,46,.28);color:#335D0C}
+.chip.cached,.chip.hist,.chip.calc{background:rgba(110,184,232,.2);color:var(--sky-ink)}
+.chip.loading,.chip.exp,.chip.partial{background:rgba(240,179,78,.24);color:var(--amber-ink)}
+.chip.offline,.chip.error{background:rgba(210,105,75,.14);color:var(--coral-ink)}
+button.chip{cursor:pointer}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:var(--forest);background:var(--stone-2);border-radius:999px;padding:6px 11px;white-space:nowrap}
+.tag svg{width:14px;height:14px}
+.tag.pos{background:rgba(167,216,46,.28)}
+.tag.neg{background:rgba(210,105,75,.13);color:var(--coral-ink)}
+.earth{color:var(--moss-ink);font-weight:600;text-decoration:none;border-bottom:1.5px dashed rgba(67,117,21,.45);display:inline-block;padding:3px 0;font-variant-numeric:tabular-nums}
+.earth:after{content:" ↗";font-size:.9em}
+.earth:hover,.earth:focus-visible{color:var(--forest);border-bottom-style:solid}
+.ring{--score:0;width:68px;height:68px;flex:none;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ringc,var(--moss)) calc(var(--score)*1%),var(--stone) 0);position:relative}
+.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--white)}
+.ring b{z-index:1;font-family:var(--head);font-weight:800;font-size:22px;color:var(--forest)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.metric{background:var(--stone-2);border-radius:14px;padding:10px;min-width:0}
+.metric b{display:block;font-family:var(--head);font-weight:700;font-size:15px;color:var(--forest)}
+.metric span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.metric em{display:block;font-style:normal;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-top:5px;color:var(--sky-ink)}
+.metric em.live{color:#3E6E12}.metric em.exp{color:var(--amber-ink)}.metric em.err{color:var(--coral-ink)}
+.loadingbar{height:4px;border-radius:4px;margin-top:12px;background:linear-gradient(90deg,transparent,var(--moss),transparent);background-size:200% 100%;animation:load 1.1s linear infinite}
+@keyframes load{from{background-position:200% 0}to{background-position:-200% 0}}
+.seg{display:inline-flex;background:var(--stone-2);border-radius:999px;padding:3px;flex:none}
+.seg button{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;min-height:34px}
+.seg button.active{background:var(--forest);color:#fff}
+.field,.select{width:100%;border:1px solid var(--line-2);background:var(--white);color:var(--forest);border-radius:14px;padding:12px 14px;min-height:48px;outline:none;font-size:16px}
+.field:focus,.select:focus{border-color:var(--moss);box-shadow:0 0 0 3px rgba(167,216,46,.35)}
+.select{border-radius:999px;padding:0 18px;font-weight:600;box-shadow:var(--shadow);appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230B3D2E' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
+label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+textarea.field{min-height:96px;resize:vertical}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:60;background:var(--forest);color:#fff;padding:12px 18px;border-radius:999px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);max-width:calc(100% - 32px)}
+
+/* ---------- map view ---------- */
+.view{display:none}.view.active{display:block}
+.mapwrap{height:calc(100vh - var(--head-h) - var(--nav-h));min-height:480px;position:relative;background:var(--stone)}
+@supports(height:100dvh){.mapwrap{height:calc(100dvh - var(--head-h) - var(--nav-h) - env(safe-area-inset-bottom))}}
+#map{position:absolute;inset:0}
+.overlay{position:absolute;top:14px;left:14px;right:14px;z-index:5;display:grid;gap:10px;pointer-events:none}
+.overlay>*{pointer-events:auto}
+.row{display:flex;gap:8px}
+.score,.mapcard,.pointcard,.results{background:rgba(255,255,255,.96);border:1px solid var(--line);box-shadow:var(--shadow-lg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.score{max-width:440px;border-radius:22px;padding:14px}
+.scoretop{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.scoremain{display:flex;gap:12px;align-items:center;min-width:0}
+.score h2,.pc-main h2{font-family:var(--head);font-weight:700;font-size:16px;line-height:1.2;color:var(--forest);margin:0 0 4px}
+.score p,.pc-main p{font-size:12px;color:var(--muted);margin:0}
+.trend{font-size:12px;color:var(--moss-ink);font-weight:700;white-space:nowrap;text-align:right;display:grid;gap:6px;justify-items:end}
+.bottom{position:absolute;left:14px;right:14px;bottom:14px;z-index:5;display:flex;justify-content:space-between;align-items:end;gap:8px;pointer-events:none}
+.mapcard{pointer-events:auto;border-radius:18px;padding:10px 12px;color:var(--text);text-align:left}
+.strongest{display:flex;gap:12px;align-items:center;max-width:320px;flex:1;min-width:0}
+.strongest .n{font-family:var(--head);font-weight:800;font-size:26px;color:var(--moss-ink)}
+.strongest strong{color:var(--moss-ink);display:block;font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.strongest b{font-size:14px;color:var(--forest);display:block;margin-top:2px}
+.strongest small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.toggle{display:flex;flex:none;gap:2px;padding:4px;border-radius:999px}
+.toggle button{border:0;background:transparent;color:var(--muted);font-weight:600;padding:8px 14px;border-radius:999px;min-height:40px}
+.toggle button.active{background:var(--lime);color:var(--forest)}
+.mapwrap .maplibregl-ctrl-bottom-right,.mapwrap .maplibregl-ctrl-bottom-left{bottom:84px}
+.mapwrap.point-open .score,.mapwrap.point-open .bottom,.mapwrap.point-open .maplibregl-ctrl-bottom-right,.mapwrap.point-open .maplibregl-ctrl-bottom-left{display:none}
+.mapwrap.searching .score,.mapwrap.searching .pointcard{display:none}
+/* area markers */
+.amk{display:flex;align-items:center;gap:6px;min-height:36px;padding:6px 12px 6px 9px;border-radius:999px;background:var(--white);border:1px solid var(--line-2);color:var(--forest);font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 6px 18px rgba(11,61,46,.2)}
+.amk i{width:9px;height:9px;border-radius:50%;background:var(--moss);flex:none}
+.amk .s{font-family:var(--head);font-weight:800;color:var(--moss-ink)}
+.amk .star{display:none;color:var(--amber)}
+.amk.strongest .star{display:inline}
+.amk.selected{background:var(--forest);color:#fff;border-color:var(--forest)}
+.amk.selected i{background:var(--lime)}.amk.selected .s{color:var(--lime)}
+.amk.sub{min-height:30px;padding:4px 10px 4px 7px;font-size:11px;font-weight:500}
+.amk.sub i{width:7px;height:7px;background:var(--sage)}
+.mapwrap.far .amk.sub{display:none}
+.pmk{width:24px;height:24px;border-radius:50%;background:var(--lime);border:5px solid var(--forest);box-shadow:0 8px 22px rgba(11,61,46,.45);pointer-events:none}
+.pmk:after{content:"";position:absolute;inset:-16px;border-radius:50%;border:3px solid var(--moss);animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{from{transform:scale(.45);opacity:.9}to{transform:scale(1.5);opacity:0}}
+@media(prefers-reduced-motion:reduce){.pmk:after{animation:none;opacity:.4}.loadingbar{animation:none}}
+/* point card */
+.pointcard{position:absolute;left:14px;right:14px;bottom:14px;z-index:7;max-width:460px;max-height:calc(100% - 84px);overflow:auto;border-radius:24px;padding:16px}
+.pc-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.pc-tools{display:flex;gap:6px;align-items:center}.pc-head .eyebrow{font-size:10px;letter-spacing:.14em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pc-main{display:flex;gap:12px;align-items:center}
+.pc-explain{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.pc-explain span{font-size:11px;background:var(--stone-2);border-radius:999px;padding:5px 10px;color:var(--muted)}
+.pc-explain span b{color:var(--forest)}
+.pc-coords{font-size:12px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}
+.pc-actions{display:flex;gap:8px;margin-top:14px}
+.pc-actions .btn{flex:1;padding:10px 12px}
+.pointcard .metric{padding:8px 9px}
+.savearea{margin-top:12px;display:grid;gap:4px}
+.savearea label{margin:6px 0 2px}
+/* search */
+.results{border-radius:20px;overflow:auto;max-height:52vh}
+.results button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--forest);padding:12px 16px;min-height:54px}
+.results button:last-child{border-bottom:0}
+.results button:hover,.results button:focus-visible{background:var(--stone-2);outline:none}
+.results b{font-size:14px;font-weight:600}
+.results .kind{float:right;font-size:9.5px;font-weight:600;color:var(--moss-ink);text-transform:uppercase;letter-spacing:.12em;margin-left:8px;background:rgba(167,216,46,.22);padding:3px 8px;border-radius:999px}
+.results small{display:block;color:var(--muted);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.results .msg{padding:14px 16px;font-size:13px;color:var(--muted)}
+.results .msg.err{color:var(--coral-ink)}
+#searchCancel{flex:none}
+#searchInput{border-radius:999px;box-shadow:var(--shadow);padding:0 20px}
+#searchInput::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+
+/* ---------- pages ---------- */
+.page{max-width:1100px;margin:auto;padding:24px 16px calc(var(--nav-h) + 32px + env(safe-area-inset-bottom))}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.statnum{font-family:var(--head);font-weight:800;font-size:46px;letter-spacing:-.03em;line-height:1;color:var(--forest)}
+.statnum .of{font-size:22px;font-weight:700;color:var(--muted);margin-left:2px}
+.statlabel{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.delta{font-size:13px;font-weight:700;margin-top:8px;display:flex;gap:6px;align-items:center}
+.delta.up{color:var(--moss-ink)}.delta.down{color:var(--coral-ink)}.delta.flat{color:var(--muted)}
+.delta small{font-weight:500;color:var(--muted)}
+.spark{width:100%;height:60px;margin-top:10px;color:var(--moss);overflow:visible}
+.forecast{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:8px;overflow:auto;padding-bottom:6px}
+.day{background:var(--stone-2);border-radius:16px;padding:12px}
+.day b{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--forest)}
+.day .n{font-family:var(--head);font-size:26px;font-weight:800;margin:10px 0 4px}
+.day small{color:var(--muted);font-size:11px;line-height:1.5}
+.bars{display:grid;gap:12px;margin-top:6px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:4px 12px;align-items:center;font-size:13px;color:var(--text)}
+.bar b{font-family:var(--head);font-weight:700;color:var(--forest);text-align:right;font-size:14px}
+.bar b small{font-family:var(--body);font-weight:500;color:var(--muted);font-size:11px}
+.bar .track{grid-column:1/-1;height:8px;border-radius:8px;background:var(--stone-2);overflow:hidden}
+.bar .fill{height:100%;border-radius:8px;background:var(--moss)}
+.bar .fill.low{background:var(--amber)}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.timebox{background:var(--stone-2);border-radius:16px;padding:12px}
+.timebox b{font-family:var(--head);font-weight:800;font-size:20px;color:var(--forest)}
+.timebox span{display:block;color:var(--muted);font-size:11px;margin-top:4px;line-height:1.35}
+/* tracker */
+.tracker{display:grid;gap:8px;margin-top:12px}
+.trk{display:grid;grid-template-columns:62px minmax(0,1fr) 58px 14px;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);background:var(--white);color:var(--text);border-radius:18px;padding:10px 12px 10px 10px;min-height:76px;box-shadow:0 2px 8px rgba(11,61,46,.04)}
+.trk:hover{border-color:var(--line-2)}
+.trk.sub{margin-left:22px;width:calc(100% - 22px);min-height:64px;background:var(--off);box-shadow:none}
+.trk.focused{border-color:var(--moss);box-shadow:0 0 0 3px rgba(167,216,46,.35)}
+.trk-tile{height:56px;border-radius:14px;background:var(--stone-2);display:grid;place-items:center;align-content:center;gap:1px}
+.trk.sub .trk-tile{height:46px}
+.trk-score{font-family:var(--head);font-size:22px;font-weight:800;line-height:1}
+.trk.sub .trk-score{font-size:18px}
+.trk-trend{font-size:11px;font-weight:700;color:var(--muted)}
+.trk-name{min-width:0}
+.trk-kicker{display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--moss-ink)}
+.trk-kicker svg{width:12px;height:12px}
+.trk-name b{font-size:15px;font-weight:700;color:var(--forest);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.trk.sub .trk-name b{font-size:14px}
+.trk-name small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk-spark{width:58px;height:26px;color:var(--moss)}
+.trk-chev{color:var(--muted);font-size:18px}
+.tree{display:none}
+.focus-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:26px;flex-wrap:wrap;scroll-margin-top:80px}
+.focus-head h3{font-family:var(--head);font-weight:800;font-size:26px;letter-spacing:-.02em;color:var(--forest);margin:6px 0 4px}
+.focus-acts{display:flex;gap:8px;flex-wrap:wrap}
+.focus-acts .btn{min-height:42px;padding:9px 16px;font-size:13px}
+.renameform{display:flex;gap:8px;margin-top:12px}
+.renameform .btn{flex:none}
+/* history + log */
+.history{display:grid;gap:8px;margin-top:12px}
+.record{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;border:1px solid var(--line);border-radius:18px;padding:12px 14px;background:var(--white)}
+.dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 4px rgba(167,216,46,.25)}
+.dot.positive{background:var(--moss)}
+.dot.blank{background:var(--coral);box-shadow:0 0 0 4px rgba(210,105,75,.18)}
+.record b{font-size:14px;color:var(--forest)}
+.record p{font-size:12px;color:var(--muted);margin:3px 0 0}
+.record .acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.record .analyse{border:0;background:var(--forest);color:#fff;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:600;min-height:36px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.notice{border-radius:16px;padding:12px 14px;font-size:12px;line-height:1.5;color:var(--forest);background:rgba(141,175,124,.18)}
+.attached{display:flex;justify-content:space-between;gap:12px;align-items:center;border-radius:18px;padding:14px;margin-bottom:16px;background:rgba(167,216,46,.2);border:1px solid rgba(109,170,44,.35)}
+.attached strong{display:flex;gap:6px;align-items:center;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--forest)}
+.attached p{margin:6px 0 2px;font-size:13px;font-variant-numeric:tabular-nums}
+.attached small{color:var(--muted);font-size:12px}
+
+/* ---------- bottom navigation ---------- */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--forest);padding:8px 10px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(11,61,46,.18)}
+nav button{border:0;background:transparent;color:rgba(255,255,255,.72);border-radius:16px;padding:7px 2px;font-size:10px;font-weight:600;letter-spacing:.08em;white-space:nowrap;text-transform:uppercase;display:grid;justify-items:center;gap:4px;min-height:52px}
+nav button svg{width:22px;height:22px}
+nav button.active{background:var(--lime);color:var(--forest)}
+
+@media(max-width:760px){
+  .cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}
+  .score,.pointcard{max-width:none}
+  .record{grid-template-columns:auto 1fr}.record .acts{grid-column:1/-1;justify-content:flex-start}
+  .title{font-size:28px}
+}
+@media(min-width:761px){nav{grid-template-columns:repeat(4,minmax(0,150px));justify-content:center}.overlay>.row,.overlay>.results{max-width:520px;width:100%}}
+@media(max-width:380px){.wordmark{font-size:18px}.brand img{height:34px}.trk{grid-template-columns:56px minmax(0,1fr) 14px}.trk-spark{display:none}}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="mark">M</div><div><b>MYCOFIELD</b><small>GRASSLAND INTELLIGENCE</small></div></div><button id="installBtn" class="pill" hidden>Install</button></header>
+<header><a class="brand" href="./" aria-label="MycoField home"><img src="./assets/logo-mark.png" alt="" width="53" height="40"><div><div class="wordmark">Myco<span>Field</span></div><small>GRASSLAND INTELLIGENCE</small></div></a><button id="installBtn" class="btn lime" style="min-height:40px;padding:8px 16px;font-size:13px" hidden>Install</button></header>
 <main>
 <section class="view active" id="view-map"><div class="mapwrap" id="mapwrap"><div id="map"></div>
-<div class="overlay"><div class="row" id="areaRow"><select id="areaSelect" class="select" aria-label="Tracked area"></select><button class="pill icon" id="searchBtn" type="button" aria-label="Search places"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button><button class="pill" id="flyBtn" aria-label="Fly to selected area">◎</button></div><form class="row" id="searchRow" role="search" hidden><input class="field" id="searchInput" type="search" placeholder="Town, postcode, landmark or lat, lon" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="pill" type="button" id="searchCancel">Cancel</button></form><div class="results" id="searchResults" hidden aria-live="polite"></div>
+<div class="overlay"><div class="row" id="areaRow"><select id="areaSelect" class="select" aria-label="Tracked area"></select><button class="pill icon" id="searchBtn" type="button" aria-label="Search places"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button><button class="pill icon" id="flyBtn" type="button" aria-label="Fly to selected area"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button></div><form class="row" id="searchRow" role="search" hidden><input class="field" id="searchInput" type="search" placeholder="Town, postcode, landmark or lat, lon" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="pill" type="button" id="searchCancel">Cancel</button></form><div class="results" id="searchResults" hidden aria-live="polite"></div>
 <div class="score"><div class="scoretop"><div class="scoremain"><div class="ring" id="ring"><b id="scoreValue">…</b></div><div><h2 id="scoreTitle">Loading live conditions…</h2><p id="scoreCopy">Fetching weather and terrain</p></div></div><div class="trend"><div id="trend"></div><span id="areaStatus" class="chip loading">Loading</span></div></div><div class="metrics"><div class="metric"><b id="rain14">—</b><span>14-day rainfall</span></div><div class="metric"><b id="night">—</b><span>overnight low</span></div><div class="metric"><b id="elev">—</b><span>elevation</span></div></div></div></div>
-<div class="bottom"><button class="mapcard strongest" id="strongestCard" type="button" aria-label="Fly to strongest tracked area"><div class="n" id="strongestScore">…</div><div><strong>★ Strongest tracked area</strong><b id="strongestName">Comparing areas…</b><small id="strongestSub">Tap the map anywhere to analyse a point</small></div></button><div class="mapcard toggle"><button id="terrainOn" class="active">3D</button><button id="terrainOff">Flat</button></div></div>
+<div class="bottom"><button class="mapcard strongest" id="strongestCard" type="button" aria-label="Fly to strongest tracked area"><div class="n" id="strongestScore">…</div><div><strong>★ Strongest tracked area</strong><b id="strongestName">Comparing areas…</b><small id="strongestSub">Tap the map anywhere to analyse a point</small></div></button><div class="mapcard toggle"><button id="terrainOn" class="active" type="button">3D</button><button id="terrainOff" type="button">Flat</button></div></div>
 <div class="pointcard" id="pointCard" hidden role="region" aria-label="Exact point intelligence" aria-live="polite">
-<div class="pc-head"><span class="eyebrow">Exact point intelligence</span><span class="pc-tools"><span id="pcStatus" class="chip loading">Loading</span><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis" title="Refresh">↻</button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis" title="Close">✕</button></span></div>
+<div class="pc-head"><span class="eyebrow">Exact point intelligence</span><span class="pc-tools"><span id="pcStatus" class="chip loading">Loading</span><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis" title="Refresh"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis" title="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></span></div>
 <div class="pc-main"><div class="ring" id="pcRing"><b id="pcScore">…</b></div><div><h2 id="pcLabel">Analysing this point…</h2><p id="pcSub">Fetching weather and terrain</p></div></div>
 <div id="pcLoading" class="loadingbar"></div>
 <div class="metrics" id="pcMetrics"></div>
 <div class="pc-explain" id="pcExplain"></div>
 <div class="pc-coords" id="pcCoords"></div>
-<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Use in field log</button><button class="btn secondary" id="pcSave" type="button">Save area</button></div>
-<form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
+<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Use in field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button></div>
+<form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
 </div>
 </div></section>
-<section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions engine</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. <span id="dashArea"></span> Experimental research indicator only — not a probability or a guarantee of fruiting.</div>
-<div class="card" style="margin-top:18px"><h3><span>Tracked areas <span class="small" id="trackerCount"></span></span><span class="seg" id="trackerSort" role="group" aria-label="Sort areas"><button type="button" data-sort="index" class="active">Index</button><button type="button" data-sort="name">A–Z</button></span></h3><div id="tracker" class="tracker"></div><div class="small" style="margin-top:10px">Add areas and sub-areas from the Map: tap or search a spot, then <b>Save area</b>.</div></div>
-<div class="focus-head" id="focusHead"><div><div class="eyebrow">Focused area</div><h3 id="focusName"></h3><div class="small" id="focusSub"></div></div><div class="focus-acts"><button class="btn secondary" type="button" id="focusMap">Show on map</button><button class="btn secondary" type="button" id="focusRename">Rename</button><button class="btn danger" type="button" id="focusDelete">Delete</button></div></div>
-<form class="renameform" id="renameForm" hidden><input class="field" id="renameInput" maxlength="60" required aria-label="Area name" autocomplete="off"><button class="btn" type="submit">Save</button><button class="btn secondary" type="button" id="renameCancel">Cancel</button></form>
-<div class="cards"><div class="card"><h3>Current signal <span class="chip exp">Experimental</span></h3><div class="big" id="dashScore">—</div><div class="small" id="dashTrend"></div><svg id="sparkScore" class="spark" aria-label="Conditions Index trend"></svg><div class="small">Index · today → +9 days</div></div><div class="card"><h3>Moisture memory <span class="chip" id="dashRainChip">—</span></h3><div class="big" id="dashRain">—</div><div class="small" id="dashRainSub">14-day rainfall total</div><svg id="sparkRain" class="spark" aria-label="Daily rainfall trend"></svg><div class="small">Daily rain · 14 days back → +9 days</div></div><div class="card"><h3>Night temperature</h3><div class="big" id="dashTemp">—</div><div class="small">Latest overnight low</div><svg id="sparkTemp" class="spark" aria-label="Overnight low trend"></svg><div class="small">Daily low · 14 days back → +9 days</div></div></div><div class="card" style="margin-top:10px"><h3>10-day outlook</h3><div class="forecast" id="forecast"><div class="small">Loading forecast…</div></div></div><div class="card" style="margin-top:10px"><h3>Why this score <span class="chip exp" id="modelChip">conditions-v0.2</span></h3><div class="timeline" id="breakdown"><div class="timebox"><b>40%</b><span>recent precipitation</span></div><div class="timebox"><b>30%</b><span>overnight temperature</span></div><div class="timebox"><b>20%</b><span>moisture persistence</span></div><div class="timebox"><b>10%</b><span>terrain context</span></div></div><div class="small" style="margin-top:10px">Hand-built prototype weighting. Thresholds are not scientifically validated.</div></div></div></section>
-<section class="view" id="view-history"><div class="page"><div class="eyebrow">Backtest</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:18px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:10px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div></div></section>
-<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field record</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome. Records stay in this browser in the prototype.</div><form class="card" id="logForm" style="margin-top:18px"><div class="attached" id="attachedPoint" hidden><div><strong>🔒 PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div></div><div style="margin-top:10px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:12px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
+<section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. <span id="dashArea"></span> Experimental research indicator only — not a probability or a guarantee of fruiting.</div>
+<div class="card" style="margin-top:20px"><h3><span>Tracked areas <span class="small" id="trackerCount"></span></span><span class="seg" id="trackerSort" role="group" aria-label="Sort areas"><button type="button" data-sort="index" class="active">Index</button><button type="button" data-sort="name">A–Z</button></span></h3><div id="tracker" class="tracker"></div><div class="small" style="margin-top:12px">Add areas and sub-areas from the Map: tap or search a spot, then <b>Save area</b>.</div></div>
+<div class="focus-head" id="focusHead"><div><div class="eyebrow">Focused area</div><h3 id="focusName"></h3><div class="small" id="focusSub"></div></div><div class="focus-acts"><button class="btn" type="button" id="focusMap">View map <span aria-hidden="true">→</span></button><button class="btn secondary" type="button" id="focusRename">Rename</button><button class="btn danger" type="button" id="focusDelete">Delete</button></div></div>
+<form class="renameform" id="renameForm" hidden><input class="field" id="renameInput" maxlength="60" required aria-label="Area name" autocomplete="off"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="renameCancel">Cancel</button></form>
+<div class="cards"><div class="card"><h3>Current signal <span class="chip exp">Experimental</span></h3><div class="statnum" id="dashScore">—</div><div class="statlabel">Conditions index</div><div class="delta flat" id="dashTrend"></div><svg id="sparkScore" class="spark" aria-label="Conditions Index trend"></svg><div class="small">Index · today → +9 days</div></div><div class="card"><h3>Moisture memory <span class="chip" id="dashRainChip">—</span></h3><div class="statnum" id="dashRain">—</div><div class="statlabel">14-day rainfall</div><div class="small" id="dashRainSub" style="margin-top:8px"></div><svg id="sparkRain" class="spark" aria-label="Daily rainfall trend"></svg><div class="small">Daily rain · 14 days back → +9 days</div></div><div class="card"><h3>Night temperature</h3><div class="statnum" id="dashTemp">—</div><div class="statlabel">Latest overnight low</div><svg id="sparkTemp" class="spark" aria-label="Overnight low trend"></svg><div class="small">Daily low · 14 days back → +9 days</div></div></div>
+<div class="card" style="margin-top:12px"><h3>10-day outlook</h3><div class="forecast" id="forecast"><div class="small">Loading forecast…</div></div></div>
+<div class="card" style="margin-top:12px"><h3>Why this score <span class="chip exp" id="modelChip">conditions-v0.2</span></h3><div class="bars" id="breakdown"></div><div class="small" style="margin-top:14px">Hand-built prototype weighting (40 / 30 / 20 / 10). Thresholds are not scientifically validated.</div></div></div></section>
+<section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:20px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div></div></section>
+<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field notes</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome — blanks included. Records stay in this browser in the prototype.</div><form class="card" id="logForm" style="margin-top:20px"><div class="attached" id="attachedPoint" hidden><div><strong><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div></div><div style="margin-top:14px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn lime" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:14px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
 </main>
-<nav><button class="active" data-view="map"><span>⌖</span>Map</button><button data-view="dashboard"><span>◫</span>Signal</button><button data-view="history"><span>↶</span>History</button><button data-view="log"><span>＋</span>Log</button></nav>
+<nav aria-label="Main">
+<button class="active" data-view="map" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>Map</button>
+<button data-view="dashboard" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Conditions</button>
+<button data-view="history" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/></svg>History</button>
+<button data-view="log" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/></svg>Field notes</button>
+</nav>
 <div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
 import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs';
@@ -100,7 +338,14 @@ const daysBetween = (a, b) => Math.round((Date.parse(b + 'T12:00:00Z') - Date.pa
 const fmtDay = iso => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'});
 const fmtDate = iso => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric', timeZone:'UTC'});
 const fmtCoord = (lat, lon, dp = 5) => `${lat.toFixed(dp)}, ${lon.toFixed(dp)}`;
-function scoreColor(v) { return v < 35 ? 'var(--bad)' : v < 55 ? 'var(--warn)' : 'var(--accent)'; }
+// Text colour (AA contrast on light surfaces) and ring/bar fill colour for a score.
+function scoreColor(v) { return v < 35 ? 'var(--bad)' : v < 55 ? 'var(--warn)' : 'var(--good)'; }
+function ringColor(v) { return v < 35 ? 'var(--coral)' : v < 55 ? 'var(--amber)' : 'var(--moss)'; }
+const ICON = {
+  pin: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  leaf: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19l7-7"/></svg>',
+  lock: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'
+};
 const STATUS_TEXT = {loading:'Loading', live:'Live', cached:'Cached', offline:'Offline', partial:'Partial', error:'Error'};
 function setChip(el, status, text) { el.className = 'chip ' + status; el.textContent = text || STATUS_TEXT[status] || status; }
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.timer); toast.timer = setTimeout(() => t.hidden = true, 2600); }
@@ -284,7 +529,7 @@ function scoreSeries(weather, terrainScore) {
   const avg = ahead.reduce((a, b) => a + b, 0) / (ahead.length || 1);
   const delta = ahead.length ? avg - series[todayIdx] : 0;
   const trend = delta > 3 ? 'rising' : delta < -3 ? 'falling' : 'stable';
-  return {series, trend};
+  return {series, trend, delta: Math.round(delta)};
 }
 const TREND_TEXT = {rising: '↑ rising', stable: '→ stable', falling: '↓ falling'};
 function explainParts(c) {
@@ -406,7 +651,7 @@ function renderSelectedArea() {
   const statusEl = $('areaStatus');
   if (d.conditions) {
     const c = d.conditions;
-    $('ring').style.setProperty('--score', c.score); $('ring').style.setProperty('--ringc', scoreColor(c.score));
+    $('ring').style.setProperty('--score', c.score); $('ring').style.setProperty('--ringc', ringColor(c.score));
     $('scoreValue').textContent = c.score;
     $('scoreTitle').textContent = c.label;
     $('scoreCopy').textContent = explainParts(c).map(([n, v]) => `${n} +${v}`).join(' · ');
@@ -438,10 +683,25 @@ function sparkLine(vals, w, h, p = 4, sw = 3) {
   const pts = pts0.map(([i, v]) => `${(p + i * (w - 2 * p) / n).toFixed(1)},${(h - p - (v - min) / (max - min || 1) * (h - 2 * p)).toFixed(1)}`).join(' ');
   return `<polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/>`;
 }
+// Brand stat-block sparkline: line plus a soft gradient area underneath.
 function spark(el, vals) {
-  el.setAttribute('viewBox', '0 0 320 56');
-  el.innerHTML = sparkLine(vals, 320, 56);
-  el.style.color = 'var(--accent)';
+  const w = 320, h = 60, line = sparkLine(vals, w, h);
+  el.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  if (!line) { el.innerHTML = ''; return; }
+  const pts = line.match(/points="([^"]+)"/)[1], first = pts.split(' ')[0].split(',')[0], last = pts.split(' ').pop().split(',')[0];
+  const gid = 'g-' + el.id;
+  el.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A7D82E" stop-opacity=".45"/><stop offset="1" stop-color="#A7D82E" stop-opacity="0"/></linearGradient></defs><polygon points="${first},${h} ${pts} ${last},${h}" fill="url(#${gid})"/>${line}`;
+}
+function deltaHTML(d) {
+  const cls = d.trend === 'rising' ? 'up' : d.trend === 'falling' ? 'down' : 'flat';
+  const sign = d.delta > 0 ? '+' : d.delta < 0 ? '−' : '±';
+  const arrow = d.trend === 'rising' ? '▲' : d.trend === 'falling' ? '▼' : '●';
+  return `<span class="delta ${cls}"><span aria-hidden="true">${arrow}</span> ${sign}${Math.abs(d.delta)} <small>${d.trend} · next 3 days</small></span>`;
+}
+// Brand "conditions card": labelled horizontal bars, value out of each component's maximum.
+function breakdownHTML(c) {
+  return [['Recent rainfall', c.components.rain, 40], ['Cool nights', c.components.nights, 30], ['Moisture persistence', c.components.persistence, 20], ['Terrain context', c.components.terrain, 10]]
+    .map(([label, v, max]) => `<div class="bar"><span>${label}</span><b>+${v}<small> / ${max}</small></b><div class="track"><div class="fill${v / max < 0.5 ? ' low' : ''}" style="width:${Math.round(v / max * 100)}%"></div></div></div>`).join('');
 }
 
 // Multi-area tracker: every top-level area with its sub-areas nested underneath.
@@ -463,11 +723,12 @@ function trackerRow(k) {
   if (d?.terrain && a.parentId) bits.push(`${d.terrain.elevation} m ${d.terrain.aspect === 'Flat' ? 'flat' : d.terrain.aspect}`);
   if (d && (d.status === 'error' || d.status === 'offline')) bits.push(STATUS_TEXT[d.status]);
   const series = c ? d.series.slice(d.weather.todayIdx) : [];
+  const kicker = a.parentId ? `${ICON.pin}${esc(areas[a.parentId]?.name || '')}` : `${ICON.leaf}Tracked area`;
   return `<button type="button" class="trk${a.parentId ? ' sub' : ''}${k === state.selectedArea ? ' focused' : ''}" data-id="${esc(k)}" aria-pressed="${k === state.selectedArea}">
-    <span class="trk-name"><b>${a.parentId ? '<span class="tree" aria-hidden="true">└</span>' : ''}${esc(a.name)}</b><small>${bits.filter(Boolean).join(' · ') || (d?.status === 'loading' || !d ? 'Loading…' : '')}</small></span>
-    <svg class="trk-spark" viewBox="0 0 64 24" aria-hidden="true">${sparkLine(series, 64, 24, 2, 2)}</svg>
-    <span class="trk-score" style="color:${c ? scoreColor(c.score) : 'var(--muted)'}">${score}</span>
-    <span class="trk-trend" title="${c ? d.trend : ''}">${c ? TREND_ARROW[d.trend] : ''}<span class="sr">${c ? ' ' + d.trend : ''}</span></span></button>`;
+    <span class="trk-tile"><span class="trk-score" style="color:${c ? scoreColor(c.score) : 'var(--muted)'}">${score}</span><span class="trk-trend" title="${c ? d.trend : ''}">${c ? TREND_ARROW[d.trend] : ''}<span class="sr">${c ? ' ' + d.trend : ''}</span></span></span>
+    <span class="trk-name"><span class="trk-kicker">${kicker}</span><b>${esc(a.name)}</b><small>${bits.filter(Boolean).join(' · ') || (d?.status === 'loading' || !d ? 'Loading…' : '')}</small></span>
+    <svg class="trk-spark" viewBox="0 0 64 26" aria-hidden="true">${sparkLine(series, 64, 26, 2, 2.5)}</svg>
+    <span class="trk-chev" aria-hidden="true">›</span></button>`;
 }
 function renderTracker() {
   const ids = sortAreaIds(topLevelAreas());
@@ -491,6 +752,7 @@ function renderSignal() {
   if (!d?.conditions) {
     const loading = !d || d.status === 'loading';
     $('dashScore').textContent = loading ? '…' : '—'; $('dashTrend').textContent = loading ? 'Loading live weather…' : 'Live weather unavailable — cached data will be used when available';
+    $('breakdown').innerHTML = '';
     $('dashRain').textContent = '—'; $('dashTemp').textContent = '—';
     setChip($('dashRainChip'), loading ? 'loading' : d.status);
     ['sparkScore', 'sparkRain', 'sparkTemp'].forEach(id => $(id).innerHTML = '');
@@ -498,8 +760,9 @@ function renderSignal() {
     return;
   }
   const {weather: w, conditions: c, series} = d;
-  $('dashScore').textContent = `${c.score}/100`;
-  $('dashTrend').textContent = `${c.label} · ${TREND_TEXT[d.trend]}`;
+  $('dashScore').innerHTML = `${c.score}<span class="of">/100</span>`;
+  $('dashTrend').innerHTML = `${deltaHTML(d)}`;
+  $('dashTrend').title = c.label;
   $('dashRain').textContent = `${w.rain14} mm`;
   $('dashRainSub').textContent = `14-day rainfall · persistence ${Math.round(w.persistence * 100)}%`;
   setChip($('dashRainChip'), w.status);
@@ -511,8 +774,7 @@ function renderSignal() {
     const s = series[w.todayIdx + j];
     return `<div class="day"><b>${fmtDay(x.date)}</b><div class="n" style="color:${scoreColor(s)}">${s ?? '—'}</div><small>${Number.isFinite(x.low) ? round1(x.low) + '°C low' : '—'}<br>${round1(x.rain || 0)} mm · ${weatherText(x.code)}</small></div>`;
   }).join('');
-  $('breakdown').innerHTML = [['40%', 'recent precipitation', c.components.rain], ['30%', 'overnight temperature', c.components.nights], ['20%', 'moisture persistence', c.components.persistence], ['10%', 'terrain context', c.components.terrain]]
-    .map(([wt, label, v]) => `<div class="timebox"><b>+${v}</b><span>${label} · weight ${wt}</span></div>`).join('');
+  $('breakdown').innerHTML = breakdownHTML(c);
 }
 
 // ---------- area editing ----------
@@ -593,6 +855,7 @@ async function analysePoint(lat, lon, {force = false, zoom = null, place = null}
   result.place = place;
   state.pointAnalysis = result;
   renderPointAnalysis(result);
+  if (zoom == null) revealPoint(lat, lon);
 }
 function buildPointResult(lat, lon, w, t) {
   const weather = w.status === 'fulfilled' ? w.value : null;
@@ -608,7 +871,7 @@ function buildPointResult(lat, lon, w, t) {
   };
 }
 function metricHTML(value, label, kind) {
-  const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : '';
+  const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : kind === 'Live' ? 'live' : '';
   return `<div class="metric"><b>${value}</b><span>${label}</span><em class="${cls}">${kind}</em></div>`;
 }
 function renderPointLoading(lat, lon, place) {
@@ -633,7 +896,7 @@ function renderPointAnalysis(r) {
   const overall = !w && !t ? (errors.weather === 'offline' ? 'offline' : 'error') : (!w || !t) ? 'partial' : statuses.includes('offline') ? 'offline' : statuses.every(s => s === 'cached') ? 'cached' : statuses.includes('cached') ? 'cached' : 'live';
   setChip($('pcStatus'), overall);
   if (c) {
-    $('pcRing').style.setProperty('--score', c.score); $('pcRing').style.setProperty('--ringc', scoreColor(c.score));
+    $('pcRing').style.setProperty('--score', c.score); $('pcRing').style.setProperty('--ringc', ringColor(c.score));
     $('pcScore').textContent = c.score;
     $('pcLabel').textContent = c.label;
     $('pcSub').textContent = `Experimental index · ${MODEL_VERSION}${c.terrainAssumed ? ' · terrain unavailable, neutral 50 used' : ''}`;
@@ -748,7 +1011,7 @@ function renderHistory() {
   $('history').innerHTML = state.records.slice().reverse().map(r => {
     const bits = [fmtDate(r.date), esc(r.notes || 'No notes')];
     if (r.location) bits.push(earthLink(r.location.lat, r.location.lon, r.terrain?.elevation, 4));
-    return `<div class="record"><div class="dot ${r.result === 'positive' ? 'positive' : 'blank'}"></div><div><b>${esc(r.area)}</b><p>${bits.join(' · ')}</p></div><div class="acts">${r.location ? '<span class="tag">🔒 private point</span>' : ''}${r.historical ? `<span class="tag">idx ${r.historical.conditionsIndex ?? '—'}</span>` : ''}<span class="tag">${r.result === 'positive' ? 'observed' : 'blank'}</span><button class="analyse" type="button" data-id="${esc(r.id)}">Analyse</button></div></div>`;
+    return `<div class="record"><div class="dot ${r.result === 'positive' ? 'positive' : 'blank'}"></div><div><b>${esc(r.area)}</b><p>${bits.join(' · ')}</p></div><div class="acts">${r.location ? `<span class="tag">${ICON.lock}private point</span>` : ''}${r.historical ? `<span class="tag">${ICON.leaf}idx ${r.historical.conditionsIndex ?? '—'}</span>` : ''}<span class="tag ${r.result === 'positive' ? 'pos' : 'neg'}">${r.result === 'positive' ? 'observed' : 'blank'}</span><button class="analyse" type="button" data-id="${esc(r.id)}">Analyse</button></div></div>`;
   }).join('') || '<div class="small">No observations yet.</div>';
 }
 

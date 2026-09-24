@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.5.0 — Brand redesign
+
+### Changed
+- Whole app restyled to the MycoField brand system: light Off White / Stone Beige surfaces,
+  Forest Green structure, Signal Lime for active elements, Moss Green data, Warm Amber
+  alerts, Sky Blue for calculated/cached labels.
+- Typography: Montserrat Bold/ExtraBold headlines and numbers, Inter body, Inter Medium
+  uppercase labels (Google Fonts, with system-font fallback offline).
+- New header with the MycoField logo mark and wordmark; new app icons, favicon and
+  apple-touch-icon generated from the logo (cleaned to the two brand greens).
+- Forest Green bottom navigation with Signal Lime active pill; tabs relabelled
+  Map · Conditions · History · Field notes.
+- Brand components: pill buttons (Forest "View map →", Lime "Save", Stone secondary),
+  pill tags, stat block with delta and gradient sparkline, "Why this score" as the brand
+  conditions-card bars, tracker rows in the brand card style (score tile, kicker, chevron).
+- White map overlays and markers (selected area in Forest Green).
+- Score text colours meet contrast on light backgrounds; status is never colour-only.
+
+### Fixed
+- Exact-point marker was offset from the tapped point (a CSS rule overrode MapLibre's
+  marker positioning). The map also re-pans once the full card has rendered so the point
+  stays visible above it.
+
 ## 2.4.0 — Multi-area tracking and sub-areas
 
 ### Added

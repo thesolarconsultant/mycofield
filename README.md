@@ -17,6 +17,12 @@ A static, installable PWA: `index.html` + `sw.js` + `manifest.webmanifest`. No b
   30 days of weather before each record.
 - **Log**: field observations with optional private coordinates and an environmental snapshot.
 
+## Brand
+Colours, type and components follow the MycoField brand sheet: Forest Green `#0B3D2E`,
+Moss Green `#6DAA2C`, Signal Lime `#A7D82E`, Stone Beige `#E7E1D2`, Off White `#FAFAF6`,
+with Sky Blue, Sage, Warm Amber and Slate accents; Montserrat headlines, Inter body.
+Logo files live in `assets/` (`logo.png`, `logo-mark.png`).
+
 ## Data sources
 | Data | Source |
 | --- | --- |
