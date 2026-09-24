@@ -19,10 +19,10 @@
   --good:var(--moss-ink);--warn:#B7791F;--bad:var(--coral-ink);--accent:var(--moss);
   --shadow:0 6px 20px rgba(11,61,46,.08);--shadow-lg:0 18px 48px rgba(11,61,46,.18);
   --head:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --nav-h:68px;--head-h:64px;
+  --nav-h:56px;--head-h:64px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--off);color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;overscroll-behavior-y:none;background:var(--off);color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 [hidden]{display:none!important}
@@ -93,6 +93,7 @@ textarea.field{min-height:96px;resize:vertical}
 /* ---------- map view (mobile-first: full-bleed map, floating search, bottom sheets) ---------- */
 .view{display:none}.view.active{display:block}
 body[data-view="map"] header{display:none}
+html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidden}
 .mapwrap{height:calc(100vh - var(--nav-h));min-height:420px;position:relative;background:var(--stone);overflow:hidden}
 @supports(height:100dvh){.mapwrap{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-bottom))}}
 #map{position:absolute;inset:0}
@@ -246,10 +247,12 @@ body[data-view="map"] header{display:none}
 .attached small{color:var(--muted);font-size:12px}
 
 /* ---------- bottom navigation ---------- */
-nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--forest);padding:8px 10px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(11,61,46,.18)}
-nav button{border:0;background:transparent;color:rgba(255,255,255,.72);border-radius:16px;padding:7px 2px;font-size:10px;font-weight:600;letter-spacing:.08em;white-space:nowrap;text-transform:uppercase;display:grid;justify-items:center;gap:4px;min-height:52px}
-nav button svg{width:22px;height:22px}
-nav button.active{background:var(--lime);color:var(--forest)}
+/* Slim, fixed, icon-first bar. Height is fixed so the map above it never shifts. */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;height:calc(var(--nav-h) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);background:var(--forest);padding:0 6px env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(11,61,46,.16);transform:translateZ(0);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+nav button{height:var(--nav-h);border:0;background:transparent;color:rgba(255,255,255,.66);padding:0;font-size:10px;font-weight:500;letter-spacing:.01em;white-space:nowrap;display:grid;justify-items:center;align-content:center;gap:3px;touch-action:manipulation}
+nav button svg.i{width:44px;height:26px;padding:3px 11px;border-radius:999px;box-sizing:border-box;transition:background .15s,color .15s}
+nav button.active{color:#fff;font-weight:600}
+nav button.active svg.i{background:var(--lime);color:var(--forest)}
 
 @media(max-width:760px){
   .cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}
@@ -305,7 +308,7 @@ nav button.active{background:var(--lime);color:var(--forest)}
 <button class="active" data-view="map" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>Map</button>
 <button data-view="dashboard" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Conditions</button>
 <button data-view="history" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/></svg>History</button>
-<button data-view="log" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/></svg>Field notes</button>
+<button data-view="log" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/></svg>Notes</button>
 </nav>
 <div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
@@ -1308,7 +1311,7 @@ function selectSearchResult(i) {
 function switchView(name) {
   document.body.dataset.view = name;
   if (name === 'dashboard') ensureAreasLoaded();
-  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x.dataset.view === name));
+  document.querySelectorAll('nav button').forEach(x => { x.classList.toggle('active', x.dataset.view === name); x.toggleAttribute('aria-current', x.dataset.view === name); });
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
   if (name === 'map') setTimeout(() => map.resize(), 50);
   window.scrollTo(0, 0);

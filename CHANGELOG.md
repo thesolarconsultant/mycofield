@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.6.1 — Locked, minimal navigation
+
+### Changed
+- Bottom nav slimmed from 68 px to 56 px (+ iPhone home-indicator space), icon-first with
+  short labels (Map · Conditions · History · Notes) and a small lime pill on the active tab.
+- Nav height is fixed and the Map tab can no longer scroll or rubber-band, so the nav and
+  map never shift while panning. No double-tap zoom or long-press selection on the bar.
+- Active tab is announced to screen readers (`aria-current`).
+
 ## 2.6.0 — Mobile-first map
 
 ### Changed
