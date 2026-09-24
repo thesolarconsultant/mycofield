@@ -30,12 +30,14 @@ Logo files live in `assets/` (`logo.png`, `logo-mark.png`).
 | Historical weather | Open-Meteo Archive API (Forecast API past days for the last week) |
 | Elevation | Open-Meteo Elevation API (Copernicus DEM, ~90 m) |
 | Soil moisture, evapotranspiration | Open-Meteo land-surface model / FAO-56 ET₀ |
-| Habitat | OpenStreetMap land use via Overpass, refined in Wales by NRW LANDMAP survey habitat (or set in the field) |
-| Land & grazing (Wales) | Natural Resources Wales LANDMAP land management (stock grazing etc.), grassland-fungi potential habitat and open-access land, via DataMapWales |
+| Habitat | OpenStreetMap land use via Overpass, refined by official habitat data (or set in the field) |
+| Land & grazing — Wales | NRW LANDMAP habitat + land management (stock grazing etc.), grassland-fungi potential habitat, open-access land (DataMapWales) |
+| Land — England | Natural England Priority Habitat Inventory, Living England, registered common land; RPA Crop Map of England 2023 |
+| Land — Scotland | NatureScot Habitat Map of Scotland |
 | Place search | OpenStreetMap Nominatim; UK postcodes via postcodes.io |
 | Map / terrain | OpenStreetMap tiles, MapLibre demo terrain DEM |
 
-## Model (experimental, `conditions-v0.4`)
+## Model (experimental, `conditions-v0.5`)
 Rainfall 25% · modelled soil moisture 20% · water balance (rain − evapotranspiration) 15% ·
 7-night mean low 20% · terrain 10% · habitat 10% · frost penalty. Missing inputs are excluded
 and reported, never guessed. Full details, resolution limits and the validation method are in

@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.9.0 — Land & grazing across Great Britain
+
+### Added
+- **England**: Natural England Priority Habitat Inventory (mapped semi-natural habitat), RPA Crop
+  Map of England 2023 (grass vs crop per field), Living England (satellite habitat, used only to
+  flag improved grassland) and registered common land.
+- **Scotland**: NatureScot Habitat Map of Scotland (EUNIS/NVC survey habitat).
+- Border areas query every candidate nation; the one whose national layers contain the point wins.
+- **Grazing in Field notes** for everywhere: stock now / grazed this year / ungrazed for years /
+  mown, and the animal. Stored with the record, exported, and compared in Evidence.
+- Evidence gains "Grazed — your field log" and "Grass, not crop, in 2023 (England)".
+
+### Changed
+- Model `conditions-v0.5`: the habitat input uses official survey habitat in England and Scotland
+  as well as Wales. Grazing is still displayed and recorded, not scored. Re-analyse records in
+  Evidence.
+
 ## 2.8.0 — Land & grazing (Wales)
 
 ### Added
