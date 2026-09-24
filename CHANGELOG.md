@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.8.0 — Land & grazing (Wales)
+
+### Added
+- **Land & grazing** on every point in Wales, from Natural Resources Wales open data
+  (DataMapWales WFS, point-in-polygon, cached 180 days): LANDMAP surveyed habitat and land
+  management (stock grazing, mowing, cultivation…), NRW's potential habitat for grassland fungi,
+  and open-access land. Shown on the point sheet ("stock grazing" metric + plain-language
+  summary) and in Conditions → Inputs.
+- Grazing and fungi-zone status are stored with every observation snapshot and history rewind,
+  exported (CSV/JSON/GeoJSON), and compared between finds and blanks in Evidence.
+
+### Changed
+- Model `conditions-v0.4`: in Wales the habitat input uses LANDMAP's surveyed habitat instead of
+  broad OSM land use, separating **improved grassland** (new class, 30) from semi-natural
+  grassland (100); new **arable** class (10). Specific OSM cover (woods, water, buildings, lawns)
+  still wins. Grazing is displayed and recorded but deliberately **not scored** until the
+  evidence supports it. Existing records need re-analysing under v0.4 in Evidence.
+
 ## 2.7.0 — Conditions model v0.3 and evidence
 
 ### Added

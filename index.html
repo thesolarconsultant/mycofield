@@ -296,7 +296,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="sh-head"><div class="ring sm" id="pcRing"><b id="pcScore">…</b></div><div class="sh-title"><span class="kicker">Exact point <span id="pcStatus" class="chip loading">Loading</span></span><h2 id="pcLabel">Analysing this point…</h2><p id="pcCoords"></p></div><div class="sh-tools"><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
 <div id="pcLoading" class="loadingbar"></div>
 <div class="strip" id="pcStrip"></div>
-<div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcGrid"></p></div>
+<div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcLand"></p><p class="sh-note" id="pcGrid"></p></div>
 <div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
 </div>
@@ -319,11 +319,12 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="card" style="margin-top:12px"><h3>Inputs &amp; data quality</h3><div class="inputs" id="inputsTable"></div></div>
 <details class="card method" style="margin-top:12px"><summary>How the index works</summary>
 <p><b>What it is.</b> An experimental 0–100 summary of whether recent conditions look favourable for grassland fungi in general. It is not a probability and does not predict any species.</p>
-<p><b>Inputs (model conditions-v0.3).</b> Recent rainfall (25%): 45 mm in 14 days scores full marks. Modelled soil moisture at 3–27 cm (20%): 15% volumetric scores 0, 40% scores full marks. Water balance (15%): a 50 mm soil bucket topped up by rain and drained by FAO-56 reference evapotranspiration. Cool nights (20%): the 7-night mean low, best at 8°C, losing 12 points per degree away. Terrain (10%): elevation, slope and aspect from a 90 m elevation model. Habitat (10%): OpenStreetMap land-use mapping, or what you set in the field. Each frost night in the last 7 days subtracts 5 points (up to 15).</p>
+<p><b>Inputs (model conditions-v0.4).</b> Recent rainfall (25%): 45 mm in 14 days scores full marks. Modelled soil moisture at 3–27 cm (20%): 15% volumetric scores 0, 40% scores full marks. Water balance (15%): a 50 mm soil bucket topped up by rain and drained by FAO-56 reference evapotranspiration. Cool nights (20%): the 7-night mean low, best at 8°C, losing 12 points per degree away. Terrain (10%): elevation, slope and aspect from a 90 m elevation model. Habitat (10%): OpenStreetMap land-use mapping — in Wales refined by Natural Resources Wales’ surveyed LANDMAP habitat, which separates improved (fertilised, reseeded) grassland (scores 30) from semi-natural acid, neutral and calcareous grassland (scores 100) — or what you set in the field. Each frost night in the last 7 days subtracts 5 points (up to 15).</p>
+<p><b>Land &amp; grazing (Wales only).</b> Each point is checked against NRW’s LANDMAP habitat survey, which records how each landscape area is managed (stock grazing, mowing, cultivation…), NRW’s mapped potential habitat for grassland fungi, and open-access land. Grazing is shown and stored with every find and blank, but it is <i>not</i> part of the score: LANDMAP areas are landscape-scale and were surveyed 2000–2017, so it says how an area is managed, not whether stock are in a field this year. Evidence on the History tab tests whether it separates your finds from your blanks.</p>
 <p><b>Missing data.</b> If an input is unavailable its weight is shared across the others, and the card shows how complete the inputs were. Nothing is filled in with guessed values.</p>
 <p><b>Resolution — read this.</b> Weather comes from models with grid squares a few kilometres across (the historical archive is coarser, roughly 10–25 km). Spots inside the same grid square get identical weather, so differences between nearby spots come only from terrain and habitat. Elevation is 90 m resolution; small banks and hollows are invisible. OpenStreetMap habitat mapping is patchy in places.</p>
 <p><b>How to trust it.</b> Every threshold above is a starting guess. Log finds <i>and</i> blanks, run Evidence on the History tab, and use the separation score (AUC) to see whether the index actually distinguishes them. Around 0.5 means it doesn't; above 0.7 is useful. The thresholds should be re-set from your records once there are enough of them.</p>
-<p><b>Sources.</b> Open-Meteo forecast, archive (ERA5) and elevation APIs; Copernicus DEM; OpenStreetMap via Overpass; postcodes.io and Nominatim for search.</p>
+<p><b>Sources.</b> Open-Meteo forecast, archive (ERA5) and elevation APIs; Copernicus DEM; OpenStreetMap via Overpass; Natural Resources Wales LANDMAP, grassland-fungi potential habitat and access-land layers via DataMapWales (contains Natural Resources Wales information © Natural Resources Wales and database right, Open Government Licence); postcodes.io and Nominatim for search.</p>
 </details></div></section>
 <section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:20px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div>
 <div class="card" style="margin-top:12px" id="evidenceCard"><h3>Evidence <span class="chip exp">Model check</span></h3><div class="small" id="evidenceSub">Does the index actually separate your finds from your blanks?</div><div class="pc-actions"><button class="btn" id="analyseAll" type="button">Analyse all records</button></div><div class="small" id="evidenceProgress" aria-live="polite"></div><div id="evidenceVerdict" class="verdict"></div><div id="evidence" class="evtable"></div></div>
@@ -341,7 +342,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs';
 
 // ---------- constants ----------
-const MODEL_VERSION = 'conditions-v0.3';
+const MODEL_VERSION = 'conditions-v0.4';
 const TZ = 'Europe/London';
 const TERRAIN_RADIUS_M = 60;
 const FLAT_SLOPE_DEG = 2;
@@ -353,6 +354,7 @@ const DAILY_VARS = 'temperature_2m_min,temperature_2m_max,precipitation_sum,weat
 const SOIL_VARS_FORECAST = ['soil_moisture_3_to_9cm', 'soil_moisture_9_to_27cm'];
 const SOIL_VARS_ARCHIVE = ['soil_moisture_0_to_7cm', 'soil_moisture_7_to_28cm'];
 const HABITAT_TTL = 90 * 864e5;
+const LAND_TTL = 180 * 864e5;
 const RECORDS_KEY = 'mycofield-history-v2';
 const COMPASS = ['N','NE','E','SE','S','SW','W','NW'];
 
@@ -617,6 +619,8 @@ const HABITAT_CLASSES = {
   'amenity-grassland': {label: 'Amenity grass / lawn / churchyard', score: 70},
   'heath-moor': {label: 'Heath & moorland', score: 60},
   'farmland': {label: 'Farmland (pasture or arable)', score: 55},
+  'improved-grassland': {label: 'Improved grassland (fertilised / reseeded)', score: 30},
+  'arable': {label: 'Arable / cultivated', score: 10},
   'scrub': {label: 'Scrub', score: 35},
   'wetland': {label: 'Wetland / bog', score: 35},
   'woodland': {label: 'Woodland', score: 25},
@@ -648,7 +652,7 @@ function overpassSlot() {
   overpassChain = slot.catch(() => {});
   return slot;
 }
-async function fetchHabitat(lat, lon, opts) {
+async function fetchOsmHabitat(lat, lon, opts) {
   const key = `habitat:${lat.toFixed(4)}:${lon.toFixed(4)}`;
   if (opts?.force || !isFresh(key, HABITAT_TTL)) await overpassSlot();
   const q = `[out:json][timeout:12];is_in(${lat.toFixed(6)},${lon.toFixed(6)})->.a;(area.a["landuse"];area.a["natural"];area.a["leisure"];area.a["amenity"="grave_yard"];);out tags;`;
@@ -658,6 +662,93 @@ async function fetchHabitat(lat, lon, opts) {
   const osmTag = ['natural', 'landuse', 'leisure', 'amenity'].filter(k => hit.tags[k]).map(k => `${k}=${hit.tags[k]}`)[0];
   return {status: res.status, cls: hit.cls, ...HABITAT_CLASSES[hit.cls], osmTag, source: 'OpenStreetMap'};
 }
+
+// ---------- land & grazing engine (Wales: Natural Resources Wales open data via DataMapWales) ----------
+// NRW LANDMAP Landscape Habitats is survey-based (Phase 1 habitat survey, aerial photos, field checks):
+// for each landscape area it records the dominant habitat and how the land is managed — including
+// stock grazing. Areas are landscape-scale (often several km²) and were surveyed 2000–2017, so this
+// says how an area is managed, not whether animals are in a particular field this year.
+const DMW_WFS = 'https://datamap.gov.wales/geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&outputFormat=application/json';
+const inWales = (lat, lon) => lat > 51.3 && lat < 53.5 && lon > -5.4 && lon < -2.6;
+function dmwPointURL(layer, props, geom, lat, lon) {
+  return `${DMW_WFS}&typeName=${layer}&propertyName=${props}&CQL_FILTER=${encodeURIComponent(`INTERSECTS(${geom},SRID=4326;POINT(${lon.toFixed(6)} ${lat.toFixed(6)}))`)}`;
+}
+// LANDMAP habitat names → MycoField habitat classes. 'Mosaic' areas fall back to their first listed habitat.
+const LANDMAP_RULES = [
+  [/^improved grassland/i, 'improved-grassland'],
+  [/(unimproved|semi-improved)?\s*(acid|neutral|calcareous) grassland/i, 'semi-natural-grassland'],
+  [/amenity grassland/i, 'amenity-grassland'],
+  [/marsh|bog|fen|swamp|flush|mire/i, 'wetland'],
+  [/heath/i, 'heath-moor'],
+  [/woodland|plantation|felled/i, 'woodland'],
+  [/scrub|bracken/i, 'scrub'],
+  [/arable|cultivated/i, 'arable'],
+  [/residential|industrial|built|green space/i, 'built'],
+  [/reservoir|lake|river|water/i, 'water'],
+  [/rock|cliff|scree|quarry|waste|exposure/i, 'bare']
+];
+function landmapClass(habitat, list) {
+  const pick = t => LANDMAP_RULES.find(([re]) => re.test(t || ''))?.[1] || null;
+  return /mosaic/i.test(habitat || '') || !habitat ? pick(list[0]) : pick(habitat);
+}
+const splitList = s => String(s || '').split('.').map(x => x.trim()).filter(x => x && !/^none$/i.test(x));
+async function fetchLand(lat, lon, opts) {
+  if (!inWales(lat, lon)) return {covered: false, status: 'outside'};
+  const k = `${lat.toFixed(4)}:${lon.toFixed(4)}`;
+  const [lm, fz, ac] = await Promise.allSettled([
+    cachedJSON(`landmap:${k}`, dmwPointURL('inspire-nrw:NRW_LANDMAP_Landscape_Habitats', 'uid,areaname,surveydate,cls_3,lh_5,lh_19', 'geom', lat, lon), LAND_TTL, opts),
+    cachedJSON(`fungizone:${k}`, dmwPointURL('geonode:GWC21_Grassland_Fungi', 'layer', 'geom', lat, lon), LAND_TTL, opts),
+    cachedJSON(`access:${k}`, dmwPointURL('inspire-nrw:NRW_COMMON_LAND_2014', 'EN_STATUS', 'fme_geometry', lat, lon), LAND_TTL, opts)
+  ]);
+  if ([lm, fz, ac].every(x => x.status === 'rejected')) throw lm.reason;
+  const f = lm.status === 'fulfilled' ? lm.value.data.features?.[0]?.properties : undefined;
+  let landmap = null;
+  if (f) {
+    const habitats = splitList(f.lh_5), management = splitList(f.lh_19);
+    landmap = {uid: f.uid || null, area: (f.areaname || '').trim() || null, surveyed: String(f.surveydate || '').slice(0, 4) || null,
+      habitat: (f.cls_3 || '').trim() || null, habitats: habitats.slice(0, 4), management, cls: landmapClass(f.cls_3, habitats)};
+  }
+  const has = r => r.status === 'fulfilled' ? (r.value.data.features || []).length > 0 : null;
+  return {
+    covered: true, status: lm.status === 'fulfilled' ? lm.value.status : 'error', landmap,
+    // 'recorded' / 'not recorded' in the surveyed management; null = no survey data for this spot.
+    grazing: lm.status !== 'fulfilled' ? null : !landmap ? null : landmap.management.some(m => /grazing/i.test(m)) ? 'recorded' : 'not recorded',
+    fungiZone: has(fz), accessLand: has(ac), source: 'Natural Resources Wales'
+  };
+}
+// Specific OSM cover (a mapped wood, lake, building or lawn) is more local than a landscape-scale
+// survey, so it wins; otherwise NRW's surveyed habitat refines broad OSM land use — crucially it
+// separates improved (fertilised, reseeded) grassland from semi-natural grassland.
+const OSM_SPECIFIC = ['woodland', 'water', 'built', 'bare', 'scrub', 'wetland', 'amenity-grassland'];
+function mergeHabitat(osm, land) {
+  const lm = land?.landmap;
+  if (lm?.cls && !(osm?.cls && OSM_SPECIFIC.includes(osm.cls))) return {status: land.status, cls: lm.cls, ...HABITAT_CLASSES[lm.cls], source: 'NRW LANDMAP', osmTag: osm?.osmTag, land};
+  return {...osm, land};
+}
+async function fetchHabitat(lat, lon, opts) {
+  const [osm, land] = await Promise.allSettled([fetchOsmHabitat(lat, lon, opts), fetchLand(lat, lon, opts)]);
+  const l = land.status === 'fulfilled' ? land.value : {covered: inWales(lat, lon), status: land.reason?.status || 'error', unavailable: true};
+  return mergeHabitat(osm.status === 'fulfilled' ? osm.value : habitatUnavailable(osm.reason), l);
+}
+const landSnap = l => l?.covered && !l.unavailable ? {grazing: l.grazing, fungiZone: l.fungiZone, accessLand: l.accessLand,
+  landmapUid: l.landmap?.uid ?? null, landmapHabitat: l.landmap?.habitat ?? null, management: l.landmap?.management ?? null, surveyed: l.landmap?.surveyed ?? null} : null;
+function landText(l) {
+  if (!l) return '';
+  if (!l.covered) return 'Land & grazing: NRW survey data covers Wales only — not available here.';
+  if (l.unavailable) return 'Land & grazing: NRW survey lookup unavailable right now.';
+  const lm = l.landmap, bits = [];
+  if (lm) {
+    bits.push(`NRW LANDMAP${lm.area ? ` “${lm.area}”` : ''}${lm.surveyed ? `, surveyed ${lm.surveyed}` : ''}: ${lm.habitat || 'habitat not given'}${lm.habitats.length ? ` (${lm.habitats.join(', ').toLowerCase()})` : ''}.`);
+    bits.push(lm.management.length ? `Managed by: ${lm.management.join(', ').toLowerCase()}.` : 'No land management recorded.');
+  } else bits.push('No NRW LANDMAP survey for this spot.');
+  if (l.fungiZone != null) bits.push(l.fungiZone ? 'Inside NRW’s mapped potential habitat for grassland fungi.' : 'Outside NRW’s mapped potential habitat for grassland fungi.');
+  if (l.accessLand) bits.push('Open-access (CRoW) land.');
+  bits.push('Landscape-scale survey: it shows how the area is managed, not whether stock are in this field now.');
+  return bits.join(' ');
+}
+const grazingValue = l => !l ? '…' : !l.covered || l.unavailable || !l.grazing ? '—' : l.grazing === 'recorded' ? 'Grazed' : 'Not recorded';
+const grazingKind = l => !l ? 'Loading' : !l.covered ? 'Wales only' : l.unavailable ? 'Unavailable' : l.grazing ? 'NRW surveyed' : 'No survey';
+
 // A habitat set in the field always overrides the mapped one.
 function effectiveHabitat(auto, override) {
   if (override && HABITAT_CLASSES[override]) return {cls: override, ...HABITAT_CLASSES[override], source: 'Field-set', status: 'field'};
@@ -1183,9 +1274,10 @@ function buildPointResult(lat, lon, w, t, habitatAuto, habitatOverride = null, p
     weather: weather && {...weatherSummary(weather.days, weather.todayIdx), status: weather.status, cell: weather.cell},
     terrain: terrain && {elevation: terrain.elevation, slope: terrain.slope, aspect: terrain.aspect, aspectDeg: terrain.aspectDeg, score: terrain.score, status: terrain.status},
     habitat,
+    land: habitatAuto?.pending ? null : habitatAuto?.land ?? null,
     conditions,
     errors: {weather: w.status === 'rejected' ? (w.reason?.status || 'error') : null, terrain: t.status === 'rejected' ? (t.reason?.status || 'error') : null},
-    metadata: {weatherSource: 'Open-Meteo Forecast', elevationSource: 'Open-Meteo Elevation (Copernicus 90 m)', habitatSource: habitat?.source || null, terrainRadiusM: TERRAIN_RADIUS_M, modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()}
+    metadata: {weatherSource: 'Open-Meteo Forecast', elevationSource: 'Open-Meteo Elevation (Copernicus 90 m)', habitatSource: habitat?.source || null, landSource: habitatAuto?.land?.covered ? 'Natural Resources Wales (LANDMAP, DataMapWales)' : null, terrainRadiusM: TERRAIN_RADIUS_M, modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()}
   };
 }
 // Field correction: re-score the current point with a habitat chosen on the ground.
@@ -1208,19 +1300,19 @@ function renderPointLoading(lat, lon, place) {
   $('pcRing').style.setProperty('--score', 0);
   $('pcScore').textContent = '…';
   $('pcLabel').textContent = 'Analysing this point…';
-  $('pcSub').textContent = 'Fetching weather, soil moisture, elevation and habitat';
+  $('pcSub').textContent = 'Fetching weather, soil moisture, elevation, habitat and land use';
   $('pcLoading').hidden = false;
-  $('pcMetrics').innerHTML = ['14-day rainfall', 'soil moisture', 'water balance', '7-night mean low', 'frost nights (7 d)', 'elevation', 'slope · aspect', 'terrain context', 'habitat'].map(l => metricHTML('…', l, 'Loading')).join('');
-  $('pcExplain').innerHTML = ''; $('pcGrid').textContent = '';
+  $('pcMetrics').innerHTML = ['14-day rainfall', 'soil moisture', 'water balance', '7-night mean low', 'frost nights (7 d)', 'elevation', 'slope · aspect', 'terrain context', 'habitat', 'grazing'].map(l => metricHTML('…', l, 'Loading')).join('');
+  $('pcExplain').innerHTML = ''; $('pcGrid').textContent = ''; $('pcLand').textContent = '';
   $('pcHabitat').innerHTML = '';
   $('pcCoords').innerHTML = (place ? `${esc(place)} · ` : '') + earthLink(lat, lon);
   $('pcUse').disabled = true; $('pcSave').disabled = true; closeSaveForm();
 }
 function habitatOptions(auto, override) {
-  const autoText = auto?.pending ? 'Auto — looking up…' : auto?.cls ? `Auto — ${auto.label} (OSM)` : `Auto — ${auto?.unavailable ? 'lookup unavailable' : 'not mapped'}`;
+  const autoText = auto?.pending ? 'Auto — looking up…' : auto?.cls ? `Auto — ${auto.label} (${auto.source === 'NRW LANDMAP' ? 'NRW survey' : 'OSM'})` : `Auto — ${auto?.unavailable ? 'lookup unavailable' : 'not mapped'}`;
   return `<option value="">${esc(autoText)}</option>` + Object.entries(HABITAT_CLASSES).map(([k, h]) => `<option value="${k}"${k === override ? ' selected' : ''}>${esc(h.label)}</option>`).join('');
 }
-function habitatKind(h) { return !h ? 'Unavailable' : h.pending ? 'Loading' : h.source === 'Field-set' ? 'Field-set' : h.cls ? 'OSM mapped' : 'Unavailable'; }
+function habitatKind(h) { return !h ? 'Unavailable' : h.pending ? 'Loading' : h.source === 'Field-set' ? 'Field-set' : h.source === 'NRW LANDMAP' ? 'NRW surveyed' : h.cls ? 'OSM mapped' : 'Unavailable'; }
 function renderPointAnalysis(r) {
   const {weather: w, terrain: t, habitat: h, conditions: c, errors} = r;
   $('pcLoading').hidden = true;
@@ -1250,8 +1342,10 @@ function renderPointAnalysis(r) {
     metricHTML(t ? `${t.elevation} m` : '—', 'elevation', t ? (t.status === 'live' ? 'Live' : 'Cached') : 'Unavailable'),
     metricHTML(t ? `${t.slope}° ${t.aspect === 'Flat' ? 'flat' : t.aspect}` : '—', 'slope · aspect', tKind),
     metricHTML(t ? `${t.score}/100` : '—', 'terrain context', t ? 'Experimental' : 'Unavailable'),
-    metricHTML(h?.pending ? '…' : h?.cls ? esc(shortHabitat(h.cls)) : '—', 'habitat', habitatKind(h))
+    metricHTML(h?.pending ? '…' : h?.cls ? esc(shortHabitat(h.cls)) : '—', 'habitat', habitatKind(h)),
+    metricHTML(h?.pending ? '…' : grazingValue(r.land), 'stock grazing', h?.pending ? 'Loading' : grazingKind(r.land))
   ].join('');
+  $('pcLand').textContent = h?.pending ? '' : landText(r.land);
   $('pcExplain').innerHTML = c ? explainParts(c).map(([n, v]) => `<span>${n} <b>${fmtSigned(v)}</b></span>`).join('') : '';
   $('pcHabitat').innerHTML = habitatOptions(r._habitatAuto, r.habitatOverride);
   const cell = w?.cell;
@@ -1263,7 +1357,7 @@ function renderPointAnalysis(r) {
     [w && Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—', 'night low'],
     [h?.pending ? '…' : h?.cls ? esc(shortHabitat(h.cls)) : '—', h?.source === 'Field-set' ? 'habitat (set)' : 'habitat']]);
 }
-const SHORT_HABITAT = {'semi-natural-grassland': 'Grassland', 'amenity-grassland': 'Amenity grass', 'heath-moor': 'Heath/moor', farmland: 'Farmland', scrub: 'Scrub', wetland: 'Wetland', woodland: 'Woodland', bare: 'Bare/rock', built: 'Built-up', water: 'Water'};
+const SHORT_HABITAT = {'semi-natural-grassland': 'Grassland', 'amenity-grassland': 'Amenity grass', 'heath-moor': 'Heath/moor', farmland: 'Farmland', 'improved-grassland': 'Improved grass', arable: 'Arable', scrub: 'Scrub', wetland: 'Wetland', woodland: 'Woodland', bare: 'Bare/rock', built: 'Built-up', water: 'Water'};
 const shortHabitat = cls => SHORT_HABITAT[cls] || '—';
 // Pan so the analysed point sits in the visible map area above the card.
 function revealPoint(lat, lon, zoom = null) {
@@ -1321,16 +1415,16 @@ function saveRecords(records = state.records) {
 }
 // Environmental state at the moment of logging — kept with the record so later model versions
 // never rewrite what was known at the time.
-function snapshotFrom(source, analysedAt, w, c, habitat, cell) {
+function snapshotFrom(source, analysedAt, w, c, habitat, cell, land) {
   return {source, analysedAt, analysedForDate: todayISO(), rain7: w.rain7, rain14: w.rain14, rain30: w.rain30, latestLow: w.latestLow, low7: w.low7, frost7: w.frost7,
-    wet14: w.wet14, soil: w.soil, balance: w.balance, persistence: w.persistence, habitat: habitat?.cls ? {cls: habitat.cls, source: habitat.source} : null,
+    wet14: w.wet14, soil: w.soil, balance: w.balance, persistence: w.persistence, habitat: habitat?.cls ? {cls: habitat.cls, source: habitat.source} : null, land: landSnap(land),
     gridCell: cell ? {lat: cell.lat, lon: cell.lon} : null, conditionsIndex: c?.score ?? null, components: c?.components ?? null, completeness: c?.completeness ?? null, modelVersion: MODEL_VERSION};
 }
 function buildSnapshot(date, areaKey) {
   const p = state.attachedPoint;
-  if (p?.weather) return snapshotFrom('exact-point', p.metadata.calculatedAt, p.weather, p.conditions, p.habitat, p.weather.cell);
+  if (p?.weather) return snapshotFrom('exact-point', p.metadata.calculatedAt, p.weather, p.conditions, p.habitat, p.weather.cell, p.land);
   const d = state.areaData[areaKey];
-  if (!p && d?.conditions && date === todayISO()) return snapshotFrom('area-centre', new Date(d.weather.fetchedAt).toISOString(), d.weather, d.conditions, d.habitat, d.weather.cell);
+  if (!p && d?.conditions && date === todayISO()) return snapshotFrom('area-centre', new Date(d.weather.fetchedAt).toISOString(), d.weather, d.conditions, d.habitat, d.weather.cell, d.habitatAuto?.land);
   return null;
 }
 function saveObservation(e) {
@@ -1398,12 +1492,13 @@ async function analyseHistoricalObservation(rec) {
   const [w, t, hb] = await Promise.allSettled([
     fetchHistoricalWeather(lat, lon, rec.date),
     rec.terrain ? Promise.resolve({score: rec.terrain.terrainScore, elevation: rec.terrain.elevation}) : analyseTerrain(lat, lon),
-    rec.habitatClass?.source === 'Field-set' ? Promise.resolve(null) : fetchHabitat(lat, lon).catch(habitatUnavailable)
+    fetchHabitat(lat, lon).catch(habitatUnavailable)
   ]);
   if (w.status === 'rejected') throw w.reason;
   const days = w.value.days, i = days.length - 1, sum = weatherSummary(days, i);
   const terrain = t.status === 'fulfilled' ? t.value : null;
   const habitat = rec.habitatClass?.source === 'Field-set' ? effectiveHabitat(null, rec.habitatClass.cls) : (hb.value || null);
+  const land = landSnap(hb.value?.land);
   const c = calculateConditionsIndex({...envAt(days, i), terrain: terrain?.score, habitat: habitat?.score});
   return {
     coordsSource: source, weatherSource: w.value.source, status: w.value.status, gridCell: w.value.cell,
@@ -1411,6 +1506,7 @@ async function analyseHistoricalObservation(rec) {
     soil: sum.soil, balance: sum.balance, et7: sum.et7, persistence: sum.persistence,
     elevation: terrain?.elevation ?? null, terrainScore: terrain?.score ?? null,
     habitat: habitat?.cls ? {cls: habitat.cls, label: habitat.label, source: habitat.source, score: habitat.score} : null,
+    land, grazing: land?.grazing ?? null, fungiZone: land?.fungiZone ?? null,
     conditionsIndex: c.score, label: c.label, components: c.components, max: c.max, missing: c.missing, completeness: c.completeness,
     modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()
   };
@@ -1424,7 +1520,7 @@ function renderRewind(rec, h, status) {
   $('rewind').innerHTML = [
     [`${h.rain7} mm`, 'rain previous 7 days'], [`${h.rain14} mm`, 'rain previous 14 days'], [`${h.rain30} mm`, 'rain previous 30 days'],
     [h.avgLow7 != null ? `${h.avgLow7}°C` : '—', '7-night mean low'], [h.wetDays14, 'wet days (≥1 mm), 14 days'], [h.frost7 ?? '—', 'frost nights, 7 days'],
-    [fmtSoil(h.soil), 'soil moisture · modelled'], [fmtPct(h.balance ?? null), 'water balance · calculated'], [h.habitat ? esc(shortHabitat(h.habitat.cls)) : '—', `habitat · ${h.habitat?.source || 'unknown'}`],
+    [fmtSoil(h.soil), 'soil moisture · modelled'], [fmtPct(h.balance ?? null), 'water balance · calculated'], [h.habitat ? esc(shortHabitat(h.habitat.cls)) : '—', `habitat · ${h.habitat?.source || 'unknown'}`], [h.grazing === 'recorded' ? 'Grazed' : h.grazing === 'not recorded' ? 'Not recorded' : '—', 'stock grazing · NRW survey'],
     [h.conditionsIndex, `Conditions Index on the day · ${h.modelVersion || 'v0.2'}`], [h.completeness != null ? `${h.completeness}%` : '—', 'inputs available'], [rec.result === 'positive' ? 'Yes' : 'No', 'fruiting observed']
   ].map(([v, l]) => `<div class="timebox"><b>${v}</b><span>${l}</span></div>`).join('');
 }
@@ -1535,7 +1631,8 @@ const EVIDENCE_VARS = [
   ['rain14', 'Rain, 14 days', v => `${round1(v)} mm`], ['rain30', 'Rain, 30 days', v => `${round1(v)} mm`],
   ['soil', 'Soil moisture', fmtSoil], ['balance', 'Water balance', fmtPct],
   ['avgLow7', '7-night mean low', v => `${round1(v)}°C`], ['wetDays14', 'Wet days of 14', v => round1(v)], ['frost7', 'Frost nights of 7', v => round1(v)],
-  ['elevation', 'Elevation', v => `${Math.round(v)} m`], ['habitatScore', 'Habitat score', v => Math.round(v)]
+  ['elevation', 'Elevation', v => `${Math.round(v)} m`], ['habitatScore', 'Habitat score', v => Math.round(v)],
+  ['grazed', 'Stock grazing recorded (NRW)', v => `${Math.round(v * 100)}%`], ['fungiZone', 'In NRW fungi-potential zone', v => `${Math.round(v * 100)}%`]
 ];
 // Mann–Whitney AUC: the chance a random find has a higher value than a random blank (ties count half).
 function auc(pos, neg) {
@@ -1545,7 +1642,8 @@ function auc(pos, neg) {
   return wins / (pos.length * neg.length);
 }
 const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
-const evValue = (h, key) => key === 'habitatScore' ? h.habitat?.score ?? null : h[key];
+const yesNo = v => v === true || v === 'recorded' ? 1 : v === false || v === 'not recorded' ? 0 : null;
+const evValue = (h, key) => key === 'habitatScore' ? h.habitat?.score ?? null : key === 'grazed' ? yesNo(h.grazing) : key === 'fungiZone' ? yesNo(h.fungiZone) : h[key];
 function aucText(a) { return a == null ? '—' : a.toFixed(2); }
 function renderEvidence() {
   const analysed = state.records.filter(r => r.historical?.modelVersion === MODEL_VERSION);
@@ -1598,6 +1696,7 @@ function exportRows() {
       latitude: r.location?.lat ?? '', longitude: r.location?.lon ?? '', location_visibility: r.location?.visibility ?? '',
       elevation_m: r.terrain?.elevation ?? h.elevation ?? '', slope_deg: r.terrain?.slope ?? '', aspect: r.terrain?.aspect ?? '',
       habitat_class: r.habitatClass?.cls ?? h.habitat?.cls ?? '', habitat_source: r.habitatClass?.source ?? h.habitat?.source ?? '',
+      grazing_nrw: h.grazing ?? snap.land?.grazing ?? '', fungi_zone_nrw: (h.fungiZone ?? snap.land?.fungiZone) ?? '', landmap_habitat: h.land?.landmapHabitat ?? snap.land?.landmapHabitat ?? '',
       habitat_notes: r.habitat ?? '', ground: r.ground ?? '', notes: r.notes ?? '',
       rain7_mm: h.rain7 ?? '', rain14_mm: h.rain14 ?? '', rain30_mm: h.rain30 ?? '', low7_c: h.avgLow7 ?? '', wet_days_14: h.wetDays14 ?? '', frost_nights_7: h.frost7 ?? '',
       soil_moisture_vol: h.soil ?? '', water_balance: h.balance ?? '', conditions_index: h.conditionsIndex ?? '', inputs_pct: h.completeness ?? '', model_version: h.modelVersion ?? '',
@@ -1637,7 +1736,8 @@ function renderInputs(d) {
     ['Water balance', fmtPct(w.balance), Number.isFinite(w.balance) ? 'Calculated' : 'Unavailable', `50 mm bucket: rain minus FAO-56 evapotranspiration (${w.et7} mm evaporated in 7 days)`],
     ['7-night mean low', Number.isFinite(w.low7) ? `${w.low7}°C` : '—', 'Calculated', `Latest night ${Number.isFinite(w.latestLow) ? round1(w.latestLow) + '°C' : '—'} · ${w.frost7} frost night${w.frost7 === 1 ? '' : 's'} in 7 days`],
     ['Terrain', t ? `${t.elevation} m · ${t.slope}° ${t.aspect === 'Flat' ? 'flat' : t.aspect}` : '—', t ? 'Experimental' : 'Unavailable', 'Copernicus 90 m elevation model, 5 samples 60 m apart'],
-    ['Habitat', h?.cls ? HABITAT_CLASSES[h.cls].label : d.habitatPending ? 'Looking up…' : 'Unknown', h?.source === 'Field-set' ? 'Field-set' : h?.cls ? 'OSM mapped' : 'Unavailable', h?.osmTag ? `OpenStreetMap: ${h.osmTag}` : h?.source === 'Field-set' ? 'Set by you in the field' : 'Not mapped here in OpenStreetMap — left out of the index'],
+    ['Habitat', h?.cls ? HABITAT_CLASSES[h.cls].label : d.habitatPending ? 'Looking up…' : 'Unknown', habitatKind(h), h?.source === 'NRW LANDMAP' ? `NRW LANDMAP survey: ${d.habitatAuto?.land?.landmap?.habitat || ''}` : h?.osmTag ? `OpenStreetMap: ${h.osmTag}` : h?.source === 'Field-set' ? 'Set by you in the field' : 'Not mapped here — left out of the index'],
+    ['Stock grazing', d.habitatPending ? 'Looking up…' : grazingValue(d.habitatAuto?.land), d.habitatPending ? 'Loading' : grazingKind(d.habitatAuto?.land), d.habitatPending ? '' : landText(d.habitatAuto?.land)],
     ['Weather grid point', w.cell ? `${w.cell.km} km away` : '—', 'Info', 'Spots in the same model grid square share identical weather']
   ];
   $('inputsTable').innerHTML = rows.map(([l, v, k, note]) => `<div class="in"><b>${l}</b><span>${esc(String(v))}</span><em class="chip ${k === 'Live' ? 'live' : k === 'Unavailable' ? 'error' : k === 'Experimental' ? 'exp' : 'calc'}">${k}</em><small>${esc(note)}</small></div>`).join('');
