@@ -3,35 +3,702 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#08100c"><title>MycoField</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="MycoField">
 <link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png"><link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.css">
 <style>
-:root{--bg:#08100c;--panel:#0f1a14;--panel2:#13221a;--ink:#f2f7f3;--muted:#9eb0a4;--line:rgba(255,255,255,.09);--accent:#9bea65;--accent2:#d6ff6b;--warn:#f4c45f;--bad:#ed765d;--glass:rgba(10,18,13,.86)}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}header{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(8,16,12,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}.brand{display:flex;gap:10px;align-items:center}.mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,var(--accent2),var(--accent));color:#08100c;display:grid;place-items:center;font-weight:900}.brand b{font-size:14px;letter-spacing:.13em}.brand small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.pill{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 12px;border-radius:999px}.view{display:none}.view.active{display:block}.mapwrap{height:calc(100vh - 126px);min-height:560px;position:relative}#map{position:absolute;inset:0}.overlay{position:absolute;top:14px;left:14px;right:14px;z-index:5;display:grid;gap:9px;pointer-events:none}.overlay>*{pointer-events:auto}.row{display:flex;gap:8px}.select,.field{width:100%;border:1px solid var(--line);background:var(--glass);color:var(--ink);border-radius:15px;padding:12px 13px;outline:none}.score{max-width:440px;background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.3)}.scoretop{display:flex;justify-content:space-between;gap:10px;align-items:center}.scoremain{display:flex;gap:12px;align-items:center}.ring{--score:68;width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) calc(var(--score)*1%),rgba(255,255,255,.08) 0);position:relative}.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0b1510}.ring b{z-index:1;font-size:20px}.score h2{font-size:16px;margin:0 0 4px}.score p{font-size:11px;color:var(--muted);margin:0}.trend{font-size:11px;color:var(--accent);font-weight:800}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:11px}.metric{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:13px;padding:9px}.metric b{display:block;font-size:13px}.metric span{font-size:9px;color:var(--muted)}.bottom{position:absolute;left:14px;right:14px;bottom:14px;z-index:5;display:flex;justify-content:space-between;align-items:end;gap:8px;pointer-events:none}.mapcard{pointer-events:auto;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:10px 12px;backdrop-filter:blur(18px)}.mapcard strong{font-size:11px}.mapcard small{display:block;font-size:9px;color:var(--muted);margin-top:3px}.toggle button{border:0;background:transparent;color:var(--muted);padding:8px 9px;border-radius:10px}.toggle button.active{background:var(--accent);color:#07100a;font-weight:800}.page{max-width:1100px;margin:auto;padding:22px 15px 94px}.eyebrow{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:.14em;text-transform:uppercase}.title{font-size:28px;line-height:1.05;margin:6px 0}.sub{color:var(--muted);font-size:13px;max-width:720px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:16px}.card h3{margin:0 0 8px;font-size:14px}.big{font-size:34px;font-weight:850;letter-spacing:-.04em}.small{color:var(--muted);font-size:11px}.spark{width:100%;height:56px;margin-top:9px}.forecast{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:8px;overflow:auto;padding-bottom:8px}.day{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}.day b{font-size:11px}.day .n{font-size:23px;font-weight:850;margin:10px 0 3px}.day small{color:var(--muted);font-size:9px}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.timebox{border:1px solid var(--line);border-radius:15px;padding:12px;background:rgba(255,255,255,.025)}.timebox b{font-size:17px}.timebox span{display:block;color:var(--muted);font-size:9px;margin-top:3px}.history{display:grid;gap:8px;margin-top:12px}.record{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--panel)}.dot{width:10px;height:10px;border-radius:50%}.dot.positive{background:var(--accent)}.dot.blank{background:var(--bad)}.record b{font-size:12px}.record p{font-size:10px;color:var(--muted);margin:3px 0 0}.tag{font-size:9px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 7px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:10px;color:var(--muted);display:block;margin-bottom:5px}textarea{min-height:92px;resize:vertical}.btn{border:0;border-radius:13px;padding:11px 13px;background:var(--accent);color:#07100a;font-weight:850}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}.notice{border:1px solid rgba(155,234,101,.25);background:rgba(155,234,101,.06);border-radius:16px;padding:12px;font-size:10px;color:#dbeadf}nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(7,13,9,.93);border-top:1px solid var(--line);backdrop-filter:blur(20px);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}nav button{border:0;background:transparent;color:var(--muted);border-radius:12px;padding:7px 4px;font-size:9px}nav button span{display:block;font-size:18px;margin-bottom:2px}nav button.active{color:var(--accent);background:rgba(155,234,101,.08)}@media(max-width:760px){.cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.score{max-width:none}}
+:root{--bg:#08100c;--panel:#0f1a14;--panel2:#13221a;--ink:#f2f7f3;--muted:#9eb0a4;--line:rgba(255,255,255,.09);--accent:#9bea65;--accent2:#d6ff6b;--warn:#f4c45f;--bad:#ed765d;--info:#8fc4d6;--glass:rgba(10,18,13,.86)}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}[hidden]{display:none!important}header{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(8,16,12,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}.brand{display:flex;gap:10px;align-items:center}.mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,var(--accent2),var(--accent));color:#08100c;display:grid;place-items:center;font-weight:900}.brand b{font-size:14px;letter-spacing:.13em}.brand small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.pill{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 12px;border-radius:999px;min-width:44px}.view{display:none}.view.active{display:block}.mapwrap{height:calc(100vh - 126px);min-height:480px;position:relative}@supports(height:100dvh){.mapwrap{height:calc(100dvh - 126px - env(safe-area-inset-bottom))}}#map{position:absolute;inset:0}.overlay{position:absolute;top:14px;left:14px;right:14px;z-index:5;display:grid;gap:9px;pointer-events:none}.overlay>*{pointer-events:auto}.row{display:flex;gap:8px}.select,.field{width:100%;border:1px solid var(--line);background:var(--glass);color:var(--ink);border-radius:15px;padding:12px 13px;outline:none}.score{max-width:440px;background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.3)}.scoretop{display:flex;justify-content:space-between;gap:10px;align-items:center}.scoremain{display:flex;gap:12px;align-items:center}.ring{--score:0;width:66px;height:66px;flex:none;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ringc,var(--accent)) calc(var(--score)*1%),rgba(255,255,255,.08) 0);position:relative}.ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0b1510}.ring b{z-index:1;font-size:20px}.score h2{font-size:16px;margin:0 0 4px}.score p{font-size:11px;color:var(--muted);margin:0}.trend{font-size:11px;color:var(--accent);font-weight:800;white-space:nowrap;text-align:right}.trend .chip{margin-top:6px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:11px}.metric{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:13px;padding:9px;min-width:0}.metric b{display:block;font-size:13px}.metric span{font-size:9px;color:var(--muted)}.metric em{display:block;font-style:normal;font-size:8px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px;color:var(--info)}.metric em.exp{color:var(--warn)}.metric em.err{color:var(--bad)}.bottom{position:absolute;left:14px;right:14px;bottom:14px;z-index:5;display:flex;justify-content:space-between;align-items:end;gap:8px;pointer-events:none}.mapcard{pointer-events:auto;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:10px 12px;backdrop-filter:blur(18px);color:var(--ink);text-align:left}.mapcard strong{font-size:11px}.mapcard small{display:block;font-size:9px;color:var(--muted);margin-top:3px}.strongest{display:flex;gap:10px;align-items:center;max-width:300px;flex:1;min-width:0}.toggle{display:flex;flex:none}.mapwrap .maplibregl-ctrl-bottom-right,.mapwrap .maplibregl-ctrl-bottom-left{bottom:78px}.strongest .n{font-size:22px;font-weight:850;color:var(--accent2)}.strongest strong{color:var(--accent2);display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase}.strongest b{font-size:12px}.toggle button{border:0;background:transparent;color:var(--muted);padding:8px 9px;border-radius:10px;min-height:36px}.toggle button.active{background:var(--accent);color:#07100a;font-weight:800}.chip{display:inline-block;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 7px;border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.03);white-space:nowrap}.chip.live{color:var(--accent);border-color:rgba(155,234,101,.35)}.chip.cached,.chip.hist,.chip.calc{color:var(--info);border-color:rgba(143,196,214,.3)}.chip.loading,.chip.exp,.chip.partial{color:var(--warn);border-color:rgba(244,196,95,.3)}.chip.offline,.chip.error{color:var(--bad);border-color:rgba(237,118,93,.35)}button.chip{cursor:pointer}
+.amk{display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 10px 6px 8px;border-radius:999px;background:var(--glass);border:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:700;white-space:nowrap;backdrop-filter:blur(8px);box-shadow:0 6px 20px rgba(0,0,0,.35)}.amk i{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}.amk .s{color:var(--muted);font-weight:800}.amk.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(155,234,101,.28),0 6px 20px rgba(0,0,0,.35)}.amk.selected i{background:var(--accent)}.amk.strongest .s{color:var(--accent2)}.amk.strongest i{background:var(--accent2);box-shadow:0 0 0 3px rgba(214,255,107,.25)}.amk .star{display:none;color:var(--accent2)}.amk.strongest .star{display:inline}
+.pmk{width:22px;height:22px;border-radius:50%;background:var(--accent2);border:4px solid #07100a;box-shadow:0 0 0 2px var(--accent2),0 8px 24px rgba(0,0,0,.5);position:relative;pointer-events:none}.pmk:after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px solid var(--accent2);animation:pulse 1.8s ease-out infinite}@keyframes pulse{from{transform:scale(.45);opacity:.9}to{transform:scale(1.5);opacity:0}}@media(prefers-reduced-motion:reduce){.pmk:after{animation:none;opacity:.4}}
+.pointcard{position:absolute;left:14px;right:14px;bottom:14px;z-index:7;max-width:460px;max-height:calc(100% - 84px);overflow:auto;background:var(--glass);border:1px solid rgba(214,255,107,.22);border-radius:22px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 18px 60px rgba(0,0,0,.45)}.pc-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.pc-main{display:flex;gap:12px;align-items:center}.pc-main h2{font-size:16px;margin:0 0 4px}.pc-main p{font-size:11px;color:var(--muted);margin:0}.pc-explain{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.pc-explain span{font-size:10px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted)}.pc-explain span b{color:var(--ink)}.pc-coords{font-size:11px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}.pc-actions{display:flex;gap:8px;margin-top:12px}.pc-actions .btn{flex:1;min-height:44px;padding:10px 8px}.mapwrap.point-open .score,.mapwrap.point-open .bottom,.mapwrap.point-open .maplibregl-ctrl-bottom-right,.mapwrap.point-open .maplibregl-ctrl-bottom-left{display:none}.pointcard .ring{width:58px;height:58px}.pointcard .ring b{font-size:19px}.pointcard .metrics{margin-top:10px}.pointcard .metric{padding:7px 8px}.loadingbar{height:3px;border-radius:3px;margin-top:10px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:200% 100%;animation:load 1.1s linear infinite}@keyframes load{from{background-position:200% 0}to{background-position:-200% 0}}
+.page{max-width:1100px;margin:auto;padding:22px 15px calc(94px + env(safe-area-inset-bottom))}.eyebrow{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:.14em;text-transform:uppercase}.title{font-size:28px;line-height:1.05;margin:6px 0}.sub{color:var(--muted);font-size:13px;max-width:720px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:16px}.card h3{margin:0 0 8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}.big{font-size:34px;font-weight:850;letter-spacing:-.04em}.small{color:var(--muted);font-size:11px}.spark{width:100%;height:56px;margin-top:9px}.forecast{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:8px;overflow:auto;padding-bottom:8px}.day{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}.day b{font-size:11px}.day .n{font-size:23px;font-weight:850;margin:10px 0 3px}.day small{color:var(--muted);font-size:9px}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.timebox{border:1px solid var(--line);border-radius:15px;padding:12px;background:rgba(255,255,255,.025)}.timebox b{font-size:17px}.timebox span{display:block;color:var(--muted);font-size:9px;margin-top:3px}.history{display:grid;gap:8px;margin-top:12px}.record{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--panel)}.dot{width:10px;height:10px;border-radius:50%}.dot.positive{background:var(--accent)}.dot.blank{background:var(--bad)}.record b{font-size:12px}.record p{font-size:10px;color:var(--muted);margin:3px 0 0}.record .acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.record .analyse{border:1px solid var(--line);background:transparent;color:var(--accent);border-radius:999px;padding:7px 11px;font-size:10px;font-weight:800;min-height:34px}.tag{font-size:9px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 7px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:10px;color:var(--muted);display:block;margin-bottom:5px}textarea{min-height:92px;resize:vertical}.btn{border:0;border-radius:13px;padding:11px 13px;background:var(--accent);color:#07100a;font-weight:850}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}.notice{border:1px solid rgba(155,234,101,.25);background:rgba(155,234,101,.06);border-radius:16px;padding:12px;font-size:10px;color:#dbeadf}.attached{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid rgba(214,255,107,.3);background:rgba(214,255,107,.06);border-radius:16px;padding:12px;margin-bottom:12px}.attached strong{font-size:10px;letter-spacing:.12em;color:var(--accent2)}.attached p{margin:4px 0 0;font-size:11px;color:var(--ink);font-variant-numeric:tabular-nums}.attached small{color:var(--muted);font-size:10px}.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:60;background:var(--panel2);border:1px solid rgba(155,234,101,.35);color:var(--ink);padding:11px 15px;border-radius:14px;font-size:12px;box-shadow:0 12px 40px rgba(0,0,0,.4)}nav{position:fixed;bottom:0;left:0;right:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(7,13,9,.93);border-top:1px solid var(--line);backdrop-filter:blur(20px);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}nav button{border:0;background:transparent;color:var(--muted);border-radius:12px;padding:7px 4px;font-size:9px}nav button span{display:block;font-size:18px;margin-bottom:2px}nav button.active{color:var(--accent);background:rgba(155,234,101,.08)}@media(max-width:760px){.record{grid-template-columns:auto 1fr}.record .acts{grid-column:1/-1;justify-content:flex-start}.cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.score{max-width:none}.pointcard{max-width:none}}
 </style>
 </head>
 <body>
 <header><div class="brand"><div class="mark">M</div><div><b>MYCOFIELD</b><small>GRASSLAND INTELLIGENCE</small></div></div><button id="installBtn" class="pill" hidden>Install</button></header>
 <main>
-<section class="view active" id="view-map"><div class="mapwrap"><div id="map"></div><div class="overlay"><div class="row"><select id="areaSelect" class="select"></select><button class="pill" id="flyBtn">◎</button></div><div class="score"><div class="scoretop"><div class="scoremain"><div class="ring" id="ring"><b id="scoreValue">68</b></div><div><h2 id="scoreTitle">Conditions building</h2><p id="scoreCopy"></p></div></div><div class="trend" id="trend">↑ improving</div></div><div class="metrics"><div class="metric"><b id="rain14">34 mm</b><span>14-day rain signal</span></div><div class="metric"><b id="night">8°C</b><span>overnight low</span></div><div class="metric"><b id="elev">310–520m</b><span>elevation</span></div></div></div></div><div class="bottom"><div class="mapcard"><strong>3D terrain</strong><small>Drag to rotate · pinch/tilt on mobile</small></div><div class="mapcard toggle"><button id="terrainOn" class="active">3D</button><button id="terrainOff">Flat</button></div></div></div></section>
-<section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions engine</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. Research indicator only — not a guarantee of fruiting.</div><div class="cards"><div class="card"><h3>Current signal</h3><div class="big" id="dashScore"></div><div class="small" id="dashTrend"></div><svg id="sparkScore" class="spark"></svg></div><div class="card"><h3>Moisture memory</h3><div class="big" id="dashRain"></div><div class="small">14-day weighted rain signal</div><svg id="sparkRain" class="spark"></svg></div><div class="card"><h3>Night temperature</h3><div class="big" id="dashTemp"></div><div class="small">Latest overnight low</div><svg id="sparkTemp" class="spark"></svg></div></div><div class="card" style="margin-top:10px"><h3>10-day outlook</h3><div class="forecast" id="forecast"></div></div><div class="card" style="margin-top:10px"><h3>Prototype weighting</h3><div class="timeline"><div class="timebox"><b>35%</b><span>recent moisture</span></div><div class="timebox"><b>30%</b><span>cool nights</span></div><div class="timebox"><b>20%</b><span>moisture persistence</span></div><div class="timebox"><b>15%</b><span>terrain / exposure</span></div></div></div></div></section>
-<section class="view" id="view-history"><div class="page"><div class="eyebrow">Backtest</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Production version can automatically pull the weather that led up to every record.</div><div class="card" style="margin-top:18px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:10px"><h3>Example rewind — 5 Nov 2022 blank</h3><div class="small">Bedlinog uplands · placeholder backtest until historical weather is connected</div><div class="timeline"><div class="timebox"><b>7d</b><span>rainfall window</span></div><div class="timebox"><b>14d</b><span>moisture trend</span></div><div class="timebox"><b>30d</b><span>season context</span></div><div class="timebox"><b>0</b><span>fruiting observed</span></div></div></div></div></section>
-<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field record</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome. Records stay in this browser in the prototype.</div><form class="card" id="logForm" style="margin-top:18px"><div class="grid2"><div><label>Date</label><input class="field" id="obsDate" type="date" required></div><div><label>Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label>Area</label><select class="field" id="obsArea"></select></div><div><label>Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label>Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label>Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div></div><div style="margin-top:10px"><label>Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:12px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations.</div></form></div></section>
+<section class="view active" id="view-map"><div class="mapwrap" id="mapwrap"><div id="map"></div>
+<div class="overlay"><div class="row"><select id="areaSelect" class="select" aria-label="Tracked area"></select><button class="pill" id="flyBtn" aria-label="Fly to selected area">◎</button></div>
+<div class="score"><div class="scoretop"><div class="scoremain"><div class="ring" id="ring"><b id="scoreValue">…</b></div><div><h2 id="scoreTitle">Loading live conditions…</h2><p id="scoreCopy">Fetching weather and terrain</p></div></div><div class="trend"><div id="trend"></div><span id="areaStatus" class="chip loading">Loading</span></div></div><div class="metrics"><div class="metric"><b id="rain14">—</b><span>14-day rainfall</span></div><div class="metric"><b id="night">—</b><span>overnight low</span></div><div class="metric"><b id="elev">—</b><span>elevation</span></div></div></div></div>
+<div class="bottom"><button class="mapcard strongest" id="strongestCard" type="button" aria-label="Fly to strongest tracked area"><div class="n" id="strongestScore">…</div><div><strong>★ Strongest tracked area</strong><b id="strongestName">Comparing areas…</b><small id="strongestSub">Tap the map anywhere to analyse a point</small></div></button><div class="mapcard toggle"><button id="terrainOn" class="active">3D</button><button id="terrainOff">Flat</button></div></div>
+<div class="pointcard" id="pointCard" hidden role="region" aria-label="Exact point intelligence" aria-live="polite">
+<div class="pc-head"><span class="eyebrow">Exact point intelligence</span><span id="pcStatus" class="chip loading">Loading</span></div>
+<div class="pc-main"><div class="ring" id="pcRing"><b id="pcScore">…</b></div><div><h2 id="pcLabel">Analysing this point…</h2><p id="pcSub">Fetching weather and terrain</p></div></div>
+<div id="pcLoading" class="loadingbar"></div>
+<div class="metrics" id="pcMetrics"></div>
+<div class="pc-explain" id="pcExplain"></div>
+<div class="pc-coords" id="pcCoords"></div>
+<div class="pc-actions"><button class="btn" id="pcUse" type="button">Use in field log</button><button class="btn secondary" id="pcRefresh" type="button">Refresh</button><button class="btn secondary" id="pcClose" type="button">Close</button></div>
+</div>
+</div></section>
+<section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions engine</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. <span id="dashArea"></span> Experimental research indicator only — not a probability or a guarantee of fruiting.</div><div class="cards"><div class="card"><h3>Current signal <span class="chip exp">Experimental</span></h3><div class="big" id="dashScore">—</div><div class="small" id="dashTrend"></div><svg id="sparkScore" class="spark" aria-label="Conditions Index trend"></svg><div class="small">Index · today → +9 days</div></div><div class="card"><h3>Moisture memory <span class="chip" id="dashRainChip">—</span></h3><div class="big" id="dashRain">—</div><div class="small" id="dashRainSub">14-day rainfall total</div><svg id="sparkRain" class="spark" aria-label="Daily rainfall trend"></svg><div class="small">Daily rain · 14 days back → +9 days</div></div><div class="card"><h3>Night temperature</h3><div class="big" id="dashTemp">—</div><div class="small">Latest overnight low</div><svg id="sparkTemp" class="spark" aria-label="Overnight low trend"></svg><div class="small">Daily low · 14 days back → +9 days</div></div></div><div class="card" style="margin-top:10px"><h3>10-day outlook</h3><div class="forecast" id="forecast"><div class="small">Loading forecast…</div></div></div><div class="card" style="margin-top:10px"><h3>Why this score <span class="chip exp" id="modelChip">conditions-v0.2</span></h3><div class="timeline" id="breakdown"><div class="timebox"><b>40%</b><span>recent precipitation</span></div><div class="timebox"><b>30%</b><span>overnight temperature</span></div><div class="timebox"><b>20%</b><span>moisture persistence</span></div><div class="timebox"><b>10%</b><span>terrain context</span></div></div><div class="small" style="margin-top:10px">Hand-built prototype weighting. Thresholds are not scientifically validated.</div></div></div></section>
+<section class="view" id="view-history"><div class="page"><div class="eyebrow">Backtest</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:18px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:10px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div></div></section>
+<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field record</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome. Records stay in this browser in the prototype.</div><form class="card" id="logForm" style="margin-top:18px"><div class="attached" id="attachedPoint" hidden><div><strong>🔒 PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div></div><div style="margin-top:10px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:12px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
 </main>
 <nav><button class="active" data-view="map"><span>⌖</span>Map</button><button data-view="dashboard"><span>◫</span>Signal</button><button data-view="history"><span>↶</span>History</button><button data-view="log"><span>＋</span>Log</button></nav>
+<div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
 import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs';
-const areas={merthyr:{name:'Merthyr Tydfil',center:[-3.378,51.748],zoom:11.4,pitch:62,score:68,title:'Conditions building',copy:'Repeated moisture + cooler nights are improving the general grassland signal.',trend:'↑ improving',rain:'34 mm',night:'8°C',elev:'310–520m',scores:[38,40,42,44,52,57,63,68,73,76],rains:[8,9,10,11,16,20,27,34,39,43],temps:[7,12,7,9,8,11,14,11,10,10]},blorenge:{name:'The Blorenge',center:[-3.060,51.793],zoom:12,pitch:66,score:65,title:'Moisture returning',copy:'Upland exposure with an increasingly unsettled late-week pattern.',trend:'↑ improving',rain:'29 mm',night:'8°C',elev:'420–560m',scores:[38,40,42,44,51,56,60,65,71,74],rains:[6,7,9,10,15,20,26,29,36,40],temps:[7,12,7,9,8,12,13,11,9,10]},penyfan:{name:'Pen y Fan / Bannau',center:[-3.436,51.883],zoom:11.8,pitch:68,score:74,title:'Cooler upland pattern',copy:'Cooler nights plus repeated wetting gives a stronger general upland signal.',trend:'↑ improving',rain:'41 mm',night:'8°C',elev:'500–886m',scores:[40,42,46,48,58,63,69,74,78,81],rains:[10,12,15,16,23,30,37,41,47,51],temps:[6,11,6,8,8,10,13,10,9,10]},bedlinog:{name:'Bedlinog Uplands',center:[-3.312,51.708],zoom:12.2,pitch:64,score:66,title:'Research area',copy:'Useful upland comparison area with room for positive and blank historical records.',trend:'↑ improving',rain:'32 mm',night:'8°C',elev:'300–470m',scores:[37,39,41,43,50,55,61,66,72,75],rains:[7,9,9,10,15,19,25,32,37,41],temps:[7,12,7,9,8,11,14,11,10,10]}};
-const dates=['23 Sep','24 Sep','25 Sep','26 Sep','27 Sep','28 Sep','29 Sep','30 Sep','1 Oct','2 Oct'];
-const weather=['cloud/sun','partly sunny','mostly cloudy','partly sunny','showers','rain/showers','steady rain','showers','showers','rain'];
-const lows=[7,12,7,9,8,11,14,11,10,10];
-const style={version:8,sources:{osm:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap contributors',maxzoom:19},terrain:{type:'raster-dem',url:'https://demotiles.maplibre.org/terrain-tiles/tiles.json',tileSize:256}},layers:[{id:'osm',type:'raster',source:'osm'},{id:'hillshade',type:'hillshade',source:'terrain',paint:{'hillshade-exaggeration':.45}}]};
-const map=new maplibregl.Map({container:'map',style,center:areas.merthyr.center,zoom:areas.merthyr.zoom,pitch:62,bearing:-18,maxPitch:85,attributionControl:false});map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'bottom-right');map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-left');map.on('load',()=>map.setTerrain({source:'terrain',exaggeration:1.45}));
-const areaSelect=document.getElementById('areaSelect'),obsArea=document.getElementById('obsArea');Object.entries(areas).forEach(([k,a])=>{[areaSelect,obsArea].forEach(s=>{const o=document.createElement('option');o.value=k;o.textContent=a.name;s.appendChild(o)})});
-function spark(el,vals){const w=320,h=56,p=4,min=Math.min(...vals),max=Math.max(...vals);const pts=vals.map((v,i)=>`${p+i*(w-2*p)/(vals.length-1)},${h-p-(v-min)/(max-min||1)*(h-2*p)}`).join(' ');el.setAttribute('viewBox',`0 0 ${w} ${h}`);el.innerHTML=`<polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;el.style.color='var(--accent)'}
-function color(v){return v<45?'var(--bad)':v<65?'var(--warn)':'var(--accent)'}let current='merthyr';
-function sync(k,fly=true){current=k;const a=areas[k];areaSelect.value=k;obsArea.value=k;ring.style.setProperty('--score',a.score);scoreValue.textContent=a.score;scoreTitle.textContent=a.title;scoreCopy.textContent=a.copy;trend.textContent=a.trend;rain14.textContent=a.rain;night.textContent=a.night;elev.textContent=a.elev;dashScore.textContent=a.score+'/100';dashTrend.textContent=a.title;dashRain.textContent=a.rain;dashTemp.textContent=a.night;spark(sparkScore,a.scores);spark(sparkRain,a.rains);spark(sparkTemp,a.temps);forecast.innerHTML=dates.map((d,i)=>`<div class="day"><b>${d}</b><div class="n" style="color:${color(a.scores[i])}">${a.scores[i]}</div><small>${a.temps[i]}°C low<br>${weather[i]}</small></div>`).join('');if(fly)map.flyTo({center:a.center,zoom:a.zoom,pitch:a.pitch,bearing:-18,duration:1100})}sync('merthyr',false);areaSelect.onchange=e=>sync(e.target.value);flyBtn.onclick=()=>sync(current);
-terrainOn.onclick=()=>{map.setTerrain({source:'terrain',exaggeration:1.45});map.easeTo({pitch:65,duration:600});terrainOn.classList.add('active');terrainOff.classList.remove('active')};terrainOff.onclick=()=>{map.setTerrain(null);map.easeTo({pitch:0,duration:600});terrainOff.classList.add('active');terrainOn.classList.remove('active')};
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+b.dataset.view).classList.add('active');if(b.dataset.view==='map')setTimeout(()=>map.resize(),50)});
-const defaults=[{date:'2022-11-05',area:'Bedlinog Uplands',result:'blank',notes:'Blank / no fruiting observed'},{date:'2026-09-22',area:'Pen y Fan / Bannau',result:'blank',notes:'Field habitat check'}];let records=JSON.parse(localStorage.getItem('mycofield-history')||'null')||defaults;function drawHistory(){document.getElementById('history').innerHTML=records.slice().reverse().map(r=>`<div class="record"><div class="dot ${r.result}"></div><div><b>${r.area}</b><p>${r.date} · ${r.notes||'No notes'}</p></div><span class="tag">${r.result==='positive'?'observed':'blank'}</span></div>`).join('')}drawHistory();obsDate.value=new Date().toISOString().slice(0,10);logForm.onsubmit=e=>{e.preventDefault();const k=obsArea.value;records.push({date:obsDate.value,area:areas[k].name,result:obsResult.value,notes:obsNotes.value||`${obsHabitat.value||'habitat'} · ${obsGround.value}`});localStorage.setItem('mycofield-history',JSON.stringify(records));drawHistory();alert('Observation saved on this device.')};useMapCenter.onclick=()=>{const c=map.getCenter();obsNotes.value+=(obsNotes.value?'\n':'')+`Map centre: ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`};
-let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;installBtn.hidden=false;installBtn.onclick=async()=>{deferred.prompt();await deferred.userChoice;installBtn.hidden=true}});if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+
+// ---------- constants ----------
+const MODEL_VERSION = 'conditions-v0.2';
+const TZ = 'Europe/London';
+const TERRAIN_RADIUS_M = 60;
+const FLAT_SLOPE_DEG = 2;
+const WEATHER_TTL = 60 * 60 * 1000;
+const TERRAIN_TTL = 30 * 24 * 60 * 60 * 1000;
+const RECENT_HISTORY_TTL = 6 * 60 * 60 * 1000;
+const DAILY_VARS = 'temperature_2m_min,temperature_2m_max,precipitation_sum,weather_code';
+const RECORDS_KEY = 'mycofield-history-v2';
+const COMPASS = ['N','NE','E','SE','S','SW','W','NW'];
+
+// Broad research/reference areas — not observation locations.
+const areas = {
+  merthyr:  {name:'Merthyr Tydfil',     center:[-3.378,51.748], zoom:11.4, pitch:62, elev:'310–520m'},
+  blorenge: {name:'The Blorenge',       center:[-3.060,51.793], zoom:12,   pitch:66, elev:'420–560m'},
+  penyfan:  {name:'Pen y Fan / Bannau', center:[-3.436,51.883], zoom:11.8, pitch:68, elev:'500–886m'},
+  bedlinog: {name:'Bedlinog Uplands',   center:[-3.312,51.708], zoom:12.2, pitch:64, elev:'300–470m'}
+};
+
+const state = {
+  selectedArea: 'merthyr',
+  areaData: {},          // key -> {status, weather, terrain, conditions, series, error}
+  strongestArea: null,
+  pointAnalysis: null,
+  attachedPoint: null,
+  records: [],
+  mapMode: 'saved-area'
+};
+
+// ---------- small helpers ----------
+const $ = id => document.getElementById(id);
+const clamp = (v, lo = 0, hi = 100) => Math.min(hi, Math.max(lo, v));
+const round1 = v => Math.round(v * 10) / 10;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const todayISO = () => new Intl.DateTimeFormat('en-CA', {timeZone: TZ}).format(new Date());
+function addDays(iso, n) { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+const daysBetween = (a, b) => Math.round((Date.parse(b + 'T12:00:00Z') - Date.parse(a + 'T12:00:00Z')) / 864e5);
+const fmtDay = iso => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'});
+const fmtDate = iso => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric', timeZone:'UTC'});
+const fmtCoord = (lat, lon, dp = 5) => `${lat.toFixed(dp)}, ${lon.toFixed(dp)}`;
+function scoreColor(v) { return v < 35 ? 'var(--bad)' : v < 55 ? 'var(--warn)' : 'var(--accent)'; }
+const STATUS_TEXT = {loading:'Loading', live:'Live', cached:'Cached', offline:'Offline', partial:'Partial', error:'Error'};
+function setChip(el, status, text) { el.className = 'chip ' + status; el.textContent = text || STATUS_TEXT[status] || status; }
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.timer); toast.timer = setTimeout(() => t.hidden = true, 2600); }
+function distanceKm([lon1, lat1], [lon2, lat2]) {
+  const r = Math.PI / 180, a = Math.sin((lat2 - lat1) * r / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin((lon2 - lon1) * r / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(a));
+}
+function nearestArea(lat, lon) {
+  return Object.entries(areas).sort((a, b) => distanceKm(a[1].center, [lon, lat]) - distanceKm(b[1].center, [lon, lat]))[0][0];
+}
+function weatherText(code) {
+  if (code == null) return '—';
+  if (code === 0) return 'clear';
+  if (code <= 2) return 'partly cloudy';
+  if (code === 3) return 'overcast';
+  if (code <= 48) return 'fog';
+  if (code <= 57) return 'drizzle';
+  if (code <= 67) return 'rain';
+  if (code <= 77) return 'snow';
+  if (code <= 82) return 'showers';
+  if (code <= 86) return 'snow showers';
+  return 'thunderstorm';
+}
+
+// ---------- cache + network ----------
+// Persistent cache in localStorage so the last good data survives weak signal / offline.
+const cache = {
+  get(key) { try { return JSON.parse(localStorage.getItem('mf:' + key)); } catch { return null; } },
+  set(key, value) {
+    const raw = JSON.stringify(value);
+    try { localStorage.setItem('mf:' + key, raw); }
+    catch { pruneCache(0); try { localStorage.setItem('mf:' + key, raw); } catch {} }
+  }
+};
+function pruneCache(maxAgeMs = 2 * 864e5) {
+  try {
+    for (const k of Object.keys(localStorage)) {
+      if (!k.startsWith('mf:weather:')) continue;
+      const v = JSON.parse(localStorage.getItem(k));
+      if (!v || Date.now() - v.fetchedAt > maxAgeMs) localStorage.removeItem(k);
+    }
+  } catch {}
+}
+const cacheStats = {hit: 0, miss: 0};
+const inflight = new Map();
+
+async function fetchJSON(url, timeoutMs = 12000) {
+  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const r = await fetch(url, {signal: ctrl.signal});
+    const body = await r.json().catch(() => null);
+    if (!r.ok || !body || body.error) throw new Error(body?.reason || `HTTP ${r.status}`);
+    return body;
+  } finally { clearTimeout(timer); }
+}
+
+// Returns {data, status: 'live'|'cached'|'offline', fetchedAt}. Falls back to stale cache on failure.
+async function cachedJSON(key, url, ttl, {force = false} = {}) {
+  const hit = cache.get(key);
+  if (!force && hit && Date.now() - hit.fetchedAt < ttl) { cacheStats.hit++; return {data: hit.data, status: 'cached', fetchedAt: hit.fetchedAt}; }
+  cacheStats.miss++;
+  if (inflight.has(key)) return inflight.get(key);
+  const p = (async () => {
+    try {
+      const data = await fetchJSON(url);
+      const fetchedAt = Date.now();
+      cache.set(key, {fetchedAt, data});
+      return {data, status: 'live', fetchedAt};
+    } catch (err) {
+      if (hit) return {data: hit.data, status: navigator.onLine ? 'cached' : 'offline', fetchedAt: hit.fetchedAt, stale: true};
+      err.status = navigator.onLine ? 'error' : 'offline';
+      throw err;
+    } finally { inflight.delete(key); }
+  })();
+  inflight.set(key, p);
+  return p;
+}
+
+// ---------- weather engine ----------
+function toDays(daily) {
+  return daily.time.map((date, i) => ({
+    date,
+    rain: daily.precipitation_sum?.[i] ?? null,
+    low: daily.temperature_2m_min?.[i] ?? null,
+    high: daily.temperature_2m_max?.[i] ?? null,
+    code: daily.weather_code?.[i] ?? null
+  }));
+}
+function sumRain(days, i, n) { let s = 0; for (let j = Math.max(0, i - n + 1); j <= i; j++) s += days[j].rain || 0; return round1(s); }
+function calculateMoisturePersistence(rains) {
+  let m = 0;
+  return rains.map(r => (m = clamp(m * 0.80 + Math.min(r || 0, 12) / 18, 0, 1)));
+}
+// Adds rolling rain totals + persistence to each day.
+function enrichDays(days) {
+  const persistence = calculateMoisturePersistence(days.map(d => d.rain));
+  days.forEach((d, i) => { d.rain7 = sumRain(days, i, 7); d.rain14 = sumRain(days, i, 14); d.rain30 = sumRain(days, i, 30); d.persistence = persistence[i]; });
+  return days;
+}
+function latestLow(days, i) { for (let j = i; j >= 0; j--) if (Number.isFinite(days[j].low)) return days[j].low; return null; }
+
+async function fetchPointWeather(lat, lon, opts) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&daily=${DAILY_VARS}&past_days=14&forecast_days=10&timezone=${encodeURIComponent(TZ)}`;
+  const res = await cachedJSON(`weather:${lat.toFixed(3)}:${lon.toFixed(3)}:${todayISO()}`, url, WEATHER_TTL, opts);
+  const days = enrichDays(toDays(res.data.daily));
+  let todayIdx = days.findIndex(d => d.date === todayISO());
+  if (todayIdx < 0) todayIdx = Math.min(14, days.length - 1);
+  const t = days[todayIdx];
+  return {
+    status: res.status, fetchedAt: res.fetchedAt, days, todayIdx,
+    rain7: t.rain7, rain14: t.rain14, rain30: t.rain30,
+    latestLow: latestLow(days, todayIdx), persistence: round1(t.persistence * 100) / 100
+  };
+}
+
+// ---------- terrain engine ----------
+function offsetPoints(lat, lon, r) {
+  const dLat = r / 111320, dLon = r / (111320 * Math.cos(lat * Math.PI / 180));
+  return {c: [lat, lon], n: [lat + dLat, lon], s: [lat - dLat, lon], e: [lat, lon + dLon], w: [lat, lon - dLon]};
+}
+// One batched Open-Meteo Elevation request for centre + N/S/E/W samples.
+async function fetchElevationSamples(lat, lon, radius = TERRAIN_RADIUS_M, opts) {
+  const pts = offsetPoints(lat, lon, radius), keys = Object.keys(pts);
+  const url = `https://api.open-meteo.com/v1/elevation?latitude=${keys.map(k => pts[k][0].toFixed(6)).join(',')}&longitude=${keys.map(k => pts[k][1].toFixed(6)).join(',')}`;
+  const res = await cachedJSON(`terrain:${lat.toFixed(4)}:${lon.toFixed(4)}:${radius}`, url, TERRAIN_TTL, opts);
+  const el = res.data.elevation;
+  if (!Array.isArray(el) || el.length !== keys.length || el.some(v => !Number.isFinite(v))) throw Object.assign(new Error('Incomplete elevation data'), {status: 'error'});
+  return {status: res.status, samples: Object.fromEntries(keys.map((k, i) => [k, el[i]]))};
+}
+function calculateSlopeAspect(s, radius) {
+  const dzdx = (s.e - s.w) / (2 * radius), dzdy = (s.n - s.s) / (2 * radius);
+  const slope = Math.atan(Math.hypot(dzdx, dzdy)) * 180 / Math.PI;
+  if (slope < FLAT_SLOPE_DEG) return {slope: round1(slope), aspect: 'Flat', aspectDeg: null};
+  // Downslope direction = negative gradient, as a compass bearing (0° = N, clockwise).
+  const aspectDeg = (Math.atan2(-dzdx, -dzdy) * 180 / Math.PI + 360) % 360;
+  return {slope: round1(slope), aspect: COMPASS[Math.round(aspectDeg / 45) % 8], aspectDeg: Math.round(aspectDeg)};
+}
+// EXPERIMENTAL heuristic — replace freely. Mildly favours mid-upland grassland elevations,
+// gentle/moderate slopes and cooler, moisture-retaining aspects.
+function calculateTerrainScore({elevation, slope, aspect}) {
+  const elevScore = elevation < 150 ? 40 + elevation / 150 * 60 : elevation <= 600 ? 100 : clamp(100 - (elevation - 600) / 4);
+  const slopeScore = slope < FLAT_SLOPE_DEG ? 75 : slope <= 15 ? 100 : clamp(100 - (slope - 15) * 4);
+  const aspectScore = aspect === 'Flat' ? 85 : ['N','NE','NW'].includes(aspect) ? 100 : ['E','W'].includes(aspect) ? 85 : 70;
+  return Math.round(0.45 * elevScore + 0.35 * slopeScore + 0.20 * aspectScore);
+}
+async function analyseTerrain(lat, lon, opts) {
+  const {status, samples} = await fetchElevationSamples(lat, lon, TERRAIN_RADIUS_M, opts);
+  const shape = calculateSlopeAspect(samples, TERRAIN_RADIUS_M);
+  const terrain = {elevation: Math.round(samples.c), ...shape};
+  return {status, ...terrain, score: calculateTerrainScore(terrain)};
+}
+
+// ---------- scoring engine (shared by areas, points, observations, history) ----------
+function conditionsLabel(score) {
+  return score < 35 ? 'Weak environmental signal' : score < 55 ? 'Conditions developing' : score < 70 ? 'Moderate environmental signal' : score < 85 ? 'Strong environmental signal' : 'Very strong environmental signal';
+}
+function calculateConditionsIndex({rain14, low, persistence, terrain}) {
+  const terrainKnown = Number.isFinite(terrain);
+  const parts = {
+    rain: 0.40 * clamp((rain14 || 0) / 45 * 100),
+    nights: Number.isFinite(low) ? 0.30 * clamp(100 - Math.abs(low - 8) * 12) : 0,
+    persistence: 0.20 * clamp((persistence || 0) * 100),
+    terrain: 0.10 * (terrainKnown ? terrain : 50)
+  };
+  const score = Math.round(parts.rain + parts.nights + parts.persistence + parts.terrain);
+  return {score, label: conditionsLabel(score), components: Object.fromEntries(Object.entries(parts).map(([k, v]) => [k, Math.round(v)])), terrainAssumed: !terrainKnown, modelVersion: MODEL_VERSION};
+}
+// Index for every day with a full 14-day window, plus trend (today vs next 3 days).
+function scoreSeries(weather, terrainScore) {
+  const {days, todayIdx} = weather;
+  const series = days.map((d, i) => i < 13 ? null : calculateConditionsIndex({rain14: d.rain14, low: d.low ?? latestLow(days, i), persistence: d.persistence, terrain: terrainScore}).score);
+  const ahead = series.slice(todayIdx + 1, todayIdx + 4).filter(Number.isFinite);
+  const avg = ahead.reduce((a, b) => a + b, 0) / (ahead.length || 1);
+  const delta = ahead.length ? avg - series[todayIdx] : 0;
+  const trend = delta > 3 ? 'rising' : delta < -3 ? 'falling' : 'stable';
+  return {series, trend};
+}
+const TREND_TEXT = {rising: '↑ rising', stable: '→ stable', falling: '↓ falling'};
+function explainParts(c) {
+  return [['Rain', c.components.rain], ['Cool nights', c.components.nights], ['Persistence', c.components.persistence], ['Terrain', c.components.terrain]];
+}
+
+// ---------- map ----------
+const style = {version: 8, sources: {osm: {type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors', maxzoom: 19}, terrain: {type: 'raster-dem', url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json', tileSize: 256}}, layers: [{id: 'osm', type: 'raster', source: 'osm'}, {id: 'hillshade', type: 'hillshade', source: 'terrain', paint: {'hillshade-exaggeration': .45}}]};
+const map = new maplibregl.Map({container: 'map', style, center: areas.merthyr.center, zoom: areas.merthyr.zoom, pitch: 62, bearing: -18, maxPitch: 85, attributionControl: false});
+map.addControl(new maplibregl.NavigationControl({visualizePitch: true}), 'bottom-right');
+map.addControl(new maplibregl.AttributionControl({compact: true}), 'bottom-left');
+map.on('load', () => map.setTerrain({source: 'terrain', exaggeration: 1.45}));
+
+const areaMarkers = {};
+function createAreaMarkers() {
+  for (const [k, a] of Object.entries(areas)) {
+    const el = document.createElement('button');
+    el.type = 'button'; el.className = 'amk'; el.dataset.area = k;
+    el.setAttribute('aria-label', `Select ${a.name}`);
+    el.innerHTML = `<i></i><span class="star">★</span>${esc(a.name)} <span class="s">…</span>`;
+    el.addEventListener('click', e => { e.stopPropagation(); selectArea(k); });
+    areaMarkers[k] = new maplibregl.Marker({element: el, anchor: 'bottom'}).setLngLat(a.center).addTo(map);
+  }
+}
+function renderAreaMarkers() {
+  for (const [k, m] of Object.entries(areaMarkers)) {
+    const el = m.getElement(), d = state.areaData[k];
+    el.classList.toggle('selected', k === state.selectedArea);
+    el.classList.toggle('strongest', k === state.strongestArea);
+    el.querySelector('.s').textContent = d?.conditions ? d.conditions.score : d?.status === 'loading' || !d ? '…' : '—';
+  }
+}
+
+let pointMarker = null;
+function placePointMarker(lat, lon) {
+  if (!pointMarker) { const el = document.createElement('div'); el.className = 'pmk'; pointMarker = new maplibregl.Marker({element: el}); }
+  pointMarker.setLngLat([lon, lat]).addTo(map);
+}
+
+// Only deliberate taps on empty terrain analyse a point — never drag/zoom/rotate.
+map.on('click', e => {
+  if (e.originalEvent?.target?.closest?.('.amk, .pmk, .maplibregl-ctrl')) return;
+  analysePoint(e.lngLat.lat, e.lngLat.lng);
+});
+
+// ---------- saved areas ----------
+async function loadArea(k, opts) {
+  const a = areas[k], [lon, lat] = a.center;
+  state.areaData[k] = {...state.areaData[k], status: 'loading'};
+  renderAreaMarkers(); if (k === state.selectedArea) renderSelectedArea();
+  const [w, t] = await Promise.allSettled([fetchPointWeather(lat, lon, opts), analyseTerrain(lat, lon, opts)]);
+  const d = {status: 'error'};
+  if (t.status === 'fulfilled') d.terrain = t.value;
+  if (w.status === 'fulfilled') {
+    d.weather = w.value;
+    d.conditions = calculateConditionsIndex({rain14: d.weather.rain14, low: d.weather.latestLow, persistence: d.weather.persistence, terrain: d.terrain?.score});
+    Object.assign(d, scoreSeries(d.weather, d.terrain?.score));
+    d.status = d.weather.status === 'live' && !d.terrain ? 'partial' : d.weather.status;
+  } else {
+    d.error = w.reason; d.status = w.reason?.status || 'error';
+  }
+  state.areaData[k] = d;
+  compareTrackedAreas(); renderAreaMarkers();
+  if (k === state.selectedArea) { renderSelectedArea(); renderSignal(); }
+}
+function loadAllAreas(opts) { return Promise.all(Object.keys(areas).map(k => loadArea(k, opts))); }
+
+function compareTrackedAreas() {
+  const scored = Object.entries(state.areaData).filter(([, d]) => d.conditions);
+  state.strongestArea = scored.length ? scored.sort((a, b) => b[1].conditions.score - a[1].conditions.score)[0][0] : null;
+  const s = state.strongestArea;
+  if (s) {
+    $('strongestScore').textContent = state.areaData[s].conditions.score;
+    $('strongestName').textContent = areas[s].name;
+    $('strongestSub').textContent = `Highest current index of ${scored.length} tracked area${scored.length === 1 ? '' : 's'}`;
+  } else {
+    const pending = Object.values(state.areaData).some(d => d.status === 'loading');
+    $('strongestScore').textContent = pending ? '…' : '—';
+    $('strongestName').textContent = pending ? 'Comparing areas…' : 'Live weather unavailable';
+    $('strongestSub').textContent = pending ? 'Tap the map anywhere to analyse a point' : 'Check signal — cached data will be used when available';
+  }
+}
+
+function selectArea(k, fly = true) {
+  state.selectedArea = k; state.mapMode = 'saved-area';
+  $('areaSelect').value = k;
+  if (!state.attachedPoint) $('obsArea').value = k;
+  clearPointAnalysis();
+  renderAreaMarkers(); renderSelectedArea(); renderSignal();
+  if (fly) { const a = areas[k]; map.flyTo({center: a.center, zoom: a.zoom, pitch: a.pitch, bearing: -18, duration: 1100}); }
+}
+
+function renderSelectedArea() {
+  const k = state.selectedArea, a = areas[k], d = state.areaData[k] || {status: 'loading'};
+  $('elev').textContent = a.elev;
+  const statusEl = $('areaStatus');
+  if (d.conditions) {
+    const c = d.conditions;
+    $('ring').style.setProperty('--score', c.score); $('ring').style.setProperty('--ringc', scoreColor(c.score));
+    $('scoreValue').textContent = c.score;
+    $('scoreTitle').textContent = c.label;
+    $('scoreCopy').textContent = explainParts(c).map(([n, v]) => `${n} +${v}`).join(' · ');
+    $('trend').textContent = TREND_TEXT[d.trend];
+    $('rain14').textContent = `${d.weather.rain14} mm`;
+    $('night').textContent = Number.isFinite(d.weather.latestLow) ? `${round1(d.weather.latestLow)}°C` : '—';
+    if (d.terrain) $('elev').textContent = `${d.terrain.elevation} m`;
+  } else {
+    $('ring').style.setProperty('--score', 0);
+    $('scoreValue').textContent = d.status === 'loading' ? '…' : '—';
+    $('scoreTitle').textContent = d.status === 'loading' ? 'Loading live conditions…' : 'Live weather unavailable';
+    $('scoreCopy').textContent = d.status === 'loading' ? `Fetching weather and terrain for ${a.name}` : 'Tap Retry when you have signal.';
+    $('trend').textContent = ''; $('rain14').textContent = '—'; $('night').textContent = '—';
+  }
+  if (d.status === 'error' || d.status === 'offline') {
+    statusEl.outerHTML = `<button id="areaStatus" class="chip ${d.status}" type="button">${STATUS_TEXT[d.status]} · Retry</button>`;
+    $('areaStatus').onclick = () => loadArea(k, {force: true});
+  } else {
+    if (statusEl.tagName === 'BUTTON') statusEl.outerHTML = '<span id="areaStatus" class="chip"></span>';
+    setChip($('areaStatus'), d.status);
+  }
+}
+
+// ---------- signal screen ----------
+function spark(el, vals) {
+  const pts0 = vals.map((v, i) => [i, v]).filter(([, v]) => Number.isFinite(v));
+  if (pts0.length < 2) { el.innerHTML = ''; return; }
+  const w = 320, h = 56, p = 4, ys = pts0.map(([, v]) => v), min = Math.min(...ys), max = Math.max(...ys), n = vals.length - 1 || 1;
+  const pts = pts0.map(([i, v]) => `${p + i * (w - 2 * p) / n},${h - p - (v - min) / (max - min || 1) * (h - 2 * p)}`).join(' ');
+  el.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  el.innerHTML = `<polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  el.style.color = 'var(--accent)';
+}
+function renderSignal() {
+  const k = state.selectedArea, d = state.areaData[k];
+  $('dashArea').textContent = `Showing ${areas[k].name}.`;
+  if (!d?.conditions) {
+    const loading = !d || d.status === 'loading';
+    $('dashScore').textContent = loading ? '…' : '—'; $('dashTrend').textContent = loading ? 'Loading live weather…' : 'Live weather unavailable — cached data will be used when available';
+    $('dashRain').textContent = '—'; $('dashTemp').textContent = '—';
+    setChip($('dashRainChip'), loading ? 'loading' : d.status);
+    ['sparkScore', 'sparkRain', 'sparkTemp'].forEach(id => $(id).innerHTML = '');
+    $('forecast').innerHTML = `<div class="small">${loading ? 'Loading forecast…' : 'Forecast unavailable offline.'}</div>`;
+    return;
+  }
+  const {weather: w, conditions: c, series} = d;
+  $('dashScore').textContent = `${c.score}/100`;
+  $('dashTrend').textContent = `${c.label} · ${TREND_TEXT[d.trend]}`;
+  $('dashRain').textContent = `${w.rain14} mm`;
+  $('dashRainSub').textContent = `14-day rainfall · persistence ${Math.round(w.persistence * 100)}%`;
+  setChip($('dashRainChip'), w.status);
+  $('dashTemp').textContent = Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—';
+  spark($('sparkScore'), series.slice(w.todayIdx));
+  spark($('sparkRain'), w.days.map(x => x.rain));
+  spark($('sparkTemp'), w.days.map(x => x.low));
+  $('forecast').innerHTML = w.days.slice(w.todayIdx, w.todayIdx + 10).map((x, j) => {
+    const s = series[w.todayIdx + j];
+    return `<div class="day"><b>${fmtDay(x.date)}</b><div class="n" style="color:${scoreColor(s)}">${s ?? '—'}</div><small>${Number.isFinite(x.low) ? round1(x.low) + '°C low' : '—'}<br>${round1(x.rain || 0)} mm · ${weatherText(x.code)}</small></div>`;
+  }).join('');
+  $('breakdown').innerHTML = [['40%', 'recent precipitation', c.components.rain], ['30%', 'overnight temperature', c.components.nights], ['20%', 'moisture persistence', c.components.persistence], ['10%', 'terrain context', c.components.terrain]]
+    .map(([wt, label, v]) => `<div class="timebox"><b>+${v}</b><span>${label} · weight ${wt}</span></div>`).join('');
+}
+
+// ---------- exact point intelligence ----------
+let pointToken = 0;
+async function analysePoint(lat, lon, {force = false} = {}) {
+  const token = ++pointToken;
+  state.mapMode = 'point';
+  state.pointAnalysis = {coordinates: {lat, lon}, loading: true};
+  placePointMarker(lat, lon);
+  renderPointLoading(lat, lon);
+  revealPoint(lat, lon);
+  const [w, t] = await Promise.allSettled([fetchPointWeather(lat, lon, {force}), analyseTerrain(lat, lon, {force})]);
+  if (token !== pointToken) return; // a newer tap superseded this one
+  const result = buildPointResult(lat, lon, w, t);
+  state.pointAnalysis = result;
+  renderPointAnalysis(result);
+}
+function buildPointResult(lat, lon, w, t) {
+  const weather = w.status === 'fulfilled' ? w.value : null;
+  const terrain = t.status === 'fulfilled' ? t.value : null;
+  const conditions = weather ? calculateConditionsIndex({rain14: weather.rain14, low: weather.latestLow, persistence: weather.persistence, terrain: terrain?.score}) : null;
+  return {
+    coordinates: {lat, lon},
+    weather: weather && {rain7: weather.rain7, rain14: weather.rain14, rain30: weather.rain30, latestLow: weather.latestLow, persistence: weather.persistence, status: weather.status},
+    terrain: terrain && {elevation: terrain.elevation, slope: terrain.slope, aspect: terrain.aspect, aspectDeg: terrain.aspectDeg, score: terrain.score, status: terrain.status},
+    conditions,
+    errors: {weather: w.status === 'rejected' ? (w.reason?.status || 'error') : null, terrain: t.status === 'rejected' ? (t.reason?.status || 'error') : null},
+    metadata: {weatherSource: 'Open-Meteo Forecast', elevationSource: 'Open-Meteo Elevation', terrainRadiusM: TERRAIN_RADIUS_M, modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()}
+  };
+}
+function metricHTML(value, label, kind) {
+  const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : '';
+  return `<div class="metric"><b>${value}</b><span>${label}</span><em class="${cls}">${kind}</em></div>`;
+}
+function renderPointLoading(lat, lon) {
+  $('mapwrap').classList.add('point-open');
+  $('pointCard').hidden = false;
+  setChip($('pcStatus'), 'loading');
+  $('pcRing').style.setProperty('--score', 0);
+  $('pcScore').textContent = '…';
+  $('pcLabel').textContent = 'Analysing this point…';
+  $('pcSub').textContent = 'Fetching weather, elevation and terrain shape';
+  $('pcLoading').hidden = false;
+  $('pcMetrics').innerHTML = ['14-day rainfall', 'overnight low', 'elevation', 'slope', 'aspect', 'terrain context'].map(l => metricHTML('…', l, 'Loading')).join('');
+  $('pcExplain').innerHTML = '';
+  $('pcCoords').textContent = fmtCoord(lat, lon);
+  $('pcUse').disabled = true;
+}
+function renderPointAnalysis(r) {
+  const {weather: w, terrain: t, conditions: c, errors} = r;
+  $('pcLoading').hidden = true;
+  $('pcUse').disabled = false;
+  const statuses = [w?.status, t?.status].filter(Boolean);
+  const overall = !w && !t ? (errors.weather === 'offline' ? 'offline' : 'error') : (!w || !t) ? 'partial' : statuses.includes('offline') ? 'offline' : statuses.every(s => s === 'cached') ? 'cached' : statuses.includes('cached') ? 'cached' : 'live';
+  setChip($('pcStatus'), overall);
+  if (c) {
+    $('pcRing').style.setProperty('--score', c.score); $('pcRing').style.setProperty('--ringc', scoreColor(c.score));
+    $('pcScore').textContent = c.score;
+    $('pcLabel').textContent = c.label;
+    $('pcSub').textContent = `Experimental index · ${MODEL_VERSION}${c.terrainAssumed ? ' · terrain unavailable, neutral 50 used' : ''}`;
+  } else {
+    $('pcRing').style.setProperty('--score', 0);
+    $('pcScore').textContent = '—';
+    $('pcLabel').textContent = t ? 'Terrain only' : 'Analysis unavailable';
+    $('pcSub').textContent = `Weather ${errors.weather === 'offline' ? 'offline' : 'failed to load'} — tap Refresh to retry.`;
+  }
+  const wKind = w ? (w.status === 'live' ? 'Live' : w.status === 'offline' ? 'Offline cache' : 'Cached') : 'Unavailable';
+  const tKind = t ? 'Calculated' : 'Unavailable';
+  $('pcMetrics').innerHTML = [
+    metricHTML(w ? `${w.rain14} mm` : '—', '14-day rainfall', wKind),
+    metricHTML(w && Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—', 'overnight low', wKind),
+    metricHTML(t ? `${t.elevation} m` : '—', 'elevation', t ? (t.status === 'live' ? 'Live' : 'Cached') : 'Unavailable'),
+    metricHTML(t ? `${t.slope}°` : '—', 'slope', tKind),
+    metricHTML(t ? t.aspect : '—', 'aspect', tKind),
+    metricHTML(t ? `${t.score}/100` : '—', 'terrain context', t ? 'Experimental' : 'Unavailable')
+  ].join('');
+  $('pcExplain').innerHTML = c ? explainParts(c).map(([n, v]) => `<span>${n} <b>+${v}</b></span>`).join('') + (w ? `<span>Moisture memory <b>${Math.round(w.persistence * 100)}%</b></span>` : '') : '';
+  $('pcCoords').textContent = `${fmtCoord(r.coordinates.lat, r.coordinates.lon)} · 🔒 private`;
+}
+// Pan so the analysed point sits in the visible map area above the card.
+function revealPoint(lat, lon) {
+  const cardH = $('pointCard').offsetHeight, mapH = $('map').offsetHeight;
+  const bottom = Math.min(cardH + 24, mapH - 140);
+  map.easeTo({center: [lon, lat], padding: {top: 70, bottom, left: 0, right: 0}, duration: 450});
+}
+function clearPointAnalysis() {
+  if (state.pointAnalysis) map.easeTo({padding: {top: 0, bottom: 0, left: 0, right: 0}, duration: 300});
+  pointToken++;
+  state.pointAnalysis = null; state.mapMode = 'saved-area';
+  pointMarker?.remove();
+  $('pointCard').hidden = true;
+  $('mapwrap').classList.remove('point-open');
+}
+function usePointInObservation() {
+  const r = state.pointAnalysis;
+  if (!r || r.loading) return;
+  state.attachedPoint = r;
+  $('obsArea').value = nearestArea(r.coordinates.lat, r.coordinates.lon);
+  if (r.terrain) $('obsElevation').value = `${r.terrain.elevation} m`;
+  renderAttachedPoint();
+  switchView('log');
+}
+function renderAttachedPoint() {
+  const r = state.attachedPoint;
+  $('attachedPoint').hidden = !r;
+  if (!r) return;
+  $('attachedCoords').textContent = fmtCoord(r.coordinates.lat, r.coordinates.lon, 4);
+  $('attachedTerrain').textContent = r.terrain ? `${r.terrain.elevation} m · ${r.terrain.aspect === 'Flat' ? 'flat ground' : r.terrain.aspect + ' aspect'} · ${r.terrain.slope}° slope` : 'Terrain unavailable for this point';
+}
+
+// ---------- observations ----------
+const DEFAULT_RECORDS = [
+  {id: 'demo-2022-11-05', createdAt: '2022-11-05T12:00:00Z', date: '2022-11-05', areaKey: 'bedlinog', area: 'Bedlinog Uplands', result: 'blank', notes: 'Blank / no fruiting observed', demo: true},
+  {id: 'demo-2026-09-22', createdAt: '2026-09-22T12:00:00Z', date: '2026-09-22', areaKey: 'penyfan', area: 'Pen y Fan / Bannau', result: 'blank', notes: 'Field habitat check', demo: true}
+];
+const areaKeyByName = name => Object.keys(areas).find(k => areas[k].name === name) || null;
+function loadRecords() {
+  try {
+    const v2 = JSON.parse(localStorage.getItem(RECORDS_KEY) || 'null');
+    if (Array.isArray(v2)) return v2;
+    const v1 = JSON.parse(localStorage.getItem('mycofield-history') || 'null');
+    if (Array.isArray(v1)) {
+      const migrated = v1.map((r, i) => ({id: `v1-${i}-${r.date}`, createdAt: null, ...r, areaKey: areaKeyByName(r.area)}));
+      saveRecords(migrated);
+      return migrated;
+    }
+  } catch {}
+  return DEFAULT_RECORDS.map(r => ({...r}));
+}
+function saveRecords(records = state.records) {
+  try { localStorage.setItem(RECORDS_KEY, JSON.stringify(records)); return true; } catch { return false; }
+}
+function buildSnapshot(date, areaKey) {
+  const p = state.attachedPoint;
+  if (p?.weather) return {source: 'exact-point', analysedAt: p.metadata.calculatedAt, analysedForDate: todayISO(), rain7: p.weather.rain7, rain14: p.weather.rain14, rain30: p.weather.rain30, latestLow: p.weather.latestLow, persistence: p.weather.persistence, conditionsIndex: p.conditions?.score ?? null, components: p.conditions?.components ?? null, modelVersion: MODEL_VERSION};
+  const d = state.areaData[areaKey];
+  if (!p && d?.conditions && date === todayISO()) return {source: 'area-centre', analysedAt: new Date(d.weather.fetchedAt).toISOString(), analysedForDate: todayISO(), rain7: d.weather.rain7, rain14: d.weather.rain14, rain30: d.weather.rain30, latestLow: d.weather.latestLow, persistence: d.weather.persistence, conditionsIndex: d.conditions.score, components: d.conditions.components, modelVersion: MODEL_VERSION};
+  return null;
+}
+function saveObservation(e) {
+  e.preventDefault();
+  const k = $('obsArea').value, p = state.attachedPoint;
+  const rec = {
+    id: crypto.randomUUID?.() || String(Date.now()),
+    createdAt: new Date().toISOString(),
+    date: $('obsDate').value,
+    result: $('obsResult').value,
+    areaKey: k, area: areas[k].name,
+    elevationBand: $('obsElevation').value.trim(),
+    habitat: $('obsHabitat').value.trim(),
+    ground: $('obsGround').value,
+    notes: $('obsNotes').value.trim() || `${$('obsHabitat').value.trim() || 'habitat'} · ${$('obsGround').value}`,
+    location: p ? {lat: round6(p.coordinates.lat), lon: round6(p.coordinates.lon), visibility: 'private'} : null,
+    terrain: p?.terrain ? {elevation: p.terrain.elevation, slope: p.terrain.slope, aspect: p.terrain.aspect, terrainScore: p.terrain.score, radiusM: TERRAIN_RADIUS_M} : null,
+    weatherSnapshot: buildSnapshot($('obsDate').value, k),
+    modelVersion: MODEL_VERSION
+  };
+  state.records.push(rec);
+  if (!saveRecords()) { state.records.pop(); toast('Could not save — device storage is full or blocked.'); return; }
+  state.attachedPoint = null; renderAttachedPoint();
+  $('obsNotes').value = ''; $('obsHabitat').value = ''; $('obsElevation').value = '';
+  renderHistory();
+  toast(rec.location ? 'Observation saved with private location.' : 'Observation saved on this device.');
+}
+const round6 = v => Math.round(v * 1e6) / 1e6;
+
+function renderHistory() {
+  $('history').innerHTML = state.records.slice().reverse().map(r => {
+    const bits = [fmtDate(r.date), esc(r.notes || 'No notes')];
+    return `<div class="record"><div class="dot ${r.result === 'positive' ? 'positive' : 'blank'}"></div><div><b>${esc(r.area)}</b><p>${bits.join(' · ')}</p></div><div class="acts">${r.location ? '<span class="tag">🔒 private point</span>' : ''}${r.historical ? `<span class="tag">idx ${r.historical.conditionsIndex ?? '—'}</span>` : ''}<span class="tag">${r.result === 'positive' ? 'observed' : 'blank'}</span><button class="analyse" type="button" data-id="${esc(r.id)}">Analyse</button></div></div>`;
+  }).join('') || '<div class="small">No observations yet.</div>';
+}
+
+// ---------- historical reconstruction ----------
+function observationCoords(rec) {
+  if (rec.location) return {lat: rec.location.lat, lon: rec.location.lon, source: 'private point'};
+  const k = rec.areaKey || areaKeyByName(rec.area) || state.selectedArea;
+  return {lat: areas[k].center[1], lon: areas[k].center[0], source: `${areas[k].name} centre`};
+}
+async function fetchHistoricalWeather(lat, lon, endDate) {
+  const start = addDays(endDate, -29), age = daysBetween(endDate, todayISO());
+  if (age < 0) throw Object.assign(new Error('Observation date is in the future'), {status: 'error'});
+  // The archive lags ~5 days; recent dates come from the forecast API's past data.
+  const recent = age <= 7;
+  const base = recent ? 'https://api.open-meteo.com/v1/forecast' : 'https://archive-api.open-meteo.com/v1/archive';
+  const url = `${base}?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&start_date=${start}&end_date=${endDate}&daily=${DAILY_VARS}&timezone=${encodeURIComponent(TZ)}`;
+  const res = await cachedJSON(`hist:${lat.toFixed(3)}:${lon.toFixed(3)}:${endDate}`, url, recent ? RECENT_HISTORY_TTL : Infinity);
+  return {...res, source: recent ? 'Open-Meteo Forecast (past days)' : 'Open-Meteo Archive', days: enrichDays(toDays(res.data.daily))};
+}
+async function analyseHistoricalObservation(rec) {
+  const {lat, lon, source} = observationCoords(rec);
+  const [w, t] = await Promise.allSettled([
+    fetchHistoricalWeather(lat, lon, rec.date),
+    rec.terrain ? Promise.resolve({score: rec.terrain.terrainScore}) : analyseTerrain(lat, lon)
+  ]);
+  if (w.status === 'rejected') throw w.reason;
+  const days = w.value.days, i = days.length - 1, last7 = days.slice(-7).map(d => d.low).filter(Number.isFinite);
+  const avgLow7 = last7.length ? round1(last7.reduce((a, b) => a + b, 0) / last7.length) : null;
+  const terrainScore = t.status === 'fulfilled' ? t.value.score : undefined;
+  const c = calculateConditionsIndex({rain14: days[i].rain14, low: latestLow(days, i), persistence: days[i].persistence, terrain: terrainScore});
+  return {
+    coordsSource: source, weatherSource: w.value.source, status: w.value.status,
+    rain7: days[i].rain7, rain14: days[i].rain14, rain30: days[i].rain30,
+    avgLow7, wetDays14: days.slice(-14).filter(d => (d.rain || 0) >= 1).length,
+    persistence: round1(days[i].persistence * 100) / 100,
+    conditionsIndex: c.score, label: c.label, components: c.components, terrainAssumed: c.terrainAssumed,
+    modelVersion: MODEL_VERSION, calculatedAt: new Date().toISOString()
+  };
+}
+function renderRewind(rec, h, status) {
+  $('rewindTitle').textContent = `Rewind — ${fmtDate(rec.date)} ${rec.result === 'positive' ? 'observation' : 'blank'}`;
+  if (status === 'loading') { setChip($('rewindChip'), 'loading'); $('rewindSub').textContent = `${rec.area} · rebuilding 30 days of weather…`; $('rewind').innerHTML = ''; return; }
+  if (status === 'error' || status === 'offline') { setChip($('rewindChip'), status); $('rewindSub').textContent = `${rec.area} · historical weather ${status === 'offline' ? 'needs a connection' : 'failed to load'}. Tap Analyse to retry.`; $('rewind').innerHTML = ''; return; }
+  setChip($('rewindChip'), 'hist', `Historical${h.status === 'live' ? '' : ' · ' + STATUS_TEXT[h.status]}`);
+  $('rewindSub').textContent = `${rec.area} · ${h.coordsSource} · ${h.weatherSource}`;
+  $('rewind').innerHTML = [
+    [`${h.rain7} mm`, 'rain previous 7 days'], [`${h.rain14} mm`, 'rain previous 14 days'], [`${h.rain30} mm`, 'rain previous 30 days'],
+    [h.avgLow7 != null ? `${h.avgLow7}°C` : '—', 'avg overnight low, 7 days'], [h.wetDays14, 'wet days (≥1 mm), 14 days'], [`${Math.round(h.persistence * 100)}%`, 'moisture persistence · calculated'],
+    [h.conditionsIndex, `Conditions Index on the day · experimental${h.terrainAssumed ? ' · neutral terrain' : ''}`], [rec.result === 'positive' ? 'Yes' : 'No', 'fruiting observed']
+  ].map(([v, l]) => `<div class="timebox"><b>${v}</b><span>${l}</span></div>`).join('');
+}
+async function onAnalyseClick(e) {
+  const btn = e.target.closest('.analyse'); if (!btn) return;
+  const rec = state.records.find(r => r.id === btn.dataset.id); if (!rec) return;
+  btn.disabled = true; btn.textContent = 'Analysing…';
+  renderRewind(rec, null, 'loading');
+  $('rewindCard').scrollIntoView({behavior: 'smooth', block: 'nearest'});
+  try {
+    rec.historical = await analyseHistoricalObservation(rec);
+    saveRecords();
+    renderRewind(rec, rec.historical);
+  } catch (err) {
+    renderRewind(rec, null, err.status === 'offline' ? 'offline' : 'error');
+  }
+  renderHistory();
+}
+
+// ---------- views + wiring ----------
+function switchView(name) {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x.dataset.view === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+  if (name === 'map') setTimeout(() => map.resize(), 50);
+  window.scrollTo(0, 0);
+}
+
+function init() {
+  pruneCache();
+  for (const [k, a] of Object.entries(areas)) for (const s of [$('areaSelect'), $('obsArea')]) { const o = document.createElement('option'); o.value = k; o.textContent = a.name; s.appendChild(o); }
+  createAreaMarkers();
+  selectArea('merthyr', false);
+
+  $('areaSelect').onchange = e => selectArea(e.target.value);
+  $('flyBtn').onclick = () => selectArea(state.selectedArea);
+  $('strongestCard').onclick = () => { if (state.strongestArea) selectArea(state.strongestArea); };
+  $('terrainOn').onclick = () => { map.setTerrain({source: 'terrain', exaggeration: 1.45}); map.easeTo({pitch: 65, duration: 600}); $('terrainOn').classList.add('active'); $('terrainOff').classList.remove('active'); };
+  $('terrainOff').onclick = () => { map.setTerrain(null); map.easeTo({pitch: 0, duration: 600}); $('terrainOff').classList.add('active'); $('terrainOn').classList.remove('active'); };
+  document.querySelectorAll('nav button').forEach(b => b.onclick = () => switchView(b.dataset.view));
+
+  $('pcUse').onclick = usePointInObservation;
+  $('pcRefresh').onclick = () => { const c = state.pointAnalysis?.coordinates; if (c) analysePoint(c.lat, c.lon, {force: true}); };
+  $('pcClose').onclick = clearPointAnalysis;
+  $('removeLocation').onclick = () => { state.attachedPoint = null; renderAttachedPoint(); toast('Private location removed.'); };
+
+  state.records = loadRecords();
+  renderHistory();
+  $('history').addEventListener('click', onAnalyseClick);
+  $('obsDate').value = todayISO();
+  $('logForm').onsubmit = saveObservation;
+  $('useMapCenter').onclick = () => { const c = map.getCenter(); $('obsNotes').value += ($('obsNotes').value ? '\n' : '') + `Map centre: ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`; };
+
+  window.addEventListener('online', () => { if (Object.values(state.areaData).some(d => !d.conditions || d.status !== 'live')) loadAllAreas(); });
+  loadAllAreas();
+}
+init();
+
+// Dev aid: window.mycofield exposes state for inspection in the console (no UI).
+window.mycofield = {state, cacheStats, MODEL_VERSION, map};
+
+// ---------- PWA ----------
+let deferred;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; $('installBtn').hidden = false; $('installBtn').onclick = async () => { deferred.prompt(); await deferred.userChoice; $('installBtn').hidden = true; }; });
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 </script></body></html>
