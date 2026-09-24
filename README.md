@@ -7,7 +7,7 @@ A static, installable PWA: `index.html` + `sw.js` + `manifest.webmanifest`. No b
 - **Map**: MapLibre 3D terrain over OpenStreetMap, 3D/flat toggle, four tracked research areas
   with live Conditions Index markers and a strongest-area card.
 - **Exact Point Intelligence**: tap any point for live weather, elevation, slope, aspect,
-  experimental Terrain Context and Conditions Index. Coordinates open in Google Earth.
+  experimental Terrain Context and Conditions Index. Tap any coordinates to copy them.
 - **Search**: towns, landmarks, UK postcodes or `lat, lon`; the result is analysed as an exact point. Send it to the field log as a private location.
 - **Signal**: tracks every area and sub-area at once (index, trend, sparkline, rain, low), with
   full detail — 10-day outlook, sparklines, score breakdown — for the focused area.
