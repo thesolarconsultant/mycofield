@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.12.0 — Paywall live
+- Stripe Payment Link connected; webhook Edge Function deployed with signature verification; sign-in email sent from help@mycofield.com.
+
 ## 2.11.0 — Paid access (ready, switched off until the Stripe link is set)
 
 ### Added
