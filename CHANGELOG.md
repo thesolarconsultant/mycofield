@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.14.0 — Shorter free look, clearer paywall, spot pack
+- Walkthrough 15 s, then a 15 s free look with no countdown on screen.
+- Paywall in two steps: sign in with email (verification email / code), then “£8 to get in”.
+  The price is still stated up front.
+- Spot pack (£20 add-on, off until `SPOTS_PAYMENT_LINK` is set): offered once after getting in;
+  after paying, the buyer gives a postcode and gets 10 spots picked once, server-side
+  (`supabase/spots.sql`, `claim_spots()`): best nearby first, then the best in Britain.
+- Webhook: `client_reference_id=spots_<user id>` creates the spot pack instead of 90-day access.
+- Terms and privacy updated for the spot pack.
+
 ## 2.13.0 — No spots given away
 - New users start with no saved areas and no demo records (the four Welsh reference areas are no
   longer seeded; devices and accounts that already have them keep them).

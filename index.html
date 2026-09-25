@@ -155,10 +155,15 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .wt-progress i.on::after{animation:wtfill var(--wt-dur,7.5s) linear forwards}
 @keyframes wtfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .gate-card .btn{width:100%}
-.trial-pill{position:fixed;top:calc(env(safe-area-inset-top) + 70px);left:50%;transform:translateX(-50%);z-index:70;background:var(--forest);color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);white-space:nowrap}
-.trial-pill b{color:var(--lime)}
 .pw-price{font-size:15px}.pw-price b{font-family:var(--head);font-size:30px;color:var(--forest);margin-right:4px}
 .pw-list{padding-left:18px;margin:6px 0 14px;font-size:14px;line-height:1.5}
+.pw-step{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--moss-ink);margin:0 0 6px!important}
+.pw-price b.sm{font-size:inherit;font-family:inherit;margin:0}
+.spots-open{width:100%;margin-top:12px}
+.spot-list{display:grid;gap:10px;margin:10px 0}
+.spot{background:var(--white);border:1px solid var(--stone);border-radius:14px;padding:12px}
+.spot-h{display:flex;justify-content:space-between;align-items:center;gap:8px}.spot-h b{font-size:15px;color:var(--forest)}
+.spot p{margin:6px 0 0}.spot-a{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}.spot-a .btn{width:auto;padding:8px 14px}
 .pw-fine{font-size:11.5px;color:var(--muted);margin-top:12px!important}
 .no-areas .needs-area{display:none!important}
 .pw-link{background:none;border:0;color:var(--forest);text-decoration:underline;font:inherit;font-size:13px;padding:6px 0;cursor:pointer}
@@ -329,6 +334,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <label class="switch"><input type="checkbox" id="showAreasToggle"><span>Show saved areas on the map</span></label>
 <div class="tracker" id="savedList"></div>
 <p class="small" style="margin:12px 2px 0">Save new areas from any analysed point with <b>Save area</b>.</p>
+<button class="btn lime spots-open" id="spotsOpen" type="button" hidden></button>
 </div>
 </div></section>
 <section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. <span id="dashArea"></span> Experimental research indicator only — not a probability or a guarantee of fruiting.</div>
@@ -360,15 +366,26 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <button data-view="log" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/></svg>Notes</button>
 </nav>
 <div class="gate" id="walkthrough" hidden role="dialog" aria-modal="true" aria-labelledby="wtTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><div class="wt-progress" id="wtProgress" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2 id="wtTitle"></h2><p id="wtText"></p><button class="btn lime" id="wtNext" type="button">Next</button></div></div>
-<div class="trial-pill" id="trialPill" hidden role="timer" aria-live="off">Free look · <b id="trialLeft">0:30</b></div>
 <div class="gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <h2 id="pwTitle">Keep reading the ground.</h2>
-<p class="pw-price"><b>£8</b> for 3 months · one payment, no subscription</p>
-<ul class="pw-list"><li>Conditions for any spot you tap: rain, soil moisture, cold nights, frost</li><li>Official habitat maps across Great Britain, and grazing in Wales</li><li>Unlimited saved areas, finds and blanks, synced to your account</li></ul>
+<p class="pw-step" id="pwStep"></p>
+<p class="pw-price" id="pwPrice"><b>£8</b> for 3 months · one payment, no subscription</p>
+<ul class="pw-list" id="pwList"><li>Conditions for any spot you tap: rain, soil moisture, cold nights, frost</li><li>Official habitat maps across Great Britain, and grazing in Wales</li><li>Unlimited saved areas, finds and blanks, synced to your account</li></ul>
 <div id="pwSignIn"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button></div>
 <div id="pwPay" hidden><a class="btn lime" id="pwPayBtn" href="#" rel="noopener">Pay £8 securely with Stripe</a><p class="small" id="pwPayNote" style="margin-top:8px"></p></div>
 <div id="pwChecking" hidden><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
 <p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div>
+<div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
+<p class="pw-step">Before you get started</p>
+<h2 id="soTitle">Want some hints and tips?</h2>
+<p>We’ve collected ground data across England, Wales and Scotland. For a one-off <b>£20</b> we’ll hand you the <b id="soCount">10</b> best spots we know, picked from your postcode.</p>
+<ul class="pw-list"><li>The best spots near you first</li><li>Nothing top-tier close by? We send you to the big leagues: the best spots in Britain</li><li>Saved to your account. Tap any spot to read its conditions</li></ul>
+<a class="btn lime" id="soBuy" href="#" rel="noopener">Get my spots · £20</a>
+<button class="pw-link" id="soSkip" type="button">No thanks, I’ll explore myself</button>
+<p class="pw-fine">One payment. Your spots are picked once, from the postcode you give after paying, and can’t be refunded once shown. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
+<div class="gate" id="spotsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="ssTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
+<h2 id="ssTitle">Your spots</h2><div id="ssBody"></div>
+<button class="pw-link" id="ssClose" type="button">Close</button></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
 import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs';
@@ -395,7 +412,9 @@ const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
 const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
 // Paid access: a Stripe Payment Link (one-off £8 → 90 days). Empty = paywall off, app fully open.
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
-const WALKTHROUGH_SECONDS = 30, TRIAL_SECONDS = 30;
+const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 15;
+// Spot pack: a second Stripe Payment Link (one-off £20). Empty = the offer stays hidden.
+const SPOTS_PAYMENT_LINK = '', SPOT_COUNT = 10;
 const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v1';
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
@@ -2129,7 +2148,9 @@ const SLIDES = [
   ['Know the ground.', 'Official habitat maps pick out old, unimproved grassland, and in Wales whether it’s grazed.'],
   ['Log finds and blanks.', 'Your own records test the index against what you actually find, so it keeps getting sharper.']
 ];
-function openApp() { firstRunLocate(); $('walkthrough').hidden = $('paywall').hidden = $('trialPill').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
+function openApp(offer = true) {
+  if (session && (spotsOn() || spotsCache()?.owned)) refreshSpots().catch(() => {}).finally(() => { if (offer) maybeOfferSpots(); });
+  firstRunLocate(); $('walkthrough').hidden = $('paywall').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
 function showWalkthrough() {
   document.body.classList.add('gated'); $('walkthrough').hidden = false; gate.slide = -1; nextSlide();
 }
@@ -2152,14 +2173,11 @@ function finishWalkthrough() {
   startTrial(); firstRunLocate();
   switchView('map'); openSearch(); $('searchInput').placeholder = 'Enter your postcode'; $('searchInput').focus();
 }
+// The free look runs silently — no countdown on screen — then the paywall closes it.
 function startTrial() {
   const endsAt = readJSON(TRIAL_KEY, {}).trialEndsAt;
-  const tick = () => {
-    const left = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
-    $('trialLeft').textContent = `0:${String(left).padStart(2, '0')}`;
-    if (left <= 0) { clearInterval(gate.trialTimer); $('trialPill').hidden = true; showPaywall(); }
-  };
-  $('trialPill').hidden = false; tick(); clearInterval(gate.trialTimer); gate.trialTimer = setInterval(tick, 250);
+  const tick = () => { if (Date.now() >= endsAt) { clearInterval(gate.trialTimer); showPaywall(); } };
+  tick(); clearInterval(gate.trialTimer); gate.trialTimer = setInterval(tick, 250);
 }
 function showPaywall() {
   closeSearch?.();
@@ -2168,12 +2186,19 @@ function showPaywall() {
 function renderPaywall() {
   if ($('paywall').hidden) return;
   const signedIn = !!session, a = cachedAccess(), expired = !!a?.paidUntil && Date.parse(a.paidUntil) <= Date.now();
-  $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : expired ? 'Your 3 months are up.' : 'Keep reading the ground.';
+  const verifying = !signedIn && !!sync.pendingEmail;
+  $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : expired ? 'Your 3 months are up.'
+    : signedIn ? '£8 to get in.' : verifying ? 'Check your email.' : 'That’s your free look.';
+  $('pwStep').textContent = gate.checking || expired ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
+    : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · sign in with your email to keep going';
+  // Price is always stated before sign-up; the full pitch shows once they're verified.
+  $('pwList').hidden = !signedIn && !expired;
+  $('pwPrice').innerHTML = signedIn || expired ? '<b>£8</b> for 3 months · one payment, no subscription' : 'Then <b class="sm">£8</b> for 3 months, one payment. No subscription.';
   $('pwChecking').hidden = !gate.checking;
   $('pwSignIn').hidden = gate.checking || signedIn;
   $('pwEmailForm').hidden = !!sync.pendingEmail;
   $('pwCodeForm').hidden = $('pwChangeEmail').hidden = !sync.pendingEmail;
-  $('pwSignInNote').textContent = sync.pendingEmail ? `We emailed ${sync.pendingEmail}. Tap “Confirm & sign in” in the email, or type the code from it here. (Check junk if it’s not there.)` : 'We’ll email you a sign-in link. Your account holds your access and your records.';
+  $('pwSignInNote').textContent = sync.pendingEmail ? `We’ve sent a verification email to ${sync.pendingEmail}. Tap “Confirm & sign in” in it, or type the code from it here. (Check junk if it’s not there.)` : 'We’ll send you a verification email. Your account holds your access and your records.';
   $('pwPay').hidden = gate.checking || !signedIn;
   if (signedIn) {
     const q = new URLSearchParams({client_reference_id: session.user?.id || '', ...(session.user?.email ? {prefilled_email: session.user.email} : {})});
@@ -2193,10 +2218,91 @@ async function confirmPayment() {
   gate.checking = false; renderPaywall();
   $('pwPayNote').textContent = 'Payment not confirmed yet. If you paid, it can take a minute — reopen the app, or contact us with your receipt.';
 }
+// ---------- spot pack (£20 add-on) ----------
+// The spots never ship in the app: the buyer's set is picked once, server-side, by claim_spots()
+// (supabase/spots.sql) and only that set is ever returned to them.
+const SPOTS_KEY = 'mycofield-spots-v1', SPOTS_OFFERED_KEY = 'mycofield-spots-offered';
+const spotsOn = () => paywallOn() && !!SPOTS_PAYMENT_LINK;
+const spots = {checking: false};
+function spotsCache() { const c = readJSON(SPOTS_KEY, null); return c && session?.user?.id && c.userId === session.user.id ? c : null; }
+async function refreshSpots() {
+  if (!session?.user?.id) return null;
+  const pack = (await sbFetch('/rest/v1/spot_packs?select=place,claimed_at'))?.[0] || null;
+  let list = spotsCache()?.list || [];
+  if (pack?.claimed_at && !list.length) list = await sbFetch('/rest/v1/rpc/claim_spots', {method: 'POST', body: {}}) || [];
+  const c = {userId: session.user.id, owned: !!pack, place: pack?.place || null, list: pack?.claimed_at ? list : []};
+  writeJSON(SPOTS_KEY, c); renderSpotsEntry(); return c;
+}
+function renderSpotsEntry() {
+  const c = spotsCache(), b = $('spotsOpen');
+  b.hidden = !(c?.owned || (spotsOn() && session));
+  b.textContent = c?.owned ? (c.list.length ? `★ Your ${c.list.length} spots` : '★ Pick your spots') : `★ The ${SPOT_COUNT} best spots near you · £20`;
+}
+function spotsBuyHref() {
+  const q = new URLSearchParams({client_reference_id: `spots_${session?.user?.id || ''}`, ...(session?.user?.email ? {prefilled_email: session.user.email} : {})});
+  return `${SPOTS_PAYMENT_LINK}${SPOTS_PAYMENT_LINK.includes('?') ? '&' : '?'}${q}`;
+}
+function openSpotsOffer() { $('soCount').textContent = SPOT_COUNT; $('soBuy').href = spotsBuyHref(); $('spotsOffer').hidden = false; }
+// Offered once, the first time someone is in with paid access.
+function maybeOfferSpots() {
+  if (!spotsOn() || !session || !hasAccess() || spotsCache()?.owned || readJSON(SPOTS_OFFERED_KEY, null)) return;
+  writeJSON(SPOTS_OFFERED_KEY, Date.now()); openSpotsOffer();
+}
+function openSpots() {
+  if (!spotsCache()?.owned) { if (spotsOn()) openSpotsOffer(); return; }
+  $('spotsSheet').hidden = false; renderSpots();
+}
+function renderSpots() {
+  const c = spotsCache(), body = $('ssBody');
+  if (spots.checking) { $('ssTitle').textContent = 'Thanks — nearly there.'; body.innerHTML = '<p class="small">Confirming your payment…</p>'; return; }
+  if (!c?.list?.length) {
+    $('ssTitle').textContent = 'Where are you based?';
+    body.innerHTML = `<p>Put your postcode in and we’ll pick your ${SPOT_COUNT} spots: the best near you first and, if there’s nothing top-tier close by, the best in Britain.</p>
+      <form id="ssForm" class="sync-form"><input class="field" id="ssPostcode" placeholder="Postcode or town" autocomplete="postal-code" required aria-label="Postcode or town"><button class="btn lime" id="ssGo" type="submit">Pick my spots</button></form>
+      <p class="small">Your spots are picked once, from this location, and saved to your account.</p>`;
+    $('ssForm').onsubmit = claimSpots; return;
+  }
+  const n = c.list.length, near = c.list.filter(x => x.nearby).length;
+  $('ssTitle').textContent = `Your ${n} spots`;
+  body.innerHTML = `<p class="small">Picked from ${esc(c.place || 'your location')}. ${near ? `${near} near you${near < n ? `, plus ${n - near} of the best further afield` : ''}.` : 'Nothing top-tier close to you, so these are the big leagues: the best we know in Britain.'}</p>
+    <div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>${esc(x.name)}</b>${x.tier === 1 ? '<span class="chip">Top tier</span>' : ''}</div>
+      <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')}${x.distance_km != null ? ` · ${Math.round(x.distance_km)} km away` : ''}${x.access ? ` · ${esc(x.access)}` : ''}</div>
+      ${x.notes ? `<p class="small">${esc(x.notes)}</p>` : ''}
+      <div class="spot-a"><button class="btn secondary" type="button" data-spot="${i}">Show on map</button>${coordLink(x.lat, x.lon)}</div></div>`).join('')}</div>
+    <p class="pw-fine">Always check access, and get the landowner’s permission where you need it. Only pick what you can identify with certainty. Never eat a wild mushroom because of an app.</p>`;
+  body.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => {
+    const x = c.list[+b.dataset.spot]; $('spotsSheet').hidden = true; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name});
+  });
+}
+async function claimSpots(e) {
+  e.preventDefault();
+  const q = $('ssPostcode').value.trim(), btn = $('ssGo'); if (!q) return;
+  btn.disabled = true; btn.textContent = 'Finding your spots…';
+  try {
+    const [r] = await searchPlaces(q);
+    if (!r) throw new Error(`we couldn’t find “${q}”`);
+    if (!confirm(`Pick your ${SPOT_COUNT} spots from ${r.name}? They’re locked in once chosen.`)) return;
+    const list = await sbFetch('/rest/v1/rpc/claim_spots', {method: 'POST', body: {p_lat: r.lat, p_lon: r.lon, p_place: r.name, p_count: SPOT_COUNT}});
+    if (!list?.length) throw new Error('the spot list is being updated. Try again shortly, or email help@mycofield.com');
+    writeJSON(SPOTS_KEY, {userId: session.user.id, owned: true, place: r.name, list}); renderSpots(); renderSpotsEntry();
+  } catch (err) { toast(`Couldn’t pick your spots: ${err.message}`); }
+  finally { btn.disabled = false; btn.textContent = 'Pick my spots'; }
+}
+// Back from Stripe (?spots=1): wait for the webhook, then ask for their postcode.
+async function confirmSpotsPayment() {
+  spots.checking = true; $('spotsSheet').hidden = false; renderSpots();
+  for (let i = 0; i < 60; i++) {
+    try { if ((await refreshSpots())?.owned) { spots.checking = false; renderSpots(); return; } } catch {}
+    await new Promise(r => setTimeout(r, 3000));
+  }
+  spots.checking = false; $('spotsSheet').hidden = true;
+  toast('Spot pack payment not confirmed yet. If you paid, reopen the app in a minute or email help@mycofield.com.');
+}
 async function startGate() {
   if (!paywallOn()) { firstRunLocate(); return; }
-  const paidReturn = new URLSearchParams(location.search).get('paid') === '1';
-  if (paidReturn) history.replaceState(null, '', location.pathname + location.hash);
+  const params = new URLSearchParams(location.search), paidReturn = params.get('paid') === '1', spotsReturn = params.get('spots') === '1';
+  if (paidReturn || spotsReturn) history.replaceState(null, '', location.pathname + location.hash);
+  if (session && spotsReturn) { openApp(false); confirmSpotsPayment(); return; }
   if (session && paidReturn) { confirmPayment(); return; }
   if (session && hasAccess()) { openApp(); refreshAccess().then(ok => { if (!ok && navigator.onLine) showPaywall(); }).catch(() => {}); return; }
   if (session) { try { if (await refreshAccess()) { openApp(); return; } } catch {} }
@@ -2211,6 +2317,11 @@ function initGate() {
     e.preventDefault(); const btn = $('pwCodeBtn'); btn.disabled = true;
     try { if (await signInWithCode($('pwCode'))) { toast('Signed in.'); startGate(); } } finally { btn.disabled = false; }
   };
+  $('soSkip').onclick = () => { $('spotsOffer').hidden = true; };
+  $('soBuy').onclick = () => { $('spotsOffer').hidden = true; };
+  $('ssClose').onclick = () => { $('spotsSheet').hidden = true; };
+  $('spotsOpen').onclick = () => { closeSaved(); openSpots(); };
+  renderSpotsEntry();
   $('pwChangeEmail').onclick = () => { sync.pendingEmail = null; renderSync(); renderPaywall(); $('pwEmail').focus(); };
   // Signed in from the email link in another tab of this browser → pick it up here.
   window.addEventListener('storage', e => {

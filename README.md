@@ -65,3 +65,15 @@ Cloud backup uses Supabase (free tier is enough). One-time setup:
 4. Put the project URL and the **anon/public** key in `SUPABASE_URL` / `SUPABASE_ANON_KEY` in
    `index.html`. Never use the service_role key in the app. Until the key is set, the sync card
    is hidden and the app is purely on-device.
+
+## Spot pack (£20 add-on)
+Paid users are offered, once, a set of 10 hand-picked spots chosen from their postcode: the best
+nearby first, then the best anywhere in Britain if there aren't enough strong spots close by.
+1. Run `supabase/spots.sql` in the SQL Editor.
+2. Add spots in Table Editor → `spots` (name, lat, lon, nation, region, tier 1–3, access, notes).
+3. Create a £20 Stripe Payment Link with its after-payment redirect set to
+   `https://www.mycofield.com/?spots=1`, and put it in `SPOTS_PAYMENT_LINK` in `index.html`.
+4. Redeploy the `stripe-webhook` Edge Function (it recognises `client_reference_id=spots_<user id>`).
+
+The spots never ship in the app. `claim_spots()` picks a buyer's set once, stores it on their
+`spot_packs` row, and only ever returns that set; the `spots` table itself is unreadable to users.

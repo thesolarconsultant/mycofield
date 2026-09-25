@@ -42,8 +42,10 @@ Deno.serve(async req => {
   // 'no_payment_required' = a 100%-off promo code (e.g. FREE4ALL); still a completed checkout.
   if (s.payment_status !== 'paid' && s.payment_status !== 'no_payment_required')
     return new Response('not paid yet', {status: 200});
-  const userId: string | undefined = s.client_reference_id;
-  if (!userId || !/^[0-9a-f-]{36}$/i.test(userId)) {
+  // client_reference_id is the MycoField account id; "spots_<id>" marks the £20 spot pack.
+  const ref = /^(spots_)?([0-9a-f-]{36})$/i.exec(s.client_reference_id ?? '');
+  const userId = ref?.[2], product = ref?.[1] ? 'spots' : 'access';
+  if (!userId) {
     console.error('Paid session without a MycoField user id', s.id, s.customer_details?.email);
     return new Response('no user id — grant manually', {status: 200});
   }
@@ -55,6 +57,11 @@ Deno.serve(async req => {
     if (dup.code === '23505') return new Response('already processed', {status: 200});
     console.error('payments insert failed', dup);
     return new Response('db error', {status: 500});
+  }
+  if (product === 'spots') {
+    const {error} = await db.from('spot_packs').upsert({user_id: userId}, {onConflict: 'user_id', ignoreDuplicates: true});
+    if (error) { console.error('spot pack insert failed', error); await db.from('payments').delete().eq('id', s.id); return new Response('db error', {status: 500}); }
+    return new Response(JSON.stringify({ok: true, spot_pack: true}), {status: 200, headers: {'Content-Type': 'application/json'}});
   }
   const {data: cur} = await db.from('entitlements').select('paid_until').eq('user_id', userId).maybeSingle();
   const from = Math.max(Date.now(), cur?.paid_until ? Date.parse(cur.paid_until) : 0);
