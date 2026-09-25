@@ -413,8 +413,9 @@ const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
 // Paid access: a Stripe Payment Link (one-off £8 → 90 days). Empty = paywall off, app fully open.
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
 const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 15;
-// Spot pack: a second Stripe Payment Link (one-off £20). Empty = the offer stays hidden.
-const SPOTS_PAYMENT_LINK = '', SPOT_COUNT = 10;
+// Spot pack: a second Stripe Payment Link (one-off £20). Empty = the offer stays hidden; it also
+// stays hidden until the spots table has at least one active spot (spots_available()).
+const SPOTS_PAYMENT_LINK = 'https://buy.stripe.com/5kQ4gy1Wl9tTfGFa3HeAg03', SPOT_COUNT = 10;
 const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v1';
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
@@ -2149,7 +2150,8 @@ const SLIDES = [
   ['Log finds and blanks.', 'Your own records test the index against what you actually find, so it keeps getting sharper.']
 ];
 function openApp(offer = true) {
-  if (session && (spotsOn() || spotsCache()?.owned)) refreshSpots().catch(() => {}).finally(() => { if (offer) maybeOfferSpots(); });
+  if (session) checkSpotsReady().then(() => (spotsOn() || spotsCache()?.owned) && refreshSpots())
+    .catch(() => {}).finally(() => { if (offer) maybeOfferSpots(); });
   firstRunLocate(); $('walkthrough').hidden = $('paywall').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
 function showWalkthrough() {
   document.body.classList.add('gated'); $('walkthrough').hidden = false; gate.slide = -1; nextSlide();
@@ -2222,8 +2224,13 @@ async function confirmPayment() {
 // The spots never ship in the app: the buyer's set is picked once, server-side, by claim_spots()
 // (supabase/spots.sql) and only that set is ever returned to them.
 const SPOTS_KEY = 'mycofield-spots-v1', SPOTS_OFFERED_KEY = 'mycofield-spots-offered';
-const spotsOn = () => paywallOn() && !!SPOTS_PAYMENT_LINK;
-const spots = {checking: false};
+const spots = {checking: false, ready: false};
+const spotsOn = () => paywallOn() && !!SPOTS_PAYMENT_LINK && spots.ready;
+async function checkSpotsReady() {
+  if (!paywallOn() || !SPOTS_PAYMENT_LINK) return false;
+  try { spots.ready = (await sbFetch('/rest/v1/rpc/spots_available', {method: 'POST', body: {}, auth: false})) === true; } catch { spots.ready = false; }
+  renderSpotsEntry(); return spots.ready;
+}
 function spotsCache() { const c = readJSON(SPOTS_KEY, null); return c && session?.user?.id && c.userId === session.user.id ? c : null; }
 async function refreshSpots() {
   if (!session?.user?.id) return null;

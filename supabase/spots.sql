@@ -93,3 +93,10 @@ end $$;
 
 revoke all on function public.claim_spots from public, anon;
 grant execute on function public.claim_spots to authenticated;
+
+-- Lets the app show the £20 offer only once there are spots to sell (reveals nothing else).
+create or replace function public.spots_available()
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.spots where active)
+$$;
+grant execute on function public.spots_available to anon, authenticated;

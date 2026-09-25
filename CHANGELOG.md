@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.14.1 — Spot pack link
+- £20 Stripe Payment Link connected. The offer only appears once `spots_available()` reports at
+  least one active spot, so nobody can buy an empty pack.
+
 ## 2.14.0 — Shorter free look, clearer paywall, spot pack
 - Walkthrough 15 s, then a 15 s free look with no countdown on screen.
 - Paywall in two steps: sign in with email (verification email / code), then “£8 to get in”.
