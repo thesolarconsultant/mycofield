@@ -191,7 +191,7 @@ button.earth .cp{width:13px;height:13px;stroke-width:2;opacity:.75}
 /* markers */
 .ready-legend{position:absolute;left:12px;top:calc(74px + env(safe-area-inset-top));z-index:6;background:rgba(255,255,255,.94);border:1px solid var(--line-2);border-radius:14px;padding:8px 11px;font-size:12px;color:var(--forest);box-shadow:var(--shadow);max-width:230px;line-height:1.35}
 .ready-legend .k{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:3px}.ready-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;opacity:.8}
-.ready-legend .rbar{display:block;width:100%;min-width:170px;height:8px;border-radius:99px;background:linear-gradient(90deg,rgba(224,165,38,.55),rgba(167,216,46,.8),rgba(47,143,58,.9),rgba(22,110,45,.95))}
+.ready-legend .rbar{display:block;width:100%;min-width:170px;height:8px;border-radius:99px;background:linear-gradient(90deg,rgba(236,176,52,.75),rgba(190,228,72,.9),rgba(120,220,96,.95),rgba(72,205,110,1))}
 .ready-legend .rl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px}
 .ready-legend small{display:block;color:var(--muted);margin-top:3px}
 .mapwrap.searching .ready-legend{display:none}
@@ -1097,8 +1097,9 @@ async function fetchReadyBatch(cells) {
     ready.cells.set(c.key, {...c, score, at: Date.now()});
   });
 }
-// Score → colour: amber (building, faint) → lime (good) → green (strong, most solid). Under 45: clear.
-const READY_STOPS = [[45, [224, 165, 38, 0.30]], [60, [167, 216, 46, 0.48]], [75, [47, 143, 58, 0.62]], [100, [22, 110, 45, 0.72]]];
+// Score → colour: amber (building, faint) → lime (good) → bright green (strong). Kept light and
+// luminous so it reads as a glow over aerial imagery rather than a dark stain. Under 45: clear.
+const READY_STOPS = [[45, [236, 176, 52, 0.28]], [60, [190, 228, 72, 0.40]], [75, [120, 220, 96, 0.48]], [100, [72, 205, 110, 0.55]]];
 function readyColour(score) {
   if (!(score >= 45)) return [0, 0, 0, 0];
   const i = READY_STOPS.findIndex(([v]) => score <= v), [v1, a] = READY_STOPS[Math.max(0, i - 1)], [v2, b] = READY_STOPS[Math.max(0, i)];

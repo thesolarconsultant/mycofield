@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.17.1 — Lighter overlay
+- Ready-ground colours lightened and brightened so they read as a glow over aerial imagery
+  instead of a dark stain.
+
 ## 2.17.0 — Satellite view, lighter live overlay
 - Satellite imagery (Esri World Imagery) draped over the 3D terrain, on by default, with a
   SAT/MAP switch on the map. Hillshade goes off under imagery.
