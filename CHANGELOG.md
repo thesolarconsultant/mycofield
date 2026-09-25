@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.18.0 — Names over satellite
+- Place, water and road names drawn over the aerial imagery (white with a dark halo), taken from
+  the label layers of OpenFreeMap's Liberty style: free, no key, OpenStreetMap data. Loaded only
+  when satellite is on; hidden on the street map, which has its own names.
+
 ## 2.17.1 — Lighter overlay
 - Ready-ground colours lightened and brightened so they read as a glow over aerial imagery
   instead of a dark stain.

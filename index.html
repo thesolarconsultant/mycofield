@@ -1157,10 +1157,39 @@ function setReady(on) {
 }
 whenMapReady(() => setReady(ready.on));
 map.on('moveend', () => { if (!ready.on) return; clearTimeout(ready.timer); ready.timer = setTimeout(updateReady, 450); });
+// ---------- place names over imagery ----------
+// Aerial imagery has no names, so the label layers of OpenFreeMap's Liberty style (free, no key,
+// OpenStreetMap data) are drawn on top: places, water and road names, white with a dark halo.
+const OFM_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+const LABEL_LAYERS = ['label_country_1', 'label_country_2', 'label_country_3', 'label_state', 'label_city_capital', 'label_city', 'label_town', 'label_village', 'label_other',
+  'water_name_point_label', 'water_name_line_label', 'waterway_line_label', 'highway-name-major', 'highway-name-minor', 'highway-name-path'];
+const labels = {state: 'idle', ids: []};
+async function ensureLabels() {
+  if (labels.state !== 'idle') return;
+  labels.state = 'loading';
+  try {
+    const st = await fetchJSON(OFM_STYLE), src = st.sources?.openmaptiles;
+    if (!src?.url || !st.glyphs) throw new Error('unexpected style');
+    map.setGlyphs(st.glyphs);
+    map.addSource('ofm', {type: 'vector', url: src.url, attribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>'});
+    for (const id of LABEL_LAYERS) {
+      const l = st.layers.find(x => x.id === id && x.type === 'symbol');
+      if (!l) continue;
+      const layout = {...l.layout};
+      for (const k of Object.keys(layout)) if (k.startsWith('icon-')) delete layout[k];   // text only: no sprite needed
+      map.addLayer({...l, id: `lbl-${id}`, source: 'ofm', layout: {...layout, visibility: satellite ? 'visible' : 'none'},
+        paint: {...l.paint, 'text-color': /water/.test(id) ? '#cfe9ff' : '#ffffff', 'text-halo-color': 'rgba(0,0,0,0.75)', 'text-halo-width': 1.6, 'text-halo-blur': 0.4}});
+      labels.ids.push(`lbl-${id}`);
+    }
+    labels.state = 'ready';
+  } catch (err) { labels.state = 'failed'; console.warn('Place names over imagery unavailable:', err?.message); }
+}
 let satellite = !!ESRI_KEY && pref('mycofield-sat', true);
 function setSatellite(on) {
   if (!ESRI_KEY) return;
   satellite = on; setPref('mycofield-sat', on);
+  if (on) ensureLabels();
+  if (mapLoaded) for (const id of labels.ids) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
   // Aerial imagery carries its own light and shadow; the hillshade only muddies it, so it goes off with satellite.
   if (mapLoaded) { map.setLayoutProperty('sat', 'visibility', on ? 'visible' : 'none'); map.setLayoutProperty('osm', 'visibility', on ? 'none' : 'visible'); map.setLayoutProperty('hillshade', 'visibility', on ? 'none' : 'visible'); }
   $('satBtn').setAttribute('aria-pressed', on); $('satBtn').textContent = on ? 'MAP' : 'SAT';
@@ -2597,7 +2626,7 @@ function init() {
 init();
 
 // Dev aid: window.mycofield exposes state for inspection in the console (no UI).
-window.mycofield = {state, cacheStats, MODEL_VERSION, map, ready, get areas() { return areas; }};
+window.mycofield = {state, cacheStats, MODEL_VERSION, map, ready, labels, get areas() { return areas; }};
 
 // ---------- PWA ----------
 let deferred;
