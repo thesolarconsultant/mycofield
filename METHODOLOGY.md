@@ -84,3 +84,11 @@ History → Evidence rebuilds every record under the current model and compares 
 ## Sources
 Open-Meteo Forecast, Historical (ERA5) and Elevation APIs; Copernicus DEM GLO-90;
 OpenStreetMap contributors via the Overpass API.
+
+
+## Live ready-ground overlay
+The map overlay scores a grid of squares (about 11 × 11 km when zoomed in, coarser when zoomed out)
+from live weather only: the rain, soil-moisture, water-balance, cool-nights and frost inputs of the
+Conditions Index, with terrain and habitat left out and the weights renormalised as usual. Squares
+under 45 aren't drawn. It shows where the weather is right, not whether the ground is suitable;
+tap any spot for the full reading with terrain and habitat.

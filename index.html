@@ -189,6 +189,10 @@ button.earth .cp{width:13px;height:13px;stroke-width:2;opacity:.75}
 .switch input:checked{background:var(--moss)}
 .switch input:checked:after{transform:translateX(18px)}
 /* markers */
+.ready-legend{position:absolute;left:12px;top:calc(74px + env(safe-area-inset-top));z-index:6;background:rgba(255,255,255,.94);border:1px solid var(--line-2);border-radius:14px;padding:8px 11px;font-size:12px;color:var(--forest);box-shadow:var(--shadow);max-width:230px;line-height:1.35}
+.ready-legend .k{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:3px}.ready-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;opacity:.8}
+.ready-legend small{display:block;color:var(--muted);margin-top:3px}
+.mapwrap.searching .ready-legend{display:none}
 .spots-fab{background:var(--forest);color:var(--lime);font-size:20px}
 .spk{display:flex;align-items:center;gap:5px;min-height:32px;padding:5px 11px 5px 8px;border-radius:999px;background:var(--forest);border:2px solid var(--lime);color:#fff;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 6px 18px rgba(11,61,46,.3);cursor:pointer}
 .spk b{color:var(--lime);font-size:14px;line-height:1}
@@ -314,7 +318,8 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <main>
 <section class="view active" id="view-map"><div class="mapwrap" id="mapwrap"><div id="map"></div>
 <div class="topbar"><form class="searchbar" id="searchRow" role="search"><img class="sb-logo" src="./assets/logo-mark.png" alt="" width="35" height="27"><input id="searchInput" type="search" placeholder="Search place or postcode" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="sb-btn" type="button" id="searchCancel" hidden aria-label="Cancel search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="sb-btn" type="button" id="savedBtn" aria-label="Saved areas" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button></form><div class="results" id="searchResults" hidden aria-live="polite"></div></div>
-<div class="fabs"><button class="fab" id="terrainBtn" type="button" aria-pressed="true" aria-label="3D terrain on — switch to flat">3D</button><button class="fab" id="locateBtn" type="button" aria-label="Analyse my location"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></button><button class="fab spots-fab" id="spotsFab" type="button" hidden aria-label="My spots">★</button></div>
+<div class="fabs"><button class="fab" id="terrainBtn" type="button" aria-pressed="true" aria-label="3D terrain on — switch to flat">3D</button><button class="fab" id="locateBtn" type="button" aria-label="Analyse my location"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></button><button class="fab spots-fab" id="spotsFab" type="button" hidden aria-label="My spots">★</button><button class="fab" id="readyBtn" type="button" aria-pressed="false" aria-label="Show live ready ground"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></button><button class="fab" id="satBtn" type="button" hidden aria-pressed="false" aria-label="Satellite view">SAT</button></div>
+<div class="ready-legend" id="readyLegend" hidden><b>Ready ground</b> <span class="k"><i style="background:#E0A526"></i>Building <i style="background:#A7D82E"></i>Good <i style="background:#2F8F3A"></i>Strong</span><small id="readyNote">Live weather</small></div>
 <div class="sheet" id="areaCard" hidden role="region" aria-label="Area summary">
 <button class="handle" type="button" aria-label="Area summary — swipe down to close"></button>
 <div class="sh-head"><div class="ring sm" id="ring"><b id="scoreValue">…</b></div><div class="sh-title"><span class="kicker"><span id="areaKicker">Saved area</span><span id="areaStatus" class="chip loading">Loading</span></span><h2 id="areaName"></h2><p id="scoreTitle">Loading live conditions…</p></div><div class="sh-tools"><button class="iconbtn" id="areaClose" type="button" aria-label="Close area summary"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
@@ -996,7 +1001,23 @@ const fmtSoil = v => Number.isFinite(v) ? `${Math.round(v * 100)}%` : '—';
 const fmtPct = v => Number.isFinite(v) ? `${Math.round(v * 100)}%` : '—';
 
 // ---------- map ----------
-const style = {version: 8, sources: {osm: {type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors', maxzoom: 19}, terrain: {type: 'raster-dem', url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json', tileSize: 256}}, layers: [{id: 'osm', type: 'raster', source: 'osm'}, {id: 'hillshade', type: 'hillshade', source: 'terrain', paint: {'hillshade-exaggeration': .45}}]};
+// Satellite: Esri World Imagery via an ArcGIS Location Platform key (referrer-restricted, basemaps only).
+// Empty = no satellite option; the map stays on OpenStreetMap.
+const ESRI_KEY = '';
+const style = {version: 8, sources: {
+  osm: {type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors', maxzoom: 19},
+  ...(ESRI_KEY ? {sat: {type: 'raster', tiles: [`https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=${ESRI_KEY}`], tileSize: 256, maxzoom: 19, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics, Getmapping'}} : {}),
+  // AWS Terrain Tiles (Mapzen terrarium, open data): ~30 m or better across GB, much sharper than the demo DEM.
+  terrain: {type: 'raster-dem', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], encoding: 'terrarium', tileSize: 256, maxzoom: 15, attribution: 'Terrain: Mapzen / AWS Open Data'},
+  ready: {type: 'geojson', data: {type: 'FeatureCollection', features: []}}
+}, layers: [
+  {id: 'osm', type: 'raster', source: 'osm'},
+  ...(ESRI_KEY ? [{id: 'sat', type: 'raster', source: 'sat', layout: {visibility: 'none'}}] : []),
+  {id: 'hillshade', type: 'hillshade', source: 'terrain', paint: {'hillshade-exaggeration': .45}},
+  // Live “ready ground”: amber = building, lime = good, green = strong. Squares under 45 aren't drawn.
+  {id: 'ready', type: 'fill', source: 'ready', layout: {visibility: 'none'}, paint: {'fill-antialias': false, 'fill-opacity': 0.4,
+    'fill-color': ['step', ['get', 'score'], '#E0A526', 55, '#A7D82E', 70, '#2F8F3A']}}
+]};
 // Open where the user left off (falls back to a south Wales overview).
 const CAMERA_KEY = 'mycofield-camera', DEFAULT_CAMERA = {center: [-2.2, 52.9], zoom: 5.6, pitch: 0, bearing: 0};
 // First open only: ask where they are and fly there. If they say no, the map stays on the
@@ -1016,14 +1037,91 @@ const map = new maplibregl.Map({container: 'map', style, ...loadCamera(), maxPit
 // Pinch-zoom on phones; zoom buttons only on wider screens.
 map.addControl(new maplibregl.NavigationControl({visualizePitch: true, showZoom: matchMedia('(min-width: 761px)').matches}), 'top-right');
 map.addControl(new maplibregl.AttributionControl({compact: true}), 'bottom-left');
-let terrain3d = pref('mycofield-3d', true);
-map.on('load', () => setTerrain(terrain3d, false));
+let terrain3d = pref('mycofield-3d', true), mapLoaded = false;
+// Run once the style is in — not on 'load', which waits for every terrain tile (slow on poor signal).
+const mapReadyFns = [];
+function whenMapReady(fn) { if (mapLoaded) fn(); else mapReadyFns.push(fn); }
+const onMapReady = () => { if (mapLoaded) return; mapLoaded = true; mapReadyFns.splice(0).forEach(fn => fn()); };
+map.on('style.load', onMapReady); map.on('load', onMapReady);
+whenMapReady(() => setTerrain(terrain3d, false));
 map.on('moveend', () => {
   try { const c = map.getCenter(); localStorage.setItem(CAMERA_KEY, JSON.stringify({center: [+c.lng.toFixed(5), +c.lat.toFixed(5)], zoom: +map.getZoom().toFixed(2), pitch: Math.round(map.getPitch()), bearing: Math.round(map.getBearing())})); } catch {}
 });
+// ---------- live “ready ground” overlay ----------
+// A grid of squares across the view, each scored from live weather only (rain, soil moisture,
+// water balance, cool nights, frost) with the same model as everything else. Terrain and habitat
+// aren't in it, so it shows where the weather is right; tapping a spot gives the full reading.
+const READY_KEY = 'mycofield-ready', READY_MAX_CELLS = 120, READY_TTL = 60 * 60 * 1000;
+const ready = {on: pref(READY_KEY, true), cells: new Map(), timer: null, token: 0};
+const readyStep = z => z >= 10 ? 0.1 : z >= 8.5 ? 0.2 : z >= 7 ? 0.4 : 0.8;
+function readyCellsInView() {
+  const step = readyStep(map.getZoom()), lonStep = step * 1.6, b = map.getBounds(), c = map.getCenter(), out = [];
+  const s0 = Math.max(49.8, b.getSouth()), n0 = Math.min(61, b.getNorth()), w0 = Math.max(-8.7, b.getWest()), e0 = Math.min(2, b.getEast());
+  for (let la = Math.floor(s0 / step) * step; la < n0; la += step)
+    for (let lo = Math.floor(w0 / lonStep) * lonStep; lo < e0; lo += lonStep)
+      out.push({key: `${step}:${la.toFixed(2)}:${lo.toFixed(2)}`, lat: +(la + step / 2).toFixed(4), lon: +(lo + lonStep / 2).toFixed(4), s: la, w: lo, n: la + step, e: lo + lonStep});
+  // Tilted 3D views reach the horizon: keep the squares nearest the centre.
+  return out.sort((a, b2) => distanceKm([a.lon, a.lat], [c.lng, c.lat]) - distanceKm([b2.lon, b2.lat], [c.lng, c.lat])).slice(0, READY_MAX_CELLS);
+}
+async function fetchReadyBatch(cells) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${cells.map(c => c.lat).join(',')}&longitude=${cells.map(c => c.lon).join(',')}&daily=${DAILY_VARS}&current=${SOIL_VARS_FORECAST.join(',')}&past_days=30&forecast_days=1&timezone=${encodeURIComponent(TZ)}`;
+  const data = await fetchJSON(url), rows = Array.isArray(data) ? data : [data], today = todayISO();
+  cells.forEach((c, i) => {
+    const r = rows[i];
+    let score = null;
+    // Sea squares come back at elevation 0: leave them uncoloured.
+    if (r?.daily?.time && r.elevation > 0.5) {
+      const soil = SOIL_VARS_FORECAST.map(v => r.current?.[v]).filter(Number.isFinite);
+      const days = enrichDays(toDays(r.daily, soil.length ? {[today]: soil.reduce((a, b) => a + b, 0) / soil.length} : {}));
+      const t = days.findIndex(d => d.date === today);
+      if (t >= 13) score = calculateConditionsIndex(envAt(days, t)).score;
+    }
+    ready.cells.set(c.key, {...c, score, at: Date.now()});
+  });
+}
+function renderReady(cells) {
+  const features = cells.map(c => ready.cells.get(c.key)).filter(c => c && c.score >= 45).map(c => ({type: 'Feature', properties: {score: c.score},
+    geometry: {type: 'Polygon', coordinates: [[[c.w, c.s], [c.e, c.s], [c.e, c.n], [c.w, c.n], [c.w, c.s]]]}}));
+  map.getSource('ready')?.setData({type: 'FeatureCollection', features});
+  return (ready.shown = features.length);
+}
+async function updateReady() {
+  if (!ready.on || !mapLoaded) return;
+  const token = ++ready.token, cells = readyCellsInView(), note = $('readyNote');
+  if (map.getZoom() < 5.5 || !cells.length) { renderReady([]); note.textContent = 'Zoom in over Britain to see live ready ground'; return; }
+  const missing = cells.filter(c => !(Date.now() - (ready.cells.get(c.key)?.at || 0) < READY_TTL));
+  renderReady(cells);
+  if (missing.length) note.textContent = 'Reading live weather…';
+  try {
+    for (let i = 0; i < missing.length; i += 50) {
+      await fetchReadyBatch(missing.slice(i, i + 50));
+      if (token !== ready.token) return;
+      renderReady(cells);
+    }
+    const shown = renderReady(cells);
+    note.textContent = `${shown ? 'Live weather' : 'Nothing ready in view right now'} · updated ${new Date().toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}. Tap any spot for the full reading.`;
+  } catch { if (token === ready.token) note.textContent = navigator.onLine ? 'Live weather unavailable — try again shortly' : 'Offline — live ready ground needs a connection'; }
+}
+function setReady(on) {
+  ready.on = on; setPref(READY_KEY, on);
+  $('readyBtn').setAttribute('aria-pressed', on); $('readyLegend').hidden = !on;
+  if (mapLoaded) map.setLayoutProperty('ready', 'visibility', on ? 'visible' : 'none');
+  if (on) updateReady();
+}
+whenMapReady(() => setReady(ready.on));
+map.on('moveend', () => { if (!ready.on) return; clearTimeout(ready.timer); ready.timer = setTimeout(updateReady, 450); });
+let satellite = !!ESRI_KEY && pref('mycofield-sat', true);
+function setSatellite(on) {
+  if (!ESRI_KEY) return;
+  satellite = on; setPref('mycofield-sat', on);
+  if (mapLoaded) { map.setLayoutProperty('sat', 'visibility', on ? 'visible' : 'none'); map.setLayoutProperty('osm', 'visibility', on ? 'none' : 'visible'); }
+  $('satBtn').setAttribute('aria-pressed', on); $('satBtn').textContent = on ? 'MAP' : 'SAT';
+  $('satBtn').setAttribute('aria-label', on ? 'Satellite on — switch to map' : 'Switch to satellite');
+}
+whenMapReady(() => { if (ESRI_KEY) { $('satBtn').hidden = false; setSatellite(satellite); } });
 function setTerrain(on, animate = true) {
   terrain3d = on; setPref('mycofield-3d', on);
-  if (map.isStyleLoaded()) map.setTerrain(on ? {source: 'terrain', exaggeration: 1.45} : null);
+  if (mapLoaded) map.setTerrain(on ? {source: 'terrain', exaggeration: 1.45} : null);
   if (animate) map.easeTo({pitch: on ? 60 : 0, duration: 600});
   const b = $('terrainBtn');
   b.textContent = on ? '3D' : '2D';
@@ -2396,6 +2494,8 @@ function init() {
 
   $('strongestCard').onclick = () => { if (state.strongestArea) { closeSaved(); selectArea(state.strongestArea); } };
   $('terrainBtn').onclick = () => setTerrain(!terrain3d);
+  $('readyBtn').onclick = () => setReady(!ready.on);
+  $('satBtn').onclick = () => setSatellite(!satellite);
   $('locateBtn').onclick = locateMe;
   $('savedBtn').onclick = () => $('savedSheet').hidden ? openSaved() : closeSaved();
   $('savedClose').onclick = closeSaved;
@@ -2449,7 +2549,7 @@ function init() {
 init();
 
 // Dev aid: window.mycofield exposes state for inspection in the console (no UI).
-window.mycofield = {state, cacheStats, MODEL_VERSION, map, get areas() { return areas; }};
+window.mycofield = {state, cacheStats, MODEL_VERSION, map, ready, get areas() { return areas; }};
 
 // ---------- PWA ----------
 let deferred;

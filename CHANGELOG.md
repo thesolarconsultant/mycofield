@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.16.0 — Live ready ground, sharper 3D
+- Live “ready ground” overlay (on by default, layers button to toggle): a grid across the view,
+  each square scored from live weather with the same model (rain, soil moisture, water balance,
+  cool nights, frost; terrain and habitat left out), drawn amber / lime / green, 45+ only.
+  Up to 120 squares in batched Open-Meteo requests, cached for an hour; sea squares skipped.
+- 3D terrain now uses AWS Terrain Tiles (terrarium) instead of the low-resolution demo DEM.
+- Satellite (Esri World Imagery) ready: set `ESRI_KEY` and a SAT/MAP switch appears.
+- Map start-up hooks run on style load, not after every terrain tile.
+
 ## 2.15.0 — Branded dialogs, spots on the map
 - Browser confirm() pop-ups (“www.mycofield.com says”) replaced with a MycoField dialog for
   picking spots, deleting an area and signing out.
