@@ -1005,10 +1005,10 @@ const fmtPct = v => Number.isFinite(v) ? `${Math.round(v * 100)}%` : '—';
 // ---------- map ----------
 // Satellite: Esri World Imagery via an ArcGIS Location Platform key (referrer-restricted, basemaps only).
 // Empty = no satellite option; the map stays on OpenStreetMap.
-const ESRI_KEY = '';
+const ESRI_KEY = 'AAPTa6b0e1s9yvylabnj5eUAPiw..lNm-qOxRYXIu2rzwSepzbdheDD2plnbNHRsWwuLJMA_sN-AQtGVzX1e4XI5BaZzGBOPGA9_uUlzVc2RSvDEhKpfYLz5CvHI3MVmKAritqXmihdZtKr2JjBqwRagVmf7ZjkqU7YESJs0NmJDNw2iv2aCmRtp0xGBLmQBdS_x8C7nhd56oPevhpOPRbjIbtUF4guo6jo-voxGcz8kryx9aar6cw9D4QrMvc2GwSEgc14NZi4kEFkL8UhnsAT1_82H3DF7L';
 const style = {version: 8, sources: {
   osm: {type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors', maxzoom: 19},
-  ...(ESRI_KEY ? {sat: {type: 'raster', tiles: [`https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=${ESRI_KEY}`], tileSize: 256, maxzoom: 19, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics, Getmapping'}} : {}),
+  ...(ESRI_KEY ? {sat: {type: 'raster', tiles: [`https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=${ESRI_KEY}`], tileSize: 256, maxzoom: 19, attribution: 'Powered by Esri · Imagery: Esri, Maxar, Earthstar Geographics, and the GIS User Community'}} : {}),
   // AWS Terrain Tiles (Mapzen terrarium, open data): ~30 m or better across GB, much sharper than the demo DEM.
   terrain: {type: 'raster-dem', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], encoding: 'terrarium', tileSize: 256, maxzoom: 15, attribution: 'Terrain: Mapzen / AWS Open Data'},
   // Live “ready ground”: a small image, one pixel per grid square, drawn smooth (bilinear) over the map.
@@ -1052,13 +1052,26 @@ map.on('moveend', () => {
 // A grid of squares across the view, each scored from live weather only (rain, soil moisture,
 // water balance, cool nights, frost) with the same model as everything else. Terrain and habitat
 // aren't in it, so it shows where the weather is right; tapping a spot gives the full reading.
-const READY_KEY = 'mycofield-ready', READY_MAX_CELLS = 400, READY_TTL = 60 * 60 * 1000;
-const ready = {on: pref(READY_KEY, true), cells: new Map(), timer: null, token: 0};
-// Finer squares as you zoom in (0.025° ≈ 2.5 km — about the UK weather model's own resolution).
-const readyStep = z => z >= 11 ? 0.025 : z >= 10 ? 0.05 : z >= 8.5 ? 0.1 : z >= 7 ? 0.2 : 0.4;
+// Kept light for Open-Meteo's free limits, which are per connection: at most ~150 squares in view,
+// 17 days of history per square, and squares cached for three hours.
+const READY_KEY = 'mycofield-ready', READY_MAX_CELLS = 120, READY_TTL = 3 * 60 * 60 * 1000, READY_PAST_DAYS = 16;
+const ready = {on: pref(READY_KEY, true), cells: new Map(), timer: null, token: 0, step: null, pausedUntil: 0};
+// The finest square size (0.025° ≈ 2.5 km, about the UK weather model's own resolution) that keeps
+// the view comfortably under READY_MAX_CELLS squares — a phone zoomed in gets 2.5 km, a wide desktop
+// view coarser. With hysteresis: the current size is kept while it still nearly fits, so a small pan
+// never re-squares (and refetches) the whole view; only a real zoom change does.
+const READY_STEPS = [0.025, 0.05, 0.1, 0.2, 0.4, 0.8];
+function readyStep(s0, n0, w0, e0) {
+  const count = st => (Math.ceil((n0 - s0) / st) + 1) * (Math.ceil((e0 - w0) / (st * 1.6)) + 1);
+  const finest = READY_STEPS.find(st => count(st) <= READY_MAX_CELLS * 0.8) ?? 0.8, cur = ready.step;
+  if (cur && finest >= cur && count(cur) <= READY_MAX_CELLS * 1.3) return cur;
+  return (ready.step = finest);
+}
 function readyCellsInView() {
-  const step = readyStep(map.getZoom()), lonStep = step * 1.6, b = map.getBounds(), c = map.getCenter(), out = [];
+  const b = map.getBounds(), c = map.getCenter(), out = [];
   const s0 = Math.max(49.8, b.getSouth()), n0 = Math.min(61, b.getNorth()), w0 = Math.max(-8.7, b.getWest()), e0 = Math.min(2, b.getEast());
+  if (s0 >= n0 || w0 >= e0) return out;
+  const step = readyStep(s0, n0, w0, e0), lonStep = step * 1.6;
   const r0 = Math.floor(s0 / step), c0 = Math.floor(w0 / lonStep);
   for (let r = r0; r * step < n0; r++)
     for (let q = c0; q * lonStep < e0; q++) {
@@ -1066,10 +1079,10 @@ function readyCellsInView() {
       out.push({key: `${step}:${r}:${q}`, r, q, step, lonStep, lat: +(la + step / 2).toFixed(4), lon: +(lo + lonStep / 2).toFixed(4)});
     }
   // Tilted 3D views reach the horizon: keep the squares nearest the centre.
-  return out.sort((a, b2) => distanceKm([a.lon, a.lat], [c.lng, c.lat]) - distanceKm([b2.lon, b2.lat], [c.lng, c.lat])).slice(0, READY_MAX_CELLS);
+  return out.sort((a, b2) => distanceKm([a.lon, a.lat], [c.lng, c.lat]) - distanceKm([b2.lon, b2.lat], [c.lng, c.lat])).slice(0, Math.round(READY_MAX_CELLS * 1.3));
 }
 async function fetchReadyBatch(cells) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${cells.map(c => c.lat).join(',')}&longitude=${cells.map(c => c.lon).join(',')}&daily=${DAILY_VARS}&current=${SOIL_VARS_FORECAST.join(',')}&past_days=30&forecast_days=1&timezone=${encodeURIComponent(TZ)}`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${cells.map(c => c.lat).join(',')}&longitude=${cells.map(c => c.lon).join(',')}&daily=${DAILY_VARS}&current=${SOIL_VARS_FORECAST.join(',')}&past_days=${READY_PAST_DAYS}&forecast_days=1&timezone=${encodeURIComponent(TZ)}`;
   const data = await fetchJSON(url), rows = Array.isArray(data) ? data : [data], today = todayISO();
   cells.forEach((c, i) => {
     const r = rows[i];
@@ -1117,6 +1130,8 @@ async function updateReady() {
   if (map.getZoom() < 5.5 || !cells.length) { renderReady([]); note.textContent = 'Zoom in over Britain to see live ready ground'; return; }
   const missing = cells.filter(c => !(Date.now() - (ready.cells.get(c.key)?.at || 0) < READY_TTL));
   renderReady(cells);
+  // Rate-limited by the weather service: leave it alone for a couple of minutes rather than pile on.
+  if (missing.length && Date.now() < ready.pausedUntil) { note.textContent = 'Live weather is busy — trying again in a couple of minutes'; return; }
   if (missing.length) note.textContent = 'Reading live weather…';
   try {
     const batches = [];
@@ -1128,7 +1143,10 @@ async function updateReady() {
     }
     const shown = renderReady(cells);
     note.textContent = `${shown ? 'Live weather' : 'Nothing ready in view right now'} · updated ${new Date().toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}. Tap any spot for the full reading.`;
-  } catch { if (token === ready.token) note.textContent = navigator.onLine ? 'Live weather unavailable — try again shortly' : 'Offline — live ready ground needs a connection'; }
+  } catch (err) {
+    if (err?.httpStatus === 429) ready.pausedUntil = Date.now() + 2 * 60 * 1000;
+    if (token === ready.token) note.textContent = err?.httpStatus === 429 ? 'Live weather is busy — trying again in a couple of minutes' : navigator.onLine ? 'Live weather unavailable — try again shortly' : 'Offline — live ready ground needs a connection';
+  }
 }
 function setReady(on) {
   ready.on = on; setPref(READY_KEY, on);
@@ -1142,7 +1160,8 @@ let satellite = !!ESRI_KEY && pref('mycofield-sat', true);
 function setSatellite(on) {
   if (!ESRI_KEY) return;
   satellite = on; setPref('mycofield-sat', on);
-  if (mapLoaded) { map.setLayoutProperty('sat', 'visibility', on ? 'visible' : 'none'); map.setLayoutProperty('osm', 'visibility', on ? 'none' : 'visible'); }
+  // Aerial imagery carries its own light and shadow; the hillshade only muddies it, so it goes off with satellite.
+  if (mapLoaded) { map.setLayoutProperty('sat', 'visibility', on ? 'visible' : 'none'); map.setLayoutProperty('osm', 'visibility', on ? 'none' : 'visible'); map.setLayoutProperty('hillshade', 'visibility', on ? 'none' : 'visible'); }
   $('satBtn').setAttribute('aria-pressed', on); $('satBtn').textContent = on ? 'MAP' : 'SAT';
   $('satBtn').setAttribute('aria-label', on ? 'Satellite on — switch to map' : 'Switch to satellite');
 }

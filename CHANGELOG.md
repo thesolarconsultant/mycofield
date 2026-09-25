@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.17.0 — Satellite view, lighter live overlay
+- Satellite imagery (Esri World Imagery) draped over the 3D terrain, on by default, with a
+  SAT/MAP switch on the map. Hillshade goes off under imagery.
+- Ready-ground overlay tuned for Open-Meteo's free limits: at most ~120 squares in view
+  (square size picked with hysteresis, so panning never re-squares the view), 17 days of
+  history per square, three-hour cache, and a two-minute back-off if the service returns 429.
+
 ## 2.16.1 — Smooth, finer ready ground
 - Overlay drawn as one smoothly blended image (amber → lime → green, more solid as the score
   rises) instead of hard-edged squares; grid down to ~2.5 km when zoomed in (up to 400 squares,

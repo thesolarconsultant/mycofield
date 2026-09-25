@@ -77,3 +77,9 @@ nearby first, then the best anywhere in Britain if there aren't enough strong sp
 
 The spots never ship in the app. `claim_spots()` picks a buyer's set once, stores it on their
 `spot_packs` row, and only ever returns that set; the `spots` table itself is unreadable to users.
+
+## Satellite imagery
+The map uses Esri World Imagery through an ArcGIS Location Platform API key (`ESRI_KEY` in
+`index.html`). The key is public in the page, as any browser map key is; it should be restricted
+in the ArcGIS developer dashboard to the site's referrer URLs and to the Basemaps privilege only.
+Leave `ESRI_KEY` empty to drop the satellite option (the map falls back to OpenStreetMap).
