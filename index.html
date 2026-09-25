@@ -164,6 +164,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .spot{background:var(--white);border:1px solid var(--stone);border-radius:14px;padding:12px}
 .spot-h{display:flex;justify-content:space-between;align-items:center;gap:8px}.spot-h b{font-size:15px;color:var(--forest)}
 .spot p{margin:6px 0 0}.spot-a{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}.spot-a .btn{width:auto;padding:8px 14px}
+.ask-gate{z-index:95}.ask-acts{display:grid;gap:8px;margin-top:6px}
 .pw-fine{font-size:11.5px;color:var(--muted);margin-top:12px!important}
 .no-areas .needs-area{display:none!important}
 .pw-link{background:none;border:0;color:var(--forest);text-decoration:underline;font:inherit;font-size:13px;padding:6px 0;cursor:pointer}
@@ -188,6 +189,9 @@ button.earth .cp{width:13px;height:13px;stroke-width:2;opacity:.75}
 .switch input:checked{background:var(--moss)}
 .switch input:checked:after{transform:translateX(18px)}
 /* markers */
+.spots-fab{background:var(--forest);color:var(--lime);font-size:20px}
+.spk{display:flex;align-items:center;gap:5px;min-height:32px;padding:5px 11px 5px 8px;border-radius:999px;background:var(--forest);border:2px solid var(--lime);color:#fff;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 6px 18px rgba(11,61,46,.3);cursor:pointer}
+.spk b{color:var(--lime);font-size:14px;line-height:1}
 .amk{display:flex;align-items:center;gap:6px;min-height:36px;padding:6px 12px 6px 9px;border-radius:999px;background:var(--white);border:1px solid var(--line-2);color:var(--forest);font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 6px 18px rgba(11,61,46,.2)}
 .amk i{width:9px;height:9px;border-radius:50%;background:var(--moss);flex:none}
 .amk .s{font-family:var(--head);font-weight:800;color:var(--moss-ink)}
@@ -310,7 +314,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <main>
 <section class="view active" id="view-map"><div class="mapwrap" id="mapwrap"><div id="map"></div>
 <div class="topbar"><form class="searchbar" id="searchRow" role="search"><img class="sb-logo" src="./assets/logo-mark.png" alt="" width="35" height="27"><input id="searchInput" type="search" placeholder="Search place or postcode" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="sb-btn" type="button" id="searchCancel" hidden aria-label="Cancel search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="sb-btn" type="button" id="savedBtn" aria-label="Saved areas" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button></form><div class="results" id="searchResults" hidden aria-live="polite"></div></div>
-<div class="fabs"><button class="fab" id="terrainBtn" type="button" aria-pressed="true" aria-label="3D terrain on — switch to flat">3D</button><button class="fab" id="locateBtn" type="button" aria-label="Analyse my location"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></button></div>
+<div class="fabs"><button class="fab" id="terrainBtn" type="button" aria-pressed="true" aria-label="3D terrain on — switch to flat">3D</button><button class="fab" id="locateBtn" type="button" aria-label="Analyse my location"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></button><button class="fab spots-fab" id="spotsFab" type="button" hidden aria-label="My spots">★</button></div>
 <div class="sheet" id="areaCard" hidden role="region" aria-label="Area summary">
 <button class="handle" type="button" aria-label="Area summary — swipe down to close"></button>
 <div class="sh-head"><div class="ring sm" id="ring"><b id="scoreValue">…</b></div><div class="sh-title"><span class="kicker"><span id="areaKicker">Saved area</span><span id="areaStatus" class="chip loading">Loading</span></span><h2 id="areaName"></h2><p id="scoreTitle">Loading live conditions…</p></div><div class="sh-tools"><button class="iconbtn" id="areaClose" type="button" aria-label="Close area summary"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
@@ -386,6 +390,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="gate" id="spotsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="ssTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <h2 id="ssTitle">Your spots</h2><div id="ssBody"></div>
 <button class="pw-link" id="ssClose" type="button">Close</button></div></div>
+<div class="gate ask-gate" id="askBox" hidden role="alertdialog" aria-modal="true" aria-labelledby="askTitle" aria-describedby="askText"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><h2 id="askTitle"></h2><p id="askText"></p><div class="ask-acts"><button class="btn lime" id="askOk" type="button">OK</button><button class="btn secondary" id="askCancel" type="button">Cancel</button></div></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
 import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs';
@@ -1422,13 +1427,25 @@ function saveRename(e) {
   if (areas[k] && name) { areas[k].name = name; refreshAreasUI(); toast('Area renamed.'); }
   $('renameForm').hidden = true;
 }
-function deleteArea() {
+// Branded stand-in for window.confirm(): resolves true (OK) or false (Cancel, Esc, tap outside).
+function askConfirm(title, text, {ok = 'OK', cancel = 'Cancel', danger = false} = {}) {
+  return new Promise(resolve => {
+    const box = $('askBox'), key = e => { if (e.key === 'Escape') done(false); };
+    const done = v => { box.hidden = true; document.removeEventListener('keydown', key); resolve(v); };
+    $('askTitle').textContent = title; $('askText').textContent = text;
+    $('askOk').textContent = ok; $('askCancel').textContent = cancel;
+    $('askOk').className = `btn ${danger ? 'danger' : 'lime'}`;
+    $('askOk').onclick = () => done(true); $('askCancel').onclick = () => done(false);
+    box.onclick = e => { if (e.target === box) done(false); };
+    document.addEventListener('keydown', key); box.hidden = false; $('askOk').focus();
+  });
+}
+async function deleteArea() {
   const k = state.selectedArea, a = areas[k];
   if (!a) return;
   const kids = childrenOf(k);
-  if (Object.keys(areas).length - 1 - kids.length < 1) { toast('Keep at least one tracked area.'); return; }
   const what = kids.length ? `“${a.name}” and its ${kids.length} sub-area${kids.length === 1 ? '' : 's'}` : `“${a.name}”`;
-  if (!confirm(`Delete ${what}? Your observations are kept.`)) return;
+  if (!await askConfirm(`Delete ${what}?`, 'Your finds and blanks are kept.', {ok: 'Delete', danger: true})) return;
   for (const id of [k, ...kids]) { delete areas[id]; delete state.areaData[id]; }
   state.selectedArea = a.parentId && areas[a.parentId] ? a.parentId : orderedAreaIds()[0];
   refreshAreasUI();
@@ -2007,7 +2024,7 @@ async function verifyCode(e) {
   if (await signInWithCode($('syncCode'))) toast('Signed in — syncing your data.');
 }
 async function signOut() {
-  if (!confirm('Sign out? Your data stays on this device and in your account.')) return;
+  if (!await askConfirm('Sign out?', 'Your data stays on this device and in your account.', {ok: 'Sign out'})) return;
   try { await sbFetch('/auth/v1/logout', {method: 'POST'}); } catch {}
   setSession(null); writeJSON(SYNC_KEY, {}); sync.state = 'off'; renderSync();
 }
@@ -2240,7 +2257,22 @@ async function refreshSpots() {
   const c = {userId: session.user.id, owned: !!pack, place: pack?.place || null, list: pack?.claimed_at ? list : []};
   writeJSON(SPOTS_KEY, c); renderSpotsEntry(); return c;
 }
+// The buyer's spots stay pinned on the map (★1…★10) with a ★ button to reopen the list.
+let spotMarkers = [];
+function renderSpotMarkers() {
+  spotMarkers.forEach(m => m.remove()); spotMarkers = [];
+  const list = spotsCache()?.list || [];
+  $('spotsFab').hidden = !list.length;
+  list.forEach((x, i) => {
+    const el = document.createElement('button');
+    el.type = 'button'; el.className = 'spk'; el.setAttribute('aria-label', `My spot ${i + 1}: ${x.name}`);
+    el.innerHTML = `<b>★</b>${i + 1}`;
+    el.addEventListener('click', e => { e.stopPropagation(); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name}); });
+    spotMarkers.push(new maplibregl.Marker({element: el, anchor: 'bottom'}).setLngLat([x.lon, x.lat]).addTo(map));
+  });
+}
 function renderSpotsEntry() {
+  renderSpotMarkers();
   const c = spotsCache(), b = $('spotsOpen');
   b.hidden = !(c?.owned || (spotsOn() && session));
   b.textContent = c?.owned ? (c.list.length ? `★ Your ${c.list.length} spots` : '★ Pick your spots') : `★ The ${SPOT_COUNT} best spots near you · £20`;
@@ -2272,10 +2304,11 @@ function renderSpots() {
   const n = c.list.length, near = c.list.filter(x => x.nearby).length;
   $('ssTitle').textContent = `Your ${n} spots`;
   body.innerHTML = `<p class="small">Picked from ${esc(c.place || 'your location')}. ${near ? `${near} near you${near < n ? `, plus ${n - near} of the best further afield` : ''}.` : 'Nothing top-tier close to you, so these are the big leagues: the best on our map in Britain.'}</p>
-    <div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>${esc(x.name)}</b>${x.tier === 1 ? '<span class="chip">Top tier</span>' : ''}</div>
+    <div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>★${i + 1} ${esc(x.name)}</b>${x.tier === 1 ? '<span class="chip">Top tier</span>' : ''}</div>
       <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')}${x.distance_km != null ? ` · ${Math.round(x.distance_km)} km away` : ''}${x.access ? ` · ${esc(x.access)}` : ''}</div>
       ${x.notes ? `<p class="small">${esc(x.notes)}</p>` : ''}
       <div class="spot-a"><button class="btn secondary" type="button" data-spot="${i}">Show on map</button>${coordLink(x.lat, x.lon)}</div></div>`).join('')}</div>
+    <p class="small">Your spots stay pinned on the map as ★1–★${n}. Tap the ★ button on the map to open this list again.</p>
     <p class="pw-fine">Always check access, and get the landowner’s permission where you need it. Only pick what you can identify with certainty. Never eat a wild mushroom because of an app.</p>`;
   body.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => {
     const x = c.list[+b.dataset.spot]; $('spotsSheet').hidden = true; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name});
@@ -2288,7 +2321,7 @@ async function claimSpots(e) {
   try {
     const [r] = await searchPlaces(q);
     if (!r) throw new Error(`we couldn’t find “${q}”`);
-    if (!confirm(`Pick your ${SPOT_COUNT} spots from ${r.name}? They’re locked in once chosen.`)) return;
+    if (!await askConfirm(`Pick your spots from ${r.name}?`, `We’ll choose your ${SPOT_COUNT} spots from here. They’re locked in once chosen, so make sure it’s the right place.`, {ok: 'Yes, pick my spots', cancel: 'Change location'})) return;
     const list = await sbFetch('/rest/v1/rpc/claim_spots', {method: 'POST', body: {p_lat: r.lat, p_lon: r.lon, p_place: r.name, p_count: SPOT_COUNT}});
     if (!list?.length) throw new Error('the spot list is being updated. Try again shortly, or email help@mycofield.com');
     writeJSON(SPOTS_KEY, {userId: session.user.id, owned: true, place: r.name, list}); renderSpots(); renderSpotsEntry();
@@ -2328,6 +2361,7 @@ function initGate() {
   $('soBuy').onclick = () => { $('spotsOffer').hidden = true; };
   $('ssClose').onclick = () => { $('spotsSheet').hidden = true; };
   $('spotsOpen').onclick = () => { closeSaved(); openSpots(); };
+  $('spotsFab').onclick = openSpots;
   renderSpotsEntry();
   $('pwChangeEmail').onclick = () => { sync.pendingEmail = null; renderSync(); renderPaywall(); $('pwEmail').focus(); };
   // Signed in from the email link in another tab of this browser → pick it up here.

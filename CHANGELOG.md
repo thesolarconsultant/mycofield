@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.15.0 — Branded dialogs, spots on the map
+- Browser confirm() pop-ups (“www.mycofield.com says”) replaced with a MycoField dialog for
+  picking spots, deleting an area and signing out.
+- Bought spots stay pinned on the map (★1–★10, tap to read conditions) and a ★ map button
+  reopens the list — previously the list was only reachable from the Saved sheet.
+- The last saved area can be deleted (the app handles zero areas since 2.13).
+
 ## 2.14.2 — Spot pack wording
 - Offer and terms describe spots as chosen from official habitat surveys (NRW, Natural England,
   NatureScot) on open-access land outside SSSIs/NNRs, not as confirmed finds. The spot list itself
