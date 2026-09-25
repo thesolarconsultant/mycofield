@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.13.0 — No spots given away
+- New users start with no saved areas and no demo records (the four Welsh reference areas are no
+  longer seeded; devices and accounts that already have them keep them).
+- First open asks for location once and flies straight there; if refused, the map opens on a
+  neutral England & Wales overview.
+- Empty states: dashboard, strongest-area card and field log work with zero saved areas; a log
+  entry needs an attached map point or a saved area.
+
 ## 2.12.2 — Clearer paywall sign-in
 - Continue button shows “Sending…” while the email goes out.
 - Paywall now takes the code from the email, so sign-in works when the link opens in another browser (mail apps).

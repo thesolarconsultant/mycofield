@@ -160,6 +160,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-price{font-size:15px}.pw-price b{font-family:var(--head);font-size:30px;color:var(--forest);margin-right:4px}
 .pw-list{padding-left:18px;margin:6px 0 14px;font-size:14px;line-height:1.5}
 .pw-fine{font-size:11.5px;color:var(--muted);margin-top:12px!important}
+.no-areas .needs-area{display:none!important}
 .pw-link{background:none;border:0;color:var(--forest);text-decoration:underline;font:inherit;font-size:13px;padding:6px 0;cursor:pointer}
 body.gated{overflow:hidden}.sync-form .field{flex:1 1 220px;min-height:48px;height:48px;resize:none}.sync-form .btn{flex:0 0 auto;white-space:nowrap}
 .pc-actions .btn{flex:1;padding:10px 12px;min-height:46px}
@@ -332,12 +333,12 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 </div></section>
 <section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. <span id="dashArea"></span> Experimental research indicator only — not a probability or a guarantee of fruiting.</div>
 <div class="card" style="margin-top:20px"><h3><span>Tracked areas <span class="small" id="trackerCount"></span></span><span class="seg" id="trackerSort" role="group" aria-label="Sort areas"><button type="button" data-sort="index" class="active">Index</button><button type="button" data-sort="name">A–Z</button></span></h3><div id="tracker" class="tracker"></div><div class="small" style="margin-top:12px">Add areas and sub-areas from the Map: tap or search a spot, then <b>Save area</b>.</div></div>
-<div class="focus-head" id="focusHead"><div><div class="eyebrow">Focused area</div><h3 id="focusName"></h3><div class="small" id="focusSub"></div></div><div class="focus-acts"><button class="btn" type="button" id="focusMap">View map <span aria-hidden="true">→</span></button><button class="btn secondary" type="button" id="focusRename">Rename</button><button class="btn danger" type="button" id="focusDelete">Delete</button></div></div>
+<div class="needs-area focus-head" id="focusHead"><div><div class="eyebrow">Focused area</div><h3 id="focusName"></h3><div class="small" id="focusSub"></div></div><div class="focus-acts"><button class="btn" type="button" id="focusMap">View map <span aria-hidden="true">→</span></button><button class="btn secondary" type="button" id="focusRename">Rename</button><button class="btn danger" type="button" id="focusDelete">Delete</button></div></div>
 <form class="renameform" id="renameForm" hidden><input class="field" id="renameInput" maxlength="60" required aria-label="Area name" autocomplete="off"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="renameCancel">Cancel</button></form>
-<div class="cards"><div class="card"><h3>Current signal <span class="chip exp">Experimental</span></h3><div class="statnum" id="dashScore">—</div><div class="statlabel">Conditions index</div><div class="delta flat" id="dashTrend"></div><svg id="sparkScore" class="spark" aria-label="Conditions Index trend"></svg><div class="small">Index · today → +9 days</div></div><div class="card"><h3>Moisture memory <span class="chip" id="dashRainChip">—</span></h3><div class="statnum" id="dashRain">—</div><div class="statlabel">14-day rainfall</div><div class="small" id="dashRainSub" style="margin-top:8px"></div><svg id="sparkRain" class="spark" aria-label="Daily rainfall trend"></svg><div class="small">Daily rain · 14 days back → +9 days</div></div><div class="card"><h3>Night temperature</h3><div class="statnum" id="dashTemp">—</div><div class="statlabel">Latest overnight low</div><svg id="sparkTemp" class="spark" aria-label="Overnight low trend"></svg><div class="small">Daily low · 14 days back → +9 days</div></div></div>
-<div class="card" style="margin-top:12px"><h3>10-day outlook</h3><div class="forecast" id="forecast"><div class="small">Loading forecast…</div></div></div>
-<div class="card" style="margin-top:12px"><h3>Why this score <span class="chip exp" id="modelChip">conditions-v0.2</span></h3><div class="bars" id="breakdown"></div><div class="small" style="margin-top:14px">Hand-built prototype weighting. Thresholds are not yet calibrated — see Evidence on the History tab.</div></div>
-<div class="card" style="margin-top:12px"><h3>Inputs &amp; data quality</h3><div class="inputs" id="inputsTable"></div></div>
+<div class="needs-area cards"><div class="card"><h3>Current signal <span class="chip exp">Experimental</span></h3><div class="statnum" id="dashScore">—</div><div class="statlabel">Conditions index</div><div class="delta flat" id="dashTrend"></div><svg id="sparkScore" class="spark" aria-label="Conditions Index trend"></svg><div class="small">Index · today → +9 days</div></div><div class="card"><h3>Moisture memory <span class="chip" id="dashRainChip">—</span></h3><div class="statnum" id="dashRain">—</div><div class="statlabel">14-day rainfall</div><div class="small" id="dashRainSub" style="margin-top:8px"></div><svg id="sparkRain" class="spark" aria-label="Daily rainfall trend"></svg><div class="small">Daily rain · 14 days back → +9 days</div></div><div class="card"><h3>Night temperature</h3><div class="statnum" id="dashTemp">—</div><div class="statlabel">Latest overnight low</div><svg id="sparkTemp" class="spark" aria-label="Overnight low trend"></svg><div class="small">Daily low · 14 days back → +9 days</div></div></div>
+<div class="needs-area card" style="margin-top:12px"><h3>10-day outlook</h3><div class="forecast" id="forecast"><div class="small">Loading forecast…</div></div></div>
+<div class="needs-area card" style="margin-top:12px"><h3>Why this score <span class="chip exp" id="modelChip">conditions-v0.2</span></h3><div class="bars" id="breakdown"></div><div class="small" style="margin-top:14px">Hand-built prototype weighting. Thresholds are not yet calibrated — see Evidence on the History tab.</div></div>
+<div class="needs-area card" style="margin-top:12px"><h3>Inputs &amp; data quality</h3><div class="inputs" id="inputsTable"></div></div>
 <details class="card method" style="margin-top:12px"><summary>How the index works</summary>
 <p><b>What it is.</b> An experimental 0–100 summary of whether recent conditions look favourable for grassland fungi in general. It is not a probability and does not predict any species.</p>
 <p><b>Inputs (model conditions-v0.5).</b> Recent rainfall (25%): 45 mm in 14 days scores full marks. Modelled soil moisture at 3–27 cm (20%): 15% volumetric scores 0, 40% scores full marks. Water balance (15%): a 50 mm soil bucket topped up by rain and drained by FAO-56 reference evapotranspiration. Cool nights (20%): the 7-night mean low, best at 8°C, losing 12 points per degree away. Terrain (10%): elevation, slope and aspect from a 90 m elevation model. Habitat (10%): OpenStreetMap land-use mapping, refined by official habitat data — NRW LANDMAP in Wales, Natural England’s Priority Habitat Inventory, the Crop Map of England and Living England in England, NatureScot’s Habitat Map of Scotland — which separates improved (fertilised, reseeded) grassland (scores 30) and arable (10) from semi-natural grassland (100) — or what you set in the field. Each frost night in the last 7 days subtracts 5 points (up to 15).</p>
@@ -402,8 +403,8 @@ let session = readJSON(AUTH_KEY, null);
 const sync = {state: 'off', lastAt: null, error: null, running: null, again: false, timer: null, applying: false};
 const COMPASS = ['N','NE','E','SE','S','SW','W','NW'];
 
-// Built-in broad research/reference areas — seeded on first run, then fully editable.
-// Not observation locations.
+// Former built-in areas. No longer seeded (new users start with none, so no spots are given away);
+// kept only so old records that point at them can still find their centre.
 const BUILT_IN_AREAS = {
   merthyr:  {name:'Merthyr Tydfil',     center:[-3.378,51.748], zoom:11.4, pitch:62, elev:'310–520m', parentId:null},
   blorenge: {name:'The Blorenge',       center:[-3.060,51.793], zoom:12,   pitch:66, elev:'420–560m', parentId:null},
@@ -412,8 +413,8 @@ const BUILT_IN_AREAS = {
 };
 const AREAS_KEY = 'mycofield-areas-v1';
 function loadAreas() {
-  try { const a = JSON.parse(localStorage.getItem(AREAS_KEY) || 'null'); if (a && typeof a === 'object' && Object.keys(a).length) return a; } catch {}
-  return JSON.parse(JSON.stringify(BUILT_IN_AREAS));
+  try { const a = JSON.parse(localStorage.getItem(AREAS_KEY) || 'null'); if (a && typeof a === 'object') return a; } catch {}
+  return {};
 }
 function saveAreas() { try { localStorage.setItem(AREAS_KEY, JSON.stringify(areas)); scheduleSync(); return true; } catch { return false; } }
 let areas = loadAreas();
@@ -424,7 +425,7 @@ const orderedAreaIds = () => topLevelAreas().flatMap(k => [k, ...childrenOf(k)])
 function areaLabel(k) { const a = areas[k]; if (!a) return ''; const p = a.parentId && areas[a.parentId]; return p ? `${p.name} › ${a.name}` : a.name; }
 
 const state = {
-  selectedArea: areas.merthyr ? 'merthyr' : orderedAreaIds()[0],
+  selectedArea: orderedAreaIds()[0] ?? null,
   areaData: {},          // key -> {status, weather, terrain, conditions, series, error}
   strongestArea: null,
   pointAnalysis: null,
@@ -478,7 +479,7 @@ document.addEventListener('click', async e => {
   toast(await copyText(b.dataset.copy) ? `Copied ${b.dataset.copy}` : `Couldn’t copy — ${b.dataset.copy}`);
 });
 function nearestArea(lat, lon) {
-  return Object.entries(areas).sort((a, b) => distanceKm(a[1].center, [lon, lat]) - distanceKm(b[1].center, [lon, lat]))[0][0];
+  return Object.entries(areas).sort((a, b) => distanceKm(a[1].center, [lon, lat]) - distanceKm(b[1].center, [lon, lat]))[0]?.[0] ?? '';
 }
 function weatherText(code) {
   if (code == null) return '—';
@@ -972,7 +973,17 @@ const fmtPct = v => Number.isFinite(v) ? `${Math.round(v * 100)}%` : '—';
 // ---------- map ----------
 const style = {version: 8, sources: {osm: {type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors', maxzoom: 19}, terrain: {type: 'raster-dem', url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json', tileSize: 256}}, layers: [{id: 'osm', type: 'raster', source: 'osm'}, {id: 'hillshade', type: 'hillshade', source: 'terrain', paint: {'hillshade-exaggeration': .45}}]};
 // Open where the user left off (falls back to a south Wales overview).
-const CAMERA_KEY = 'mycofield-camera', DEFAULT_CAMERA = {center: [-3.33, 51.78], zoom: 9.6, pitch: 45, bearing: -12};
+const CAMERA_KEY = 'mycofield-camera', DEFAULT_CAMERA = {center: [-2.2, 52.9], zoom: 5.6, pitch: 0, bearing: 0};
+// First open only: ask where they are and fly there. If they say no, the map stays on the
+// neutral England & Wales view — it never opens on anyone's spots.
+const hadCamera = (() => { try { return !!localStorage.getItem(CAMERA_KEY); } catch { return false; } })();
+function firstRunLocate() {
+  if (!navigator.geolocation || hadCamera || pref('mycofield-asked-location', false)) return;
+  setPref('mycofield-asked-location', true);
+  navigator.geolocation.getCurrentPosition(
+    pos => map.flyTo({center: [pos.coords.longitude, pos.coords.latitude], zoom: 11.5, duration: 1600}),
+    () => {}, {timeout: 15000, maximumAge: 600000});
+}
 function loadCamera() { try { const c = JSON.parse(localStorage.getItem(CAMERA_KEY)); if (c && Array.isArray(c.center)) return c; } catch {} return DEFAULT_CAMERA; }
 const pref = (key, fallback) => { try { const v = localStorage.getItem(key); return v == null ? fallback : v === '1'; } catch { return fallback; } };
 const setPref = (key, on) => { try { localStorage.setItem(key, on ? '1' : '0'); } catch {} };
@@ -1101,6 +1112,10 @@ function compareTrackedAreas() {
     $('strongestScore').textContent = state.areaData[s].conditions.score;
     $('strongestName').textContent = areaLabel(s);
     $('strongestSub').textContent = `Highest current index of ${scored.length} tracked area${scored.length === 1 ? '' : 's'}`;
+  } else if (!Object.keys(areas).length) {
+    $('strongestScore').textContent = '—';
+    $('strongestName').textContent = 'No saved areas yet';
+    $('strongestSub').textContent = 'Tap the map, then Save, to track a spot here';
   } else {
     const pending = Object.values(state.areaData).some(d => d.status === 'loading');
     $('strongestScore').textContent = pending ? '…' : '—';
@@ -1244,7 +1259,8 @@ function focusArea(k) {
 function renderSignal() {
   renderTracker(); renderSavedList();
   const k = state.selectedArea, d = state.areaData[k], a = areas[k];
-  if (!a) return;
+  document.body.classList.toggle('no-areas', !a);
+  if (!a) { $('dashArea').textContent = 'No saved areas yet: tap anywhere on the map, then Save, and it will be tracked here.'; $('tracker').innerHTML = ''; return; }
   $('dashArea').textContent = `Detail below: ${areaLabel(k)}.`;
   $('focusName').textContent = a.name;
   const [lon, lat] = a.center;
@@ -1348,7 +1364,7 @@ function refreshAreasUI() {
 }
 function renderAreaOptions() {
   const sel = $('obsArea'), v = sel.value;
-  sel.innerHTML = orderedAreaIds().map(k => `<option value="${esc(k)}">${areas[k].parentId ? '\u00a0\u00a0└ ' : ''}${esc(areas[k].name)}</option>`).join('');
+  sel.innerHTML = orderedAreaIds().map(k => `<option value="${esc(k)}">${areas[k].parentId ? '\u00a0\u00a0└ ' : ''}${esc(areas[k].name)}</option>`).join('') || '<option value="">No saved area — attach a map point</option>';
   if (areas[v]) sel.value = v;
 }
 function newAreaId() { return 'a-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
@@ -1567,7 +1583,7 @@ function loadRecords() {
       return migrated;
     }
   } catch {}
-  return DEFAULT_RECORDS.map(r => ({...r}));
+  return [];
 }
 function saveRecords(records = state.records) {
   try { localStorage.setItem(RECORDS_KEY, JSON.stringify(records)); scheduleSync(); return true; } catch { return false; }
@@ -1588,13 +1604,14 @@ function buildSnapshot(date, areaKey) {
 }
 function saveObservation(e) {
   e.preventDefault();
-  const k = $('obsArea').value, p = state.attachedPoint;
+  const k = areas[$('obsArea').value] ? $('obsArea').value : null, p = state.attachedPoint;
+  if (!k && !p) { toast('Tap a spot on the map and attach it, or save an area first.'); return; }
   const rec = {
     id: crypto.randomUUID?.() || String(Date.now()),
     createdAt: new Date().toISOString(),
     date: $('obsDate').value,
     result: $('obsResult').value,
-    areaKey: k, area: areaLabel(k), areaCenter: areas[k].center,
+    areaKey: k, area: k ? areaLabel(k) : 'Map point', areaCenter: k ? areas[k].center : [round6(p.coordinates.lon), round6(p.coordinates.lat)],
     elevationBand: $('obsElevation').value.trim(),
     habitat: $('obsHabitat').value.trim(),
     ground: $('obsGround').value,
@@ -1631,7 +1648,8 @@ function observationCoords(rec) {
   // Area was deleted — use the centre stored on the record (or the original built-in centre).
   const c = rec.areaCenter || BUILT_IN_AREAS[rec.areaKey]?.center;
   if (c) return {lat: c[1], lon: c[0], source: `${rec.area} centre (saved)`};
-  const f = areas[state.selectedArea].center;
+  const f = areas[state.selectedArea]?.center;
+  if (!f) return null;
   return {lat: f[1], lon: f[0], source: `${areaLabel(state.selectedArea)} centre (fallback)`};
 }
 async function fetchHistoricalWeather(lat, lon, endDate) {
@@ -2111,7 +2129,7 @@ const SLIDES = [
   ['Know the ground.', 'Official habitat maps pick out old, unimproved grassland, and in Wales whether it’s grazed.'],
   ['Log finds and blanks.', 'Your own records test the index against what you actually find, so it keeps getting sharper.']
 ];
-function openApp() { $('walkthrough').hidden = $('paywall').hidden = $('trialPill').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
+function openApp() { firstRunLocate(); $('walkthrough').hidden = $('paywall').hidden = $('trialPill').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
 function showWalkthrough() {
   document.body.classList.add('gated'); $('walkthrough').hidden = false; gate.slide = -1; nextSlide();
 }
@@ -2131,7 +2149,7 @@ function finishWalkthrough() {
   const t = readJSON(TRIAL_KEY, {});
   writeJSON(TRIAL_KEY, {...t, walkthroughDone: true, trialEndsAt: t.trialEndsAt || Date.now() + TRIAL_SECONDS * 1000});
   $('walkthrough').hidden = true; document.body.classList.remove('gated');
-  startTrial();
+  startTrial(); firstRunLocate();
   switchView('map'); openSearch(); $('searchInput').placeholder = 'Enter your postcode'; $('searchInput').focus();
 }
 function startTrial() {
@@ -2176,7 +2194,7 @@ async function confirmPayment() {
   $('pwPayNote').textContent = 'Payment not confirmed yet. If you paid, it can take a minute — reopen the app, or contact us with your receipt.';
 }
 async function startGate() {
-  if (!paywallOn()) return;
+  if (!paywallOn()) { firstRunLocate(); return; }
   const paidReturn = new URLSearchParams(location.search).get('paid') === '1';
   if (paidReturn) history.replaceState(null, '', location.pathname + location.hash);
   if (session && paidReturn) { confirmPayment(); return; }
@@ -2220,6 +2238,7 @@ function init() {
   syncAreaMarkers();
   updateMarkerDensity();
   selectArea(state.selectedArea, false, false);
+  if (!areas[state.selectedArea]) { compareTrackedAreas(); renderSignal(); }
   setTerrain(terrain3d, false);
   setShowAreas(pref('mycofield-show-areas', false));
 
