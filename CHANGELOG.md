@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.12.2 — Clearer paywall sign-in
+- Continue button shows “Sending…” while the email goes out.
+- Paywall now takes the code from the email, so sign-in works when the link opens in another browser (mail apps).
+- A sign-in completed in another tab is picked up straight away; “Use a different email” link.
+
 ## 2.12.1 — Promo codes
 - New Stripe Payment Link with promotion codes enabled.
 - Webhook also grants access for 100%-off promo checkouts (`no_payment_required`).

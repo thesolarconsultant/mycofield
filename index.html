@@ -364,7 +364,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <h2 id="pwTitle">Keep reading the ground.</h2>
 <p class="pw-price"><b>£8</b> for 3 months · one payment, no subscription</p>
 <ul class="pw-list"><li>Conditions for any spot you tap: rain, soil moisture, cold nights, frost</li><li>Official habitat maps across Great Britain, and grazing in Wales</li><li>Unlimited saved areas, finds and blanks, synced to your account</li></ul>
-<div id="pwSignIn"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p></div>
+<div id="pwSignIn"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button></div>
 <div id="pwPay" hidden><a class="btn lime" id="pwPayBtn" href="#" rel="noopener">Pay £8 securely with Stripe</a><p class="small" id="pwPayNote" style="margin-top:8px"></p></div>
 <div id="pwChecking" hidden><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
 <p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div>
@@ -1947,23 +1947,26 @@ function consumeAuthRedirect() {
   return true;
 }
 async function sendSignInEmail(email, btn) {
-  btn.disabled = true;
+  const label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
   try {
     await sbFetch(`/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin + location.pathname)}`, {method: 'POST', body: {email, create_user: true}, auth: false});
     sync.pendingEmail = email; renderSync(); renderPaywall();
-    toast('Check your email and tap Log In.');
+    toast('Email sent — check your inbox.');
   } catch (err) { toast(`Could not send the email: ${err.message}`); }
-  finally { btn.disabled = false; }
+  finally { btn.disabled = false; btn.textContent = label; }
 }
 function requestSignIn(e) { e.preventDefault(); const email = $('syncEmail').value.trim(); if (email) sendSignInEmail(email, $('syncEmailBtn')); }
-async function verifyCode(e) {
-  e.preventDefault();
-  const token = $('syncCode').value.replace(/\s/g, ''); if (!token || !sync.pendingEmail) return;
+async function signInWithCode(input) {
+  const token = input.value.replace(/\s/g, ''); if (!token || !sync.pendingEmail) return false;
   try {
     setSession(await sbFetch('/auth/v1/verify', {method: 'POST', body: {type: 'email', email: sync.pendingEmail, token}, auth: false}));
-    sync.pendingEmail = null; sync.showCode = false; $('syncCode').value = '';
-    toast('Signed in — syncing your data.'); renderSync(); runSync();
-  } catch (err) { toast(`That code didn't work: ${err.message}`); }
+    sync.pendingEmail = null; sync.showCode = false; input.value = '';
+    renderSync(); runSync(); return true;
+  } catch (err) { toast(`That code didn't work: ${err.message}`); return false; }
+}
+async function verifyCode(e) {
+  e.preventDefault();
+  if (await signInWithCode($('syncCode'))) toast('Signed in — syncing your data.');
 }
 async function signOut() {
   if (!confirm('Sign out? Your data stays on this device and in your account.')) return;
@@ -2151,7 +2154,8 @@ function renderPaywall() {
   $('pwChecking').hidden = !gate.checking;
   $('pwSignIn').hidden = gate.checking || signedIn;
   $('pwEmailForm').hidden = !!sync.pendingEmail;
-  $('pwSignInNote').textContent = sync.pendingEmail ? `We emailed ${sync.pendingEmail}. Open it and tap Log In — you’ll come straight back here. (Check junk if it’s not there.)` : 'We’ll email you a sign-in link. Your account holds your access and your records.';
+  $('pwCodeForm').hidden = $('pwChangeEmail').hidden = !sync.pendingEmail;
+  $('pwSignInNote').textContent = sync.pendingEmail ? `We emailed ${sync.pendingEmail}. Tap “Confirm & sign in” in the email, or type the code from it here. (Check junk if it’s not there.)` : 'We’ll email you a sign-in link. Your account holds your access and your records.';
   $('pwPay').hidden = gate.checking || !signedIn;
   if (signedIn) {
     const q = new URLSearchParams({client_reference_id: session.user?.id || '', ...(session.user?.email ? {prefilled_email: session.user.email} : {})});
@@ -2185,6 +2189,17 @@ async function startGate() {
 }
 function initGate() {
   $('wtNext').onclick = nextSlide;
+  $('pwCodeForm').onsubmit = async e => {
+    e.preventDefault(); const btn = $('pwCodeBtn'); btn.disabled = true;
+    try { if (await signInWithCode($('pwCode'))) { toast('Signed in.'); startGate(); } } finally { btn.disabled = false; }
+  };
+  $('pwChangeEmail').onclick = () => { sync.pendingEmail = null; renderSync(); renderPaywall(); $('pwEmail').focus(); };
+  // Signed in from the email link in another tab of this browser → pick it up here.
+  window.addEventListener('storage', e => {
+    if (e.key !== AUTH_KEY || !e.newValue || session) return;
+    try { session = JSON.parse(e.newValue); } catch { return; }
+    sync.pendingEmail = null; renderSync(); runSync(); startGate();
+  });
   $('pwEmailForm').onsubmit = e => { e.preventDefault(); const email = $('pwEmail').value.trim(); if (email) sendSignInEmail(email, $('pwEmailBtn')); };
   startGate();
 }
