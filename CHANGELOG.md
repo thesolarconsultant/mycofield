@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.18.1 — Summits
+- Mountain and hill names with their height (OpenStreetMap peaks) over the imagery, pale yellow,
+  from zoom 8.5; place names take priority where they collide.
+
 ## 2.18.0 — Names over satellite
 - Place, water and road names drawn over the aerial imagery (white with a dark halo), taken from
   the label layers of OpenFreeMap's Liberty style: free, no key, OpenStreetMap data. Loaded only

@@ -1172,12 +1172,21 @@ async function ensureLabels() {
     if (!src?.url || !st.glyphs) throw new Error('unexpected style');
     map.setGlyphs(st.glyphs);
     map.addSource('ofm', {type: 'vector', url: src.url, attribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>'});
+    const vis = satellite ? 'visible' : 'none';
+    // Summits: name and height, pale yellow. Added first (lowest) so place names win when they collide.
+    map.addLayer({id: 'lbl-peaks', type: 'symbol', source: 'ofm', 'source-layer': 'mountain_peak', minzoom: 8.5,
+      filter: ['all', ['has', 'name'], ['match', ['get', 'class'], ['peak', 'volcano'], true, false]],
+      layout: {visibility: vis, 'symbol-sort-key': ['coalesce', ['get', 'rank'], 5], 'text-font': ['Noto Sans Bold'], 'text-anchor': 'top', 'text-offset': [0, 0.15], 'text-max-width': 8,
+        'text-size': ['interpolate', ['linear'], ['zoom'], 8.5, 11, 13, 14],
+        'text-field': ['format', ['coalesce', ['get', 'name:latin'], ['get', 'name']], {}, ['case', ['has', 'ele'], ['concat', '\n', ['to-string', ['get', 'ele']], ' m'], ''], {'font-scale': 0.8}]},
+      paint: {'text-color': '#ffe9a8', 'text-halo-color': 'rgba(0,0,0,0.8)', 'text-halo-width': 1.6, 'text-halo-blur': 0.4}});
+    labels.ids.push('lbl-peaks');
     for (const id of LABEL_LAYERS) {
       const l = st.layers.find(x => x.id === id && x.type === 'symbol');
       if (!l) continue;
       const layout = {...l.layout};
       for (const k of Object.keys(layout)) if (k.startsWith('icon-')) delete layout[k];   // text only: no sprite needed
-      map.addLayer({...l, id: `lbl-${id}`, source: 'ofm', layout: {...layout, visibility: satellite ? 'visible' : 'none'},
+      map.addLayer({...l, id: `lbl-${id}`, source: 'ofm', layout: {...layout, visibility: vis},
         paint: {...l.paint, 'text-color': /water/.test(id) ? '#cfe9ff' : '#ffffff', 'text-halo-color': 'rgba(0,0,0,0.75)', 'text-halo-width': 1.6, 'text-halo-blur': 0.4}});
       labels.ids.push(`lbl-${id}`);
     }
