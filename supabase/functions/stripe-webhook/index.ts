@@ -39,7 +39,9 @@ Deno.serve(async req => {
   if (event.type !== 'checkout.session.completed' && event.type !== 'checkout.session.async_payment_succeeded')
     return new Response('ignored', {status: 200});
   const s = event.data?.object ?? {};
-  if (s.payment_status !== 'paid') return new Response('not paid yet', {status: 200});
+  // 'no_payment_required' = a 100%-off promo code (e.g. FREE4ALL); still a completed checkout.
+  if (s.payment_status !== 'paid' && s.payment_status !== 'no_payment_required')
+    return new Response('not paid yet', {status: 200});
   const userId: string | undefined = s.client_reference_id;
   if (!userId || !/^[0-9a-f-]{36}$/i.test(userId)) {
     console.error('Paid session without a MycoField user id', s.id, s.customer_details?.email);
