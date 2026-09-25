@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.14.2 — Spot pack wording
+- Offer and terms describe spots as chosen from official habitat surveys (NRW, Natural England,
+  NatureScot) on open-access land outside SSSIs/NNRs, not as confirmed finds. The spot list itself
+  lives only in Supabase, never in this repository.
+
 ## 2.14.1 — Spot pack link
 - £20 Stripe Payment Link connected. The offer only appears once `spots_available()` reports at
   least one active spot, so nobody can buy an empty pack.

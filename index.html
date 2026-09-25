@@ -378,8 +378,8 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <p class="pw-step">Before you get started</p>
 <h2 id="soTitle">Want some hints and tips?</h2>
-<p>We’ve collected ground data across England, Wales and Scotland. For a one-off <b>£20</b> we’ll hand you the <b id="soCount">10</b> best spots we know, picked from your postcode.</p>
-<ul class="pw-list"><li>The best spots near you first</li><li>Nothing top-tier close by? We send you to the big leagues: the best spots in Britain</li><li>Saved to your account. Tap any spot to read its conditions</li></ul>
+<p>We’ve mapped the strongest grassland-fungi habitat on open-access land across England, Wales and Scotland. For a one-off <b>£20</b> we’ll hand you the <b id="soCount">10</b> best spots on our map, picked from your postcode.</p>
+<ul class="pw-list"><li>Old, unimproved grassland from official habitat surveys, on land you’re allowed to walk, clear of protected sites</li><li>The best spots near you first</li><li>Nothing top-tier close by? We send you to the big leagues: the best on our map in Britain</li><li>Saved to your account. Tap any spot to read its conditions</li></ul>
 <a class="btn lime" id="soBuy" href="#" rel="noopener">Get my spots · £20</a>
 <button class="pw-link" id="soSkip" type="button">No thanks, I’ll explore myself</button>
 <p class="pw-fine">One payment. Your spots are picked once, from the postcode you give after paying, and can’t be refunded once shown. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
@@ -2271,7 +2271,7 @@ function renderSpots() {
   }
   const n = c.list.length, near = c.list.filter(x => x.nearby).length;
   $('ssTitle').textContent = `Your ${n} spots`;
-  body.innerHTML = `<p class="small">Picked from ${esc(c.place || 'your location')}. ${near ? `${near} near you${near < n ? `, plus ${n - near} of the best further afield` : ''}.` : 'Nothing top-tier close to you, so these are the big leagues: the best we know in Britain.'}</p>
+  body.innerHTML = `<p class="small">Picked from ${esc(c.place || 'your location')}. ${near ? `${near} near you${near < n ? `, plus ${n - near} of the best further afield` : ''}.` : 'Nothing top-tier close to you, so these are the big leagues: the best on our map in Britain.'}</p>
     <div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>${esc(x.name)}</b>${x.tier === 1 ? '<span class="chip">Top tier</span>' : ''}</div>
       <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')}${x.distance_km != null ? ` · ${Math.round(x.distance_km)} km away` : ''}${x.access ? ` · ${esc(x.access)}` : ''}</div>
       ${x.notes ? `<p class="small">${esc(x.notes)}</p>` : ''}
