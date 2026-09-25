@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.12.1 — Promo codes
+- New Stripe Payment Link with promotion codes enabled.
+- Webhook also grants access for 100%-off promo checkouts (`no_payment_required`).
+- Supabase auth emails branded (templates in `supabase/email-templates/`).
+
 ## 2.12.0 — Paywall live
 - Stripe Payment Link connected; webhook Edge Function deployed with signature verification; sign-in email sent from help@mycofield.com.
 
