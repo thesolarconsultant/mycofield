@@ -52,17 +52,21 @@ returns double precision language sql immutable as $$
     + cos(radians(lat1)) * cos(radians(lat2)) * power(sin(radians(lon2 - lon1) / 2), 2)))
 $$;
 
--- p_count spots: first the best within p_near_km of the buyer (tier, then distance), then — if
--- that doesn't fill the pack — the best spots anywhere in Britain ("the big leagues").
+-- p_count spots, quality first:
+--   1. up to six of the best sites within p_near_km (tier 1–2 only, best first, then nearest);
+--   2. the big leagues: tier-1 sites anywhere in Britain, nearest first, until the pack is full;
+--   3. only if still short, the nearest tier-2 then tier-3 sites.
+-- So a buyer in a thin area gets the best sites in the country, never a pack of local scraps.
 create or replace function public.claim_spots(
   p_lat double precision default null, p_lon double precision default null, p_place text default null,
-  p_count int default 10, p_near_km double precision default 60)
+  p_count int default 10, p_near_km double precision default 80)
 returns table (id uuid, name text, lat double precision, lon double precision, nation text, region text,
                tier smallint, access text, notes text, distance_km double precision, nearby boolean)
 language plpgsql security definer set search_path = public as $$
 declare
   pack public.spot_packs;
   near_ids uuid[];
+  big_ids uuid[];
   rest_ids uuid[];
 begin
   select * into pack from public.spot_packs sp where sp.user_id = auth.uid();
@@ -72,11 +76,15 @@ begin
     if p_lat is null or p_lon is null then return; end if;  -- not picked yet, and no location given
     p_count := least(greatest(p_count, 1), 20);
     near_ids := array(select s.id from public.spots s
-      where s.active and public.km_between(p_lat, p_lon, s.lat, s.lon) <= p_near_km
-      order by s.tier, public.km_between(p_lat, p_lon, s.lat, s.lon) limit p_count);
+      where s.active and s.tier <= 2 and public.km_between(p_lat, p_lon, s.lat, s.lon) <= p_near_km
+      order by s.tier, public.km_between(p_lat, p_lon, s.lat, s.lon) limit least(p_count, 6));
+    big_ids := array(select s.id from public.spots s
+      where s.active and s.tier = 1 and not (s.id = any(near_ids))
+      order by public.km_between(p_lat, p_lon, s.lat, s.lon) limit p_count - cardinality(near_ids));
     rest_ids := array(select s.id from public.spots s
-      where s.active and not (s.id = any(near_ids))
-      order by s.tier, public.km_between(p_lat, p_lon, s.lat, s.lon) limit p_count - cardinality(near_ids));
+      where s.active and not (s.id = any(near_ids || big_ids))
+      order by s.tier, public.km_between(p_lat, p_lon, s.lat, s.lon) limit p_count - cardinality(near_ids) - cardinality(big_ids));
+    near_ids := near_ids || big_ids;
     if cardinality(near_ids) + cardinality(rest_ids) = 0 then return; end if;  -- no spots loaded yet: don't lock an empty pack
     update public.spot_packs sp set spot_ids = near_ids || rest_ids, lat = p_lat, lon = p_lon,
       place = left(p_place, 120), claimed_at = now()

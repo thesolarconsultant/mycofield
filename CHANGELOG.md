@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.19.0 — Spot pack rebuilt from real records
+- Spots are now 1 km squares ranked by waxcap species recorded there since 2000 (NBN Atlas, open
+  licences only), instead of habitat-map candidates; protected sites are included and flagged.
+- Allocation: the best tier 1–2 sites within 80 km (up to six), then tier-1 sites anywhere in
+  Britain nearest first; a buyer never gets a pack padded with weak local sites.
+- Offer, spot cards and terms reworded; NBN Atlas credited.
+
 ## 2.18.2
 - Summit labels prioritised by height, so the highest peak wins where two overlap.
 

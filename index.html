@@ -389,8 +389,8 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <p class="pw-step">Before you get started</p>
 <h2 id="soTitle">Want some hints and tips?</h2>
-<p>We’ve mapped the strongest grassland-fungi habitat on open-access land across England, Wales and Scotland. For a one-off <b>£20</b> we’ll hand you the <b id="soCount">10</b> best spots on our map, picked from your postcode.</p>
-<ul class="pw-list"><li>Old, unimproved grassland from official habitat surveys, on land you’re allowed to walk, clear of protected sites</li><li>The best spots near you first</li><li>Nothing top-tier close by? We send you to the big leagues: the best on our map in Britain</li><li>Saved to your account. Tap any spot to read its conditions</li></ul>
+<p>We’ve pulled together where waxcaps have actually been found across England, Wales and Scotland — thousands of recorders’ finds — and ranked the richest sites. For a one-off <b>£20</b> we’ll hand you the <b id="soCount">10</b> best for you, picked from your postcode.</p>
+<ul class="pw-list"><li>Real recorded sites, ranked by how many waxcap species have turned up there</li><li>The richest near you first, then the big leagues: the best sites in Britain</li><li>Saved to your account. Tap any spot to read its live conditions</li></ul>
 <a class="btn lime" id="soBuy" href="#" rel="noopener">Get my spots · £20</a>
 <button class="pw-link" id="soSkip" type="button">No thanks, I’ll explore myself</button>
 <p class="pw-fine">One payment. Your spots are picked once, from the postcode you give after paying, and can’t be refunded once shown. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
@@ -2490,11 +2490,12 @@ function renderSpots() {
   $('ssTitle').textContent = `Your ${n} spots`;
   body.innerHTML = `<p class="small">Picked from ${esc(c.place || 'your location')}. ${near ? `${near} near you${near < n ? `, plus ${n - near} of the best further afield` : ''}.` : 'Nothing top-tier close to you, so these are the big leagues: the best on our map in Britain.'}</p>
     <div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>★${i + 1} ${esc(x.name)}</b>${x.tier === 1 ? '<span class="chip">Top tier</span>' : ''}</div>
-      <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')}${x.distance_km != null ? ` · ${Math.round(x.distance_km)} km away` : ''}${x.access ? ` · ${esc(x.access)}` : ''}</div>
+      <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')}${x.distance_km != null ? ` · ${Math.round(x.distance_km)} km away` : ''}</div>
+      ${x.access ? `<div class="small"><b>Access:</b> ${esc(x.access)}</div>` : ''}
       ${x.notes ? `<p class="small">${esc(x.notes)}</p>` : ''}
       <div class="spot-a"><button class="btn secondary" type="button" data-spot="${i}">Show on map</button>${coordLink(x.lat, x.lon)}</div></div>`).join('')}</div>
     <p class="small">Your spots stay pinned on the map as ★1–★${n}. Tap the ★ button on the map to open this list again.</p>
-    <p class="pw-fine">Always check access, and get the landowner’s permission where you need it. Only pick what you can identify with certainty. Never eat a wild mushroom because of an app.</p>`;
+    <p class="pw-fine">Sites come from recorders’ finds published on the <a href="https://nbnatlas.org" target="_blank" rel="noopener">NBN Atlas</a> (CC-BY, CC0 and OGL records) with official habitat, access and protected-site data. A past record is not a promise for today. Always check access and get the landowner’s permission where you need it; on protected sites look and record rather than pick. Only pick what you can identify with certainty. Never eat a wild mushroom because of an app.</p>`;
   body.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => {
     const x = c.list[+b.dataset.spot]; $('spotsSheet').hidden = true; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name});
   });

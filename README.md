@@ -67,8 +67,11 @@ Cloud backup uses Supabase (free tier is enough). One-time setup:
    is hidden and the app is purely on-device.
 
 ## Spot pack (£20 add-on)
-Paid users are offered, once, a set of 10 hand-picked spots chosen from their postcode: the best
-nearby first, then the best anywhere in Britain if there aren't enough strong spots close by.
+Paid users are offered, once, a set of 10 spots chosen from their postcode. Spots are 1 km squares
+ranked by the number of waxcap species recorded there since 2000 (NBN Atlas records under CC-BY,
+CC0 or OGL), with access and protected-site status looked up per site; the list itself lives only
+in Supabase. Allocation (`claim_spots`): up to six tier 1–2 sites within 80 km, then tier-1 sites
+anywhere in Britain nearest first, and only then lesser sites.
 1. Run `supabase/spots.sql` in the SQL Editor.
 2. Add spots in Table Editor → `spots` (name, lat, lon, nation, region, tier 1–3, access, notes).
 3. Create a £20 Stripe Payment Link (done: `5kQ4gy1…`) with its after-payment redirect set to
