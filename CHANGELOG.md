@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.16.1 — Smooth, finer ready ground
+- Overlay drawn as one smoothly blended image (amber → lime → green, more solid as the score
+  rises) instead of hard-edged squares; grid down to ~2.5 km when zoomed in (up to 400 squares,
+  100 per request, three requests at a time).
+
 ## 2.16.0 — Live ready ground, sharper 3D
 - Live “ready ground” overlay (on by default, layers button to toggle): a grid across the view,
   each square scored from live weather with the same model (rain, soil moisture, water balance,
