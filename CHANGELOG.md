@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.18.2
+- Summit labels prioritised by height, so the highest peak wins where two overlap.
+
 ## 2.18.1 — Summits
 - Mountain and hill names with their height (OpenStreetMap peaks) over the imagery, pale yellow,
   from zoom 8.5; place names take priority where they collide.
