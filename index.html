@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="MycoField">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./favicon.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="modulepreload" href="https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.mjs" crossorigin><link rel="preconnect" href="https://api.open-meteo.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.10.0/dist/maplibre-gl.css">
 <style>
@@ -81,7 +81,7 @@ button.chip{cursor:pointer}
 .loadingbar{height:4px;border-radius:4px;margin-top:12px;background:linear-gradient(90deg,transparent,var(--moss),transparent);background-size:200% 100%;animation:load 1.1s linear infinite}
 @keyframes load{from{background-position:200% 0}to{background-position:-200% 0}}
 .seg{display:inline-flex;background:var(--stone-2);border-radius:999px;padding:3px;flex:none}
-.seg button{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;min-height:34px}
+.seg button{border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;min-height:40px}
 .seg button.active{background:var(--forest);color:#fff}
 .field,.select{width:100%;border:1px solid var(--line-2);background:var(--white);color:var(--forest);border-radius:14px;padding:12px 14px;min-height:48px;outline:none;font-size:16px}
 .field:focus,.select:focus{border-color:var(--moss);box-shadow:0 0 0 3px rgba(167,216,46,.35)}
@@ -89,6 +89,8 @@ button.chip{cursor:pointer}
 label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
 textarea.field{min-height:96px;resize:vertical}
 /* Brand every system-ish surface: text selection, native select chevrons, MapLibre buttons and attribution. */
+.legal-links a{display:inline-block;padding:12px 4px;margin:-12px -4px}
+.pw-fine a{padding:6px 0}
 ::selection{background:rgba(167,216,46,.5);color:var(--forest)}
 h1,h2,h3,label,.btn,.chip,.metric,.eyebrow,.fabs,nav,.toast{-webkit-user-select:none;user-select:none}
 select.field{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236DAA2C' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
@@ -111,7 +113,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .mapwrap{height:calc(100vh - var(--nav-h));min-height:420px;position:relative;background:var(--stone);overflow:hidden}
 @supports(height:100dvh){.mapwrap{height:calc(100dvh - var(--nav-h) - env(safe-area-inset-bottom))}}
 #map{position:absolute;inset:0}
-.topbar{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:9;display:grid;gap:8px}
+.topbar{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:9;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
 .searchbar{display:flex;align-items:center;gap:2px;background:var(--white);border:1px solid var(--line-2);border-radius:999px;box-shadow:var(--shadow-lg);height:52px;padding:0 6px 0 12px}
 .sb-logo{height:27px;width:auto;flex:none}
 #searchInput{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-size:16px;color:var(--forest);padding:0 8px}
@@ -123,8 +125,8 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .results button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--forest);padding:12px 16px;min-height:54px}
 .results button:last-child{border-bottom:0}
 .results button:hover,.results button:focus-visible{background:var(--stone-2);outline:none}
-.results b{font-size:14px;font-weight:600}
-.results .kind{float:right;font-size:9.5px;font-weight:600;color:var(--moss-ink);text-transform:uppercase;letter-spacing:.12em;margin-left:8px;background:rgba(167,216,46,.22);padding:3px 8px;border-radius:999px}
+.results b{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.results .kind{float:right;font-size:10px;font-weight:600;color:var(--moss-ink);text-transform:uppercase;letter-spacing:.12em;margin-left:8px;background:rgba(167,216,46,.22);padding:3px 8px;border-radius:999px}
 .results small{display:block;color:var(--muted);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .results .msg{padding:14px 16px;font-size:13px;color:var(--muted)}
 .results .msg.err{color:var(--coral-ink)}
@@ -137,6 +139,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 /* bottom sheets */
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:8;background:var(--white);border-radius:24px 24px 0 0;box-shadow:0 -12px 40px rgba(11,61,46,.2);padding:0 16px 16px;max-height:calc(100% - 76px - env(safe-area-inset-top));overflow:auto;overscroll-behavior:contain;transition:transform .18s ease-out}
 .handle{display:block;width:100%;height:24px;border:0;background:transparent;position:relative;touch-action:none;cursor:grab;margin:0}
+.handle:after{content:"";position:absolute;left:0;right:0;top:-8px;bottom:-8px}
 .handle:before{content:"";position:absolute;left:50%;top:9px;width:42px;height:5px;border-radius:5px;background:var(--line-2);transform:translateX(-50%)}
 .sh-head{display:flex;gap:12px;align-items:center}
 .sh-title{flex:1;min-width:0}
@@ -144,12 +147,14 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .sh-title p{margin:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sh-tools{display:flex;gap:6px;flex:none}
 .kicker{display:flex;gap:6px;align-items:center;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--moss-ink);white-space:nowrap}
-.kicker .chip{padding:2px 7px;font-size:8.5px}
+.kicker .chip{padding:2px 7px;font-size:9.5px}
 .ring.sm{width:54px;height:54px}.ring.sm:after{inset:6px}.ring.sm b{font-size:18px}
 .strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
 .strip div{background:var(--stone-2);border-radius:12px;padding:8px 9px;min-width:0}
 .strip b{display:block;font-family:var(--head);font-weight:700;font-size:14px;color:var(--forest);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.strip span{display:block;font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap}
+.strip span{display:block;font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:400px){.strip{gap:5px}.strip div{padding:7px 7px}.strip b{font-size:13px}.sh-title h2{font-size:15px}.sh-head{gap:8px}}
+@media(max-width:380px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}.strip div{display:flex;align-items:baseline;gap:6px}.strip b{flex:none}.strip span{margin:0}}
 .sh-note{font-size:12px;color:var(--muted);margin:10px 0 0}
 .pc-more{display:none}
 .sheet.expanded .pc-more{display:block}.sheet.expanded #pcStrip{display:none}
@@ -191,6 +196,7 @@ body.gated{overflow:hidden}.sync-form .field{flex:1 1 220px;min-height:48px;heig
 .savearea label{margin:6px 0 2px}
 #pcCoords .earth{padding:0}
 button.earth{font:inherit;color:var(--moss-ink);font-weight:600;background:none;border:0;border-bottom:1.5px dashed rgba(67,117,21,.45);cursor:copy;display:inline-flex;align-items:center;gap:4px;padding:3px 0;border-radius:0;-webkit-tap-highlight-color:transparent}
+button.earth{position:relative}button.earth:after{content:"";position:absolute;left:-6px;right:-6px;top:-12px;bottom:-12px}
 button.earth .cp{width:13px;height:13px;stroke-width:2;opacity:.75}
 #strongestCard{display:flex;gap:12px;align-items:center;width:100%;margin-top:12px;text-align:left;border:0;border-radius:16px;padding:12px 14px;background:rgba(167,216,46,.18);color:var(--text)}
 #strongestCard .n{font-family:var(--head);font-weight:800;font-size:26px;color:var(--moss-ink);min-width:40px}
@@ -256,7 +262,7 @@ button.earth .cp{width:13px;height:13px;stroke-width:2;opacity:.75}
 .inputs .in:last-child{border-bottom:0}
 .inputs .in b{font-size:13px;color:var(--forest)}.inputs .in span{font-family:var(--head);font-weight:700;font-size:13px;color:var(--forest)}
 .inputs .in small{grid-column:1/-1;color:var(--muted);font-size:11px}
-details.method summary{font-weight:700;color:var(--forest);cursor:pointer;font-size:15px}
+details.method summary{font-weight:700;color:var(--forest);cursor:pointer;font-size:15px;padding:10px 0;margin:-10px 0}
 details.method p{font-size:13px;line-height:1.55;color:var(--text);margin:10px 0 0}
 .verdict{margin-top:12px;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.5;background:var(--stone-2);color:var(--forest)}
 .verdict:empty{display:none}.verdict b{font-family:var(--head)}
@@ -304,7 +310,7 @@ details.method p{font-size:13px;line-height:1.55;color:var(--text);margin:10px 0
 .record b{font-size:14px;color:var(--forest)}
 .record p{font-size:12px;color:var(--muted);margin:3px 0 0}
 .record .acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.record .analyse{border:0;background:var(--forest);color:#fff;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:600;min-height:36px}
+.record .analyse{border:0;background:var(--forest);color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;min-height:40px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .notice{border-radius:16px;padding:12px 14px;font-size:12px;line-height:1.5;color:var(--forest);background:rgba(141,175,124,.18)}
 .attached{display:flex;justify-content:space-between;gap:12px;align-items:center;border-radius:18px;padding:14px;margin-bottom:16px;background:rgba(167,216,46,.2);border:1px solid rgba(109,170,44,.35)}
@@ -315,7 +321,7 @@ details.method p{font-size:13px;line-height:1.55;color:var(--text);margin:10px 0
 /* ---------- bottom navigation ---------- */
 /* Slim, fixed, icon-first bar. Height is fixed so the map above it never shifts. */
 nav{position:fixed;bottom:0;left:0;right:0;z-index:40;height:calc(var(--nav-h) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);background:var(--forest);padding:0 6px env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(11,61,46,.16);transform:translateZ(0);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-nav button{height:var(--nav-h);border:0;background:transparent;color:rgba(255,255,255,.66);padding:0;font-size:10px;font-weight:500;letter-spacing:.01em;white-space:nowrap;display:grid;justify-items:center;align-content:center;gap:3px;touch-action:manipulation}
+nav button{height:var(--nav-h);border:0;background:transparent;color:rgba(255,255,255,.72);padding:0;font-size:11px;font-weight:500;letter-spacing:.01em;white-space:nowrap;display:grid;justify-items:center;align-content:center;gap:3px;touch-action:manipulation}
 nav button svg.i{width:44px;height:26px;padding:3px 11px;border-radius:999px;box-sizing:border-box;transition:background .15s,color .15s}
 nav button.active{color:#fff;font-weight:600}
 nav button.active svg.i{background:var(--lime);color:var(--forest)}
@@ -381,7 +387,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 </details></div></section>
 <section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" id="syncCard" style="margin-top:20px"><h3>Account &amp; sync <span class="chip" id="syncChip">Off</span></h3><div class="small" id="syncSub"></div><form id="syncEmailForm" class="sync-form"><input class="field" id="syncEmail" type="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><button class="btn" id="syncEmailBtn" type="submit">Email me a sign-in link</button></form><div id="syncPending" class="sync-form" hidden><button class="btn secondary" type="button" id="syncCodeBack">Use a different email</button><button class="btn secondary" type="button" id="syncShowCode">I have a code</button></div><form id="syncCodeForm" class="sync-form" hidden><input class="field" id="syncCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" type="submit">Sign in</button></form><div class="sync-form" id="syncSignedIn" hidden><button class="btn" id="syncNow" type="button">Sync now</button><button class="btn secondary" id="syncSignOut" type="button">Sign out</button></div></div><div class="card" style="margin-top:12px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div>
 <div class="card" style="margin-top:12px" id="evidenceCard"><h3>Evidence <span class="chip exp">Model check</span></h3><div class="small" id="evidenceSub">Does the index actually separate your finds from your blanks?</div><div class="pc-actions"><button class="btn" id="analyseAll" type="button">Analyse all records</button></div><div class="small" id="evidenceProgress" aria-live="polite"></div><div id="evidenceVerdict" class="verdict"></div><div id="evidence" class="evtable"></div></div>
-<div class="card" style="margin-top:12px"><h3>Export your data</h3><div class="pc-actions"><button class="btn secondary" id="exportCsv" type="button">CSV</button><button class="btn secondary" id="exportJson" type="button">JSON</button><button class="btn secondary" id="exportGeo" type="button">GeoJSON</button></div><div class="small" style="margin-top:10px">Exports include your private coordinates — share them carefully.</div><div class="small" style="margin-top:10px"><a href="/terms">Terms &amp; refunds</a> · <a href="/privacy">Privacy</a></div></div></div></section>
+<div class="card" style="margin-top:12px"><h3>Export your data</h3><div class="pc-actions"><button class="btn secondary" id="exportCsv" type="button">CSV</button><button class="btn secondary" id="exportJson" type="button">JSON</button><button class="btn secondary" id="exportGeo" type="button">GeoJSON</button></div><div class="small" style="margin-top:10px">Exports include your private coordinates — share them carefully.</div><div class="small legal-links" style="margin-top:10px"><a href="/terms">Terms &amp; refunds</a> · <a href="/privacy">Privacy</a></div></div></div></section>
 <section class="view" id="view-log"><div class="page"><div class="eyebrow">Field notes</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome — blanks included. Records are saved on this device, and backed up to your account when you sign in (History tab).</div><form class="card" id="logForm" style="margin-top:20px"><div class="attached" id="attachedPoint" hidden><div><strong><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div><div><label for="obsGrazing">Grazing</label><select class="field" id="obsGrazing"><option value="">Not sure</option><option value="now">Stock grazing now</option><option value="this-year">Grazed this year (dung, short sward)</option><option value="ungrazed">Ungrazed for years (long, rank sward)</option><option value="mown">Mown / cut, not grazed</option></select></div><div><label for="obsAnimal">Grazed by</label><select class="field" id="obsAnimal"><option value="">Not sure / n/a</option><option value="sheep">Sheep</option><option value="cattle">Cattle</option><option value="horses">Horses / ponies</option><option value="mixed">Mixed stock</option><option value="wild">Rabbits / deer only</option></select></div></div><div style="margin-top:14px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn lime" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:14px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
 </main>
 <nav aria-label="Main">
@@ -1060,6 +1066,7 @@ const map = new maplibregl.Map({container: 'map', style, ...loadCamera(), maxPit
 // Pinch-zoom on phones; zoom buttons only on wider screens.
 map.addControl(new maplibregl.NavigationControl({visualizePitch: true, showZoom: matchMedia('(min-width: 761px)').matches}), 'top-right');
 map.addControl(new maplibregl.AttributionControl({compact: true}), 'bottom-left');
+(() => setTimeout(() => { const a = document.querySelector('.maplibregl-ctrl-attrib.maplibregl-compact-show'); if (a) a.querySelector('.maplibregl-ctrl-attrib-button')?.click(); }, 6000))();
 let terrain3d = pref('mycofield-3d', true), mapLoaded = false;
 // Run once the style is in — not on 'load', which waits for every terrain tile (slow on poor signal).
 const mapReadyFns = [];
@@ -1771,7 +1778,7 @@ function renderPointAnalysis(r) {
   $('pcGrid').textContent = cell ? `Weather comes from the model grid point ${cell.km} km away. Nearby spots in the same grid square get identical weather — differences between them come only from terrain and habitat.` : '';
   $('pcCoords').innerHTML = `${r.place ? esc(r.place) + ' · ' : ''}${coordLink(r.coordinates.lat, r.coordinates.lon, r.terrain?.elevation)} <span title="Private — stays on this device" aria-label="private">🔒</span>`;
   $('pcStrip').innerHTML = stripHTML([
-    [w ? `${w.rain14} mm` : '—', '14-day rain'],
+    [w ? `${Math.round(w.rain14)} mm` : '—', '14-day rain'],
     [w ? fmtSoil(w.soil) : '—', 'soil moisture'],
     [w && Number.isFinite(w.latestLow) ? `${round1(w.latestLow)}°C` : '—', 'night low'],
     [h?.pending ? '…' : h?.cls ? esc(shortHabitat(h.cls)) : '—', h?.source === 'Field-set' ? 'habitat (set)' : 'habitat']]);

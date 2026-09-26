@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.22.0 — Mobile pass
+- Search bar no longer runs off the right edge once you type (small phones); result tags stay inside.
+- Point card: rain shown to the whole mm, stat tiles go two-by-two under 380 px so values are never
+  cut off, and the title fits without losing words.
+- Bigger touch areas: sheet handles, copy-coordinates, Index/A-Z, Analyse, "How the index works",
+  footer and legal-page links. Bottom-nav labels and the smallest chips a size up.
+- Map credit line shows on open and folds to the (i) button after a few seconds.
+- The map library starts downloading earlier (module preload); weather API preconnected.
+
 ## 2.21.0 — Spot pack withdrawn
 - The £20 spot pack is switched off (`SPOTS_ENABLED = false`): no offer, no ★ button, no pins, no
   spot list, and spots cached on devices are cleared. Server tables and functions are left in place.
