@@ -71,6 +71,11 @@ declare
 begin
   select * into pack from public.spot_packs sp where sp.user_id = auth.uid();
   if not found then raise exception 'No spot pack on this account' using errcode = '42501'; end if;
+  -- If every site in this pack has since been retired (the list was rebuilt), let the buyer pick again.
+  if pack.spot_ids is not null and not exists (select 1 from public.spots s where s.id = any(pack.spot_ids) and s.active) then
+    update public.spot_packs sp set spot_ids = null, claimed_at = null, place = null, lat = null, lon = null
+      where sp.user_id = auth.uid() returning * into pack;
+  end if;
 
   if pack.spot_ids is null then
     if p_lat is null or p_lon is null then return; end if;  -- not picked yet, and no location given

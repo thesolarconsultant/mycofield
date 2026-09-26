@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.19.1
+- Spot list always comes from the server (cache only as offline fallback); `claim_spots()` resets a
+  pack whose sites have all been retired so the buyer picks again.
+
 ## 2.19.0 — Spot pack rebuilt from real records
 - Spots are now 1 km squares ranked by waxcap species recorded there since 2000 (NBN Atlas, open
   licences only), instead of habitat-map candidates; protected sites are included and flagged.

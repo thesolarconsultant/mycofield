@@ -2437,9 +2437,13 @@ function spotsCache() { const c = readJSON(SPOTS_KEY, null); return c && session
 async function refreshSpots() {
   if (!session?.user?.id) return null;
   const pack = (await sbFetch('/rest/v1/spot_packs?select=place,claimed_at'))?.[0] || null;
-  let list = spotsCache()?.list || [];
-  if (pack?.claimed_at && !list.length) list = await sbFetch('/rest/v1/rpc/claim_spots', {method: 'POST', body: {}}) || [];
-  const c = {userId: session.user.id, owned: !!pack, place: pack?.place || null, list: pack?.claimed_at ? list : []};
+  // The server's list is the truth (sites can be renamed or the pack re-picked); the cache is for offline.
+  let list = [];
+  if (pack?.claimed_at) {
+    try { list = await sbFetch('/rest/v1/rpc/claim_spots', {method: 'POST', body: {}}) || []; }
+    catch { list = spotsCache()?.list || []; }
+  }
+  const c = {userId: session.user.id, owned: !!pack, place: list.length ? pack?.place || null : null, list};
   writeJSON(SPOTS_KEY, c); renderSpotsEntry(); return c;
 }
 // The buyer's spots stay pinned on the map (★1…★10) with a ★ button to reopen the list.

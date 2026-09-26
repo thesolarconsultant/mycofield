@@ -1,5 +1,5 @@
 // Bump CACHE on every release so old index.html versions are dropped.
-const CACHE = 'mycofield-v2.19.0';
+const CACHE = 'mycofield-v2.19.1';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon.png', './assets/logo-mark.png'];
 
 self.addEventListener('install', e => {
