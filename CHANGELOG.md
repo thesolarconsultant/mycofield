@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.22.1
+- `FREE_UNTIL`: a timed free window (paywall off until then, back on by itself, no redeploy).
+  Set for one hour on 26 Sept 2026 (until 10:45 UK time) for a social-media share.
+
 ## 2.22.0 — Mobile pass
 - Search bar no longer runs off the right edge once you type (small phones); result tags stay inside.
 - Point card: rain shown to the whole mm, stat tiles go two-by-two under 380 px so values are never
