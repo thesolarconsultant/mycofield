@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.21.0 — Spot pack withdrawn
+- The £20 spot pack is switched off (`SPOTS_ENABLED = false`): no offer, no ★ button, no pins, no
+  spot list, and spots cached on devices are cleared. Server tables and functions are left in place.
+- Terms: the spot pack is no longer sold; anyone who bought one can ask for a full refund.
+
 ## 2.20.0 — Everything on brand
 - Location is asked for with a MycoField card ("Start from where you are?") before the browser's own
   permission box, and only once someone is in the app.

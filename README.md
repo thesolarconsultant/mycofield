@@ -66,7 +66,10 @@ Cloud backup uses Supabase (free tier is enough). One-time setup:
    `index.html`. Never use the service_role key in the app. Until the key is set, the sync card
    is hidden and the app is purely on-device.
 
-## Spot pack (£20 add-on)
+## Spot pack (£20 add-on) — withdrawn
+**Switched off in 2.21.0** (`SPOTS_ENABLED = false` in `index.html`): the sites did not meet the quality bar.
+Deactivate the £20 Payment Link in Stripe. Set the flag back to `true` to bring it back.
+
 Paid users are offered, once, a set of 10 spots chosen from their postcode. Spots are 1 km squares
 ranked by the number of waxcap species recorded there since 2000 (NBN Atlas records under CC-BY,
 CC0 or OGL), with access and protected-site status looked up per site; the list itself lives only

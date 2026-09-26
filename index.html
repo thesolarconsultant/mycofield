@@ -442,6 +442,9 @@ const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 15;
 // Spot pack: a second Stripe Payment Link (one-off £20). Empty = the offer stays hidden; it also
 // stays hidden until the spots table has at least one active spot (spots_available()).
 const SPOTS_PAYMENT_LINK = 'https://buy.stripe.com/5kQ4gy1Wl9tTfGFa3HeAg03', SPOT_COUNT = 10;
+// Spot pack withdrawn: the sites didn't meet the quality bar. false hides the offer, the ★ button,
+// the pins and the list, and clears any spots cached on the device. The server side is left in place.
+const SPOTS_ENABLED = false;
 const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v1';
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
@@ -2372,7 +2375,7 @@ const SLIDES = [
 ];
 function openApp(offer = true) {
   const located = firstRunLocate();  // one card at a time: the spot offer waits for the location card
-  if (session) checkSpotsReady().then(() => (spotsOn() || spotsCache()?.owned) && refreshSpots())
+  if (session && SPOTS_ENABLED) checkSpotsReady().then(() => (spotsOn() || spotsCache()?.owned) && refreshSpots())
     .catch(() => {}).finally(() => { if (offer) located.then(maybeOfferSpots); });
   $('walkthrough').hidden = $('paywall').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
 function showWalkthrough() {
@@ -2447,15 +2450,16 @@ async function confirmPayment() {
 // (supabase/spots.sql) and only that set is ever returned to them.
 const SPOTS_KEY = 'mycofield-spots-v1', SPOTS_OFFERED_KEY = 'mycofield-spots-offered';
 const spots = {checking: false, ready: false};
-const spotsOn = () => paywallOn() && !!SPOTS_PAYMENT_LINK && spots.ready;
+const spotsOn = () => SPOTS_ENABLED && paywallOn() && !!SPOTS_PAYMENT_LINK && spots.ready;
+if (!SPOTS_ENABLED) { try { localStorage.removeItem(SPOTS_KEY); localStorage.removeItem(SPOTS_OFFERED_KEY); } catch {} }
 async function checkSpotsReady() {
-  if (!paywallOn() || !SPOTS_PAYMENT_LINK) return false;
+  if (!SPOTS_ENABLED || !paywallOn() || !SPOTS_PAYMENT_LINK) return false;
   try { spots.ready = (await sbFetch('/rest/v1/rpc/spots_available', {method: 'POST', body: {}, auth: false})) === true; } catch { spots.ready = false; }
   renderSpotsEntry(); return spots.ready;
 }
-function spotsCache() { const c = readJSON(SPOTS_KEY, null); return c && session?.user?.id && c.userId === session.user.id ? c : null; }
+function spotsCache() { if (!SPOTS_ENABLED) return null; const c = readJSON(SPOTS_KEY, null); return c && session?.user?.id && c.userId === session.user.id ? c : null; }
 async function refreshSpots() {
-  if (!session?.user?.id) return null;
+  if (!SPOTS_ENABLED || !session?.user?.id) return null;
   const pack = (await sbFetch('/rest/v1/spot_packs?select=place,claimed_at'))?.[0] || null;
   // The server's list is the truth (sites can be renamed or the pack re-picked); the cache is for offline.
   let list = [];
@@ -2552,7 +2556,7 @@ async function startGate() {
   if (!paywallOn()) { firstRunLocate(); return; }
   const params = new URLSearchParams(location.search), paidReturn = params.get('paid') === '1', spotsReturn = params.get('spots') === '1';
   if (paidReturn || spotsReturn) history.replaceState(null, '', location.pathname + location.hash);
-  if (session && spotsReturn) { openApp(false); confirmSpotsPayment(); return; }
+  if (session && spotsReturn) { openApp(false); if (SPOTS_ENABLED) confirmSpotsPayment(); return; }
   if (session && paidReturn) { confirmPayment(); return; }
   if (session && hasAccess()) { openApp(); refreshAccess().then(ok => { if (!ok && navigator.onLine) showPaywall(); }).catch(() => {}); return; }
   if (session) { try { if (await refreshAccess()) { openApp(); return; } } catch {} }
