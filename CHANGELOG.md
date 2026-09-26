@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.20.0 — Everything on brand
+- Location is asked for with a MycoField card ("Start from where you are?") before the browser's own
+  permission box, and only once someone is in the app.
+- Text selection, drop-down chevrons, the map's zoom/compass buttons and the attribution pill now use
+  the brand palette instead of browser defaults; headings, buttons and tiles no longer highlight on
+  long-press.
+
 ## 2.19.1
 - Spot list always comes from the server (cache only as offline fallback); `claim_spots()` resets a
   pack whose sites have all been retired so the buyer picks again.
