@@ -66,23 +66,27 @@ Cloud backup uses Supabase (free tier is enough). One-time setup:
    `index.html`. Never use the service_role key in the app. Until the key is set, the sync card
    is hidden and the app is purely on-device.
 
-## Spot pack (£20 add-on) — withdrawn
-**Switched off in 2.21.0** (`SPOTS_ENABLED = false` in `index.html`): the sites did not meet the quality bar.
-Deactivate the £20 Payment Link in Stripe. Set the flag back to `true` to bring it back.
+## Spot credits (£20 = 10 credits, 12 months)
+Buyers spend one credit to reveal today's best available spot in the nation they pick (England,
+Wales, Scotland, Northern Ireland). A sellable spot scores 90+, sits on confirmed grassland, heath
+or bog, and is on land the public can walk (CRoW open-access or registered common land in England
+and Wales, or Scotland's access rights). Each spot goes to at most 5 buyers a week and never twice
+to the same buyer; a failed reveal costs nothing. Northern Ireland has no access-land data yet, so
+it shows none.
 
-Paid users are offered, once, a set of 10 spots chosen from their postcode. Spots are 1 km squares
-ranked by the number of waxcap species recorded there since 2000 (NBN Atlas records under CC-BY,
-CC0 or OGL), with access and protected-site status looked up per site; the list itself lives only
-in Supabase. Allocation (`claim_spots`): up to six tier 1–2 sites within 80 km, then tier-1 sites
-anywhere in Britain nearest first, and only then lesser sites.
-1. Run `supabase/spots.sql` in the SQL Editor.
-2. Add spots in Table Editor → `spots` (name, lat, lon, nation, region, tier 1–3, access, notes).
-3. Create a £20 Stripe Payment Link (done: `5kQ4gy1…`) with its after-payment redirect set to
-   `https://www.mycofield.com/?spots=1`, and put it in `SPOTS_PAYMENT_LINK` in `index.html`.
-4. Redeploy the `stripe-webhook` Edge Function (it recognises `client_reference_id=spots_<user id>`).
+Setup (once):
+1. Run `supabase/credits.sql` in the Supabase SQL Editor (also converts old spot packs to 10
+   credits and extends existing £8 access to a year).
+2. Run `supabase/scanner-token.sql` and save the value it shows as the GitHub Actions secret
+   `SPOT_SCANNER_TOKEN` (repo → Settings → Secrets and variables → Actions).
+3. Paste the updated `supabase/functions/stripe-webhook/index.ts` into the Edge Function and deploy.
+4. The £20 Payment Link (`SPOTS_PAYMENT_LINK`) must be active, with its after-payment redirect set to
+   `https://www.mycofield.com/?spots=1`.
 
-The spots never ship in the app. `claim_spots()` picks a buyer's set once, stores it on their
-`spot_packs` row, and only ever returns that set; the `spots` table itself is unreadable to users.
+The nightly scan (`.github/workflows/spot-scan.yml` → `scanner/scan.cjs`) drives the live app in a
+headless browser, so spots are scored by exactly the code users see, and loads them with
+`load_live_spots`. Run it by hand from the repo's Actions tab ("Nightly spot scan" → Run workflow).
+Buyers only ever see scans at most 2 days old.
 
 ## Satellite imagery
 The map uses Esri World Imagery through an ArcGIS Location Platform API key (`ESRI_KEY` in

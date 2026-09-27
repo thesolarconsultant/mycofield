@@ -180,6 +180,12 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-price b.sm{font-size:inherit;font-family:inherit;margin:0}
 .spots-open{width:100%;margin-top:12px}
 .spot-list{display:grid;gap:10px;margin:10px 0}
+.ss-bal{font-size:15px;margin:0 0 6px}.ss-bal b{font-family:var(--head);font-size:22px;color:var(--forest)}
+.ss-nations{display:grid;gap:8px;margin:12px 0}
+.ss-nation{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--white);border:1px solid var(--stone);border-radius:14px;padding:10px 12px}
+.ss-nation b{color:var(--forest);font-size:15px}.ss-nation .btn{width:auto;flex:none;padding:8px 14px;min-height:40px}.ss-nation .btn:disabled{opacity:.5;cursor:default}
+.ss-h{font-family:var(--head);font-size:16px;color:var(--forest);margin:16px 0 4px}
+#ssBuy{margin-top:4px}
 .spot{background:var(--white);border:1px solid var(--stone);border-radius:14px;padding:12px}
 .spot-h{display:flex;justify-content:space-between;align-items:center;gap:8px}.spot-h b{font-size:15px;color:var(--forest)}
 .spot p{margin:6px 0 0}.spot-a{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}.spot-a .btn{width:auto;padding:8px 14px}
@@ -400,7 +406,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <h2 id="pwTitle">Keep reading the ground.</h2>
 <p class="pw-step" id="pwStep"></p>
-<p class="pw-price" id="pwPrice"><b>£8</b> for 3 months · one payment, no subscription</p>
+<p class="pw-price" id="pwPrice"><b>£8</b> for a year · one payment, no subscription</p>
 <ul class="pw-list" id="pwList"><li>Conditions for any spot you tap: rain, soil moisture, cold nights, frost</li><li>Official habitat maps across Great Britain, and grazing in Wales</li><li>Unlimited saved areas, finds and blanks, synced to your account</li></ul>
 <div id="pwSignIn"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button></div>
 <div id="pwPay" hidden><a class="btn lime" id="pwPayBtn" href="#" rel="noopener">Pay £8 securely with Stripe</a><p class="small" id="pwPayNote" style="margin-top:8px"></p></div>
@@ -408,12 +414,12 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div>
 <div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <p class="pw-step">Before you get started</p>
-<h2 id="soTitle">Want some hints and tips?</h2>
-<p>We’ve pulled together where waxcaps have actually been found across England, Wales and Scotland — thousands of recorders’ finds — and ranked the richest sites. For a one-off <b>£20</b> we’ll hand you the <b id="soCount">10</b> best for you, picked from your postcode.</p>
-<ul class="pw-list"><li>Real recorded sites, ranked by how many waxcap species have turned up there</li><li>The richest near you first, then the big leagues: the best sites in Britain</li><li>Saved to your account. Tap any spot to read its live conditions</li></ul>
-<a class="btn lime" id="soBuy" href="#" rel="noopener">Get my spots · £20</a>
+<h2 id="soTitle">Want to go straight to the best ground?</h2>
+<p>Every night MycoField scores England, Wales, Scotland and Northern Ireland and keeps the strongest spots. <b id="soCount">10</b> spot credits cost a one-off <b>£20</b>, and each one reveals today’s best spot in the nation you pick.</p>
+<ul class="pw-list"><li>Only spots scoring 90+ on confirmed grassland, heath or bog</li><li>Only ground you can legally walk: open-access land, commons, or Scotland’s access rights</li><li>Spend them when the weather’s right. No strong spots in a nation? Your credits wait</li></ul>
+<a class="btn lime" id="soBuy" href="#" rel="noopener">Get 10 credits · £20</a>
 <button class="pw-link" id="soSkip" type="button">No thanks, I’ll explore myself</button>
-<p class="pw-fine">One payment. Your spots are picked once, from the postcode you give after paying, and can’t be refunded once shown. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
+<p class="pw-fine">One payment. Credits last 12 months from purchase. Unused credits can be refunded within 14 days of buying. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
 <div class="gate" id="spotsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="ssTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <h2 id="ssTitle">Your spots</h2><div id="ssBody"></div>
 <button class="pw-link" id="ssClose" type="button">Close</button></div></div>
@@ -442,15 +448,13 @@ const RECORDS_KEY = 'mycofield-history-v2';
 const SUPABASE_URL = 'https://abgbzdairkgakmqscvyo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
 const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
-// Paid access: a Stripe Payment Link (one-off £8 → 90 days). Empty = paywall off, app fully open.
+// Paid access: a Stripe Payment Link (one-off £8 → a year). Empty = paywall off, app fully open.
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
 const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 180;  // 3-minute free look
-// Spot pack: a second Stripe Payment Link (one-off £20). Empty = the offer stays hidden; it also
-// stays hidden until the spots table has at least one active spot (spots_available()).
+// Spot credits: a second Stripe Payment Link (one-off £20 → SPOT_COUNT credits for 12 months).
+// Empty link, or SPOTS_ENABLED false, hides the offer, the ★ button, the pins and the sheet.
 const SPOTS_PAYMENT_LINK = 'https://buy.stripe.com/5kQ4gy1Wl9tTfGFa3HeAg03', SPOT_COUNT = 10;
-// Spot pack withdrawn: the sites didn't meet the quality bar. false hides the offer, the ★ button,
-// the pins and the list, and clears any spots cached on the device. The server side is left in place.
-const SPOTS_ENABLED = false;
+const SPOTS_ENABLED = true;
 const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v2';  // v2: everyone who had the old 15 s look gets the 3-minute one
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
@@ -792,6 +796,7 @@ const LAYERS = {
   livingEngland: `${NE_AGOL}/Living_England_Habitat_Map_Phase4/FeatureServer/0`,
   crome: `${DEFRA_AGOL}/Crop_Map_of_England_2023/FeatureServer/0`,
   commonEngland: `${DEFRA_AGOL}/CRoWAct2000Section4ConclusiveRegisteredCommonLand/FeatureServer/0`,
+  crowEngland: `${NE_AGOL}/CRoW_Act_2000_Access_Layer/FeatureServer/0`,
   habmos: `${NS_AGOL}/Habitat_Map_of_Scotland/FeatureServer/0`
 };
 const inWales = (lat, lon) => lat > 51.3 && lat < 53.5 && lon > -5.4 && lon < -2.6;
@@ -850,7 +855,8 @@ async function landWales(lat, lon, k, opts) {
   const rs = await Promise.allSettled([
     cachedJSON(`landmap:${k}`, dmwPointURL('inspire-nrw:NRW_LANDMAP_Landscape_Habitats', 'uid,areaname,surveydate,cls_3,lh_5,lh_19', 'geom', lat, lon), LAND_TTL, opts),
     cachedJSON(`fungizone:${k}`, dmwPointURL('geonode:GWC21_Grassland_Fungi', 'layer', 'geom', lat, lon), LAND_TTL, opts),
-    cachedJSON(`access:${k}`, dmwPointURL('inspire-nrw:NRW_COMMON_LAND_2014', 'EN_STATUS', 'fme_geometry', lat, lon), LAND_TTL, opts)
+    cachedJSON(`access:${k}`, dmwPointURL('inspire-nrw:NRW_COMMON_LAND_2014', 'EN_STATUS', 'fme_geometry', lat, lon), LAND_TTL, opts),
+    cachedJSON(`opencountry:${k}`, dmwPointURL('inspire-nrw:NRW_OPEN_COUNTRY_2014', 'EN_STATUS', 'fme_geometry', lat, lon), LAND_TTL, opts)
   ]);
   const f = settledFeatures(rs[0])?.[0]?.properties;
   if (!f) return {hit: false, failed: rs.every(r => r.status === 'rejected'), reason: rs[0].reason};
@@ -861,7 +867,9 @@ async function landWales(lat, lon, k, opts) {
       habitat: (f.cls_3 || '').trim() || null, habitats: habitats.slice(0, 4), management, cls: landmapClass(f.cls_3, habitats)},
     // 'recorded' / 'not recorded' in the surveyed land management.
     grazing: management.some(m => /grazing/i.test(m)) ? 'recorded' : 'not recorded',
-    fungiZone: hasFeatures(rs[1]), accessLand: hasFeatures(rs[2]), commonLand: null, crop: null
+    // CRoW access land in Wales = mapped open country or registered common land.
+    fungiZone: hasFeatures(rs[1]), accessLand: hasFeatures(rs[2]) || hasFeatures(rs[3]) || (rs[2].status === 'rejected' && rs[3].status === 'rejected' ? null : false),
+    commonLand: hasFeatures(rs[2]) ? 'Registered common land' : null, crop: null
   }};
 }
 async function landEngland(lat, lon, k, opts) {
@@ -869,7 +877,8 @@ async function landEngland(lat, lon, k, opts) {
     cachedJSON(`phi:${k}`, agolPointURL(LAYERS.phi, 'MainHabs,AddHabs,PrimSource,Version,UID', lat, lon), LAND_TTL, opts),
     cachedJSON(`crome23:${k}`, agolPointURL(LAYERS.crome, 'LUCODE,PROB', lat, lon), LAND_TTL, opts),
     cachedJSON(`livingeng:${k}`, agolPointURL(LAYERS.livingEngland, 'A_pred,A_prob', lat, lon), LAND_TTL, opts),
-    cachedJSON(`commonen:${k}`, agolPointURL(LAYERS.commonEngland, 'name,cl_number', lat, lon), LAND_TTL, opts)
+    cachedJSON(`commonen:${k}`, agolPointURL(LAYERS.commonEngland, 'name,cl_number', lat, lon), LAND_TTL, opts),
+    cachedJSON(`crowen:${k}`, agolPointURL(LAYERS.crowEngland, 'OC,RCL,S16', lat, lon), LAND_TTL, opts)
   ]);
   const phi = settledFeatures(rs[0])?.[0]?.attributes, crome = settledFeatures(rs[1])?.[0]?.attributes, le = settledFeatures(rs[2])?.[0]?.attributes, cl = settledFeatures(rs[3])?.[0]?.attributes;
   // The crop map and Living England cover all of England, so a hit on either means the point is in England.
@@ -887,7 +896,7 @@ async function landEngland(lat, lon, k, opts) {
   }
   return {hit: true, land: {
     covered: true, nation: 'England', status: liveOrCached(rs), source: 'Natural England / Rural Payments Agency',
-    survey, grazing: null, fungiZone: null, accessLand: null,
+    survey, grazing: null, fungiZone: null, accessLand: rs[4].status === 'fulfilled' ? !!settledFeatures(rs[4])?.length : null,
     commonLand: rs[3].status === 'fulfilled' ? (cl ? (cl.name || 'Registered common land') : false) : null, crop,
     livingEngland: le ? {pred: le.A_pred, prob: Math.round(Number(le.A_prob))} : null
   }};
@@ -952,6 +961,7 @@ function landText(l) {
     else bits.push('Not on Natural England’s Priority Habitat Inventory (no mapped semi-natural habitat here).');
     if (sv?.source === 'Living England') bits.push(`Living England satellite map: ${sv.habitat}.`);
     if (l.crop) bits.push(`Crop Map of England ${l.crop.year}: ${l.crop.label.toLowerCase()} (${l.crop.code}).`);
+    if (l.accessLand) bits.push('Open-access (CRoW) land: you can walk here.');
     if (l.commonLand) bits.push(`Registered common land: ${l.commonLand}.`);
     bits.push(NO_GRAZING_DATA);
   } else {
@@ -2387,7 +2397,7 @@ const SLIDES = [
 ];
 function openApp(offer = true) {
   const located = firstRunLocate();  // one card at a time: the spot offer waits for the location card
-  if (session && SPOTS_ENABLED) checkSpotsReady().then(() => (spotsOn() || spotsCache()?.owned) && refreshSpots())
+  if (session && SPOTS_ENABLED) checkSpotsReady().then(() => spotsOn() && refreshSpots())
     .catch(() => {}).finally(() => { if (offer) located.then(maybeOfferSpots); });
   $('walkthrough').hidden = $('paywall').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
 function showWalkthrough() {
@@ -2426,13 +2436,13 @@ function renderPaywall() {
   if ($('paywall').hidden) return;
   const signedIn = !!session, a = cachedAccess(), expired = !!a?.paidUntil && Date.parse(a.paidUntil) <= Date.now();
   const verifying = !signedIn && !!sync.pendingEmail;
-  $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : expired ? 'Your 3 months are up.'
+  $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : expired ? 'Your year is up.'
     : signedIn ? '£8 to get in.' : verifying ? 'Check your email.' : 'That’s your free look.';
   $('pwStep').textContent = gate.checking || expired ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
     : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · sign in with your email to keep going';
   // Price is always stated before sign-up; the full pitch shows once they're verified.
   $('pwList').hidden = !signedIn && !expired;
-  $('pwPrice').innerHTML = signedIn || expired ? '<b>£8</b> for 3 months · one payment, no subscription' : 'Then <b class="sm">£8</b> for 3 months, one payment. No subscription.';
+  $('pwPrice').innerHTML = signedIn || expired ? '<b>£8</b> for a year · one payment, no subscription' : 'Then <b class="sm">£8</b> for a whole year, one payment. No subscription.';
   $('pwChecking').hidden = !gate.checking;
   $('pwSignIn').hidden = gate.checking || signedIn;
   $('pwEmailForm').hidden = !!sync.pendingEmail;
@@ -2457,32 +2467,31 @@ async function confirmPayment() {
   gate.checking = false; renderPaywall();
   $('pwPayNote').textContent = 'Payment not confirmed yet. If you paid, it can take a minute — reopen the app, or contact us with your receipt.';
 }
-// ---------- spot pack (£20 add-on) ----------
-// The spots never ship in the app: the buyer's set is picked once, server-side, by claim_spots()
-// (supabase/spots.sql) and only that set is ever returned to them.
-const SPOTS_KEY = 'mycofield-spots-v1', SPOTS_OFFERED_KEY = 'mycofield-spots-offered';
-const spots = {checking: false, ready: false};
-const spotsOn = () => SPOTS_ENABLED && paywallOn() && !!SPOTS_PAYMENT_LINK && spots.ready;
-if (!SPOTS_ENABLED) { try { localStorage.removeItem(SPOTS_KEY); localStorage.removeItem(SPOTS_OFFERED_KEY); } catch {} }
+// ---------- spot credits (£20 = 10 credits, valid 12 months) ----------
+// Spots are never shipped in the app. Each night the scanner loads that day's live spots (90+,
+// confirmed ground, land the public can walk) into Supabase; one credit reveals the best available
+// spot in the nation the buyer picks via reveal_spot() (supabase/credits.sql). A spot goes to at
+// most 5 buyers a week and never twice to the same buyer; if a nation has none, the credit waits.
+const SPOTS_KEY = 'mycofield-spots-v2', SPOTS_OFFERED_KEY = 'mycofield-credits-offered';
+const NATIONS = ['England', 'Wales', 'Scotland', 'Northern Ireland'];
+const spots = {checking: false, counts: null, busy: false, dbReady: false};
+// Nothing is offered until the server side (supabase/credits.sql) answers, so no one can pay before it exists.
+const spotsOn = () => SPOTS_ENABLED && paywallOn() && !!SPOTS_PAYMENT_LINK && spots.dbReady;
+try { localStorage.removeItem('mycofield-spots-v1'); localStorage.removeItem('mycofield-spots-offered'); if (!SPOTS_ENABLED) localStorage.removeItem(SPOTS_KEY); } catch {}
+function spotsCache() { if (!SPOTS_ENABLED) return null; const c = readJSON(SPOTS_KEY, null); return c && session?.user?.id && c.userId === session.user.id ? c : null; }
 async function checkSpotsReady() {
   if (!SPOTS_ENABLED || !paywallOn() || !SPOTS_PAYMENT_LINK) return false;
-  try { spots.ready = (await sbFetch('/rest/v1/rpc/spots_available', {method: 'POST', body: {}, auth: false})) === true; } catch { spots.ready = false; }
-  renderSpotsEntry(); return spots.ready;
+  try { spots.counts = await sbFetch('/rest/v1/rpc/spot_counts', {method: 'POST', body: {}, auth: !!session}); spots.dbReady = Array.isArray(spots.counts); } catch { spots.counts = null; }
+  renderSpotsEntry(); if (!$('spotsSheet').hidden) renderSpots(); return true;
 }
-function spotsCache() { if (!SPOTS_ENABLED) return null; const c = readJSON(SPOTS_KEY, null); return c && session?.user?.id && c.userId === session.user.id ? c : null; }
 async function refreshSpots() {
-  if (!SPOTS_ENABLED || !session?.user?.id) return null;
-  const pack = (await sbFetch('/rest/v1/spot_packs?select=place,claimed_at'))?.[0] || null;
-  // The server's list is the truth (sites can be renamed or the pack re-picked); the cache is for offline.
-  let list = [];
-  if (pack?.claimed_at) {
-    try { list = await sbFetch('/rest/v1/rpc/claim_spots', {method: 'POST', body: {}}) || []; }
-    catch { list = spotsCache()?.list || []; }
-  }
-  const c = {userId: session.user.id, owned: !!pack, place: list.length ? pack?.place || null : null, list};
-  writeJSON(SPOTS_KEY, c); renderSpotsEntry(); return c;
+  if (!spotsOn() || !session?.user?.id) return null;
+  const [cr, list] = await Promise.all([sbFetch('/rest/v1/rpc/my_credits', {method: 'POST', body: {}}), sbFetch('/rest/v1/rpc/my_spots', {method: 'POST', body: {}})]);
+  const row = Array.isArray(cr) ? cr[0] : cr;
+  const c = {userId: session.user.id, balance: row?.balance ?? 0, nextExpiry: row?.next_expiry ?? null, list: list || []};
+  writeJSON(SPOTS_KEY, c); renderSpotsEntry(); if (!$('spotsSheet').hidden) renderSpots(); return c;
 }
-// The buyer's spots stay pinned on the map (★1…★10) with a ★ button to reopen the list.
+// Revealed spots stay pinned on the map (★1, ★2…) with a ★ button to reopen the sheet.
 let spotMarkers = [];
 function renderSpotMarkers() {
   spotMarkers.forEach(m => m.remove()); spotMarkers = [];
@@ -2499,70 +2508,76 @@ function renderSpotMarkers() {
 function renderSpotsEntry() {
   renderSpotMarkers();
   const c = spotsCache(), b = $('spotsOpen');
-  b.hidden = !(c?.owned || (spotsOn() && session));
-  b.textContent = c?.owned ? (c.list.length ? `★ Your ${c.list.length} spots` : '★ Pick your spots') : `★ The ${SPOT_COUNT} best spots near you · £20`;
+  b.hidden = !(spotsOn() && session);
+  b.textContent = c?.balance ? `★ Spot credits · ${c.balance} left` : c?.list?.length ? `★ Your spots · get more credits` : `★ Spot credits · ${SPOT_COUNT} for £20`;
 }
 function spotsBuyHref() {
   const q = new URLSearchParams({client_reference_id: `spots_${session?.user?.id || ''}`, ...(session?.user?.email ? {prefilled_email: session.user.email} : {})});
   return `${SPOTS_PAYMENT_LINK}${SPOTS_PAYMENT_LINK.includes('?') ? '&' : '?'}${q}`;
 }
 function openSpotsOffer() { $('soCount').textContent = SPOT_COUNT; $('soBuy').href = spotsBuyHref(); $('spotsOffer').hidden = false; }
-// Offered once, the first time someone is in with paid access.
+// Offered once, the first time someone is in with paid access and has no credits.
 function maybeOfferSpots() {
-  if (!spotsOn() || !session || !hasAccess() || spotsCache()?.owned || readJSON(SPOTS_OFFERED_KEY, null)) return;
+  const c = spotsCache();
+  if (!spotsOn() || !session || !hasAccess() || c?.balance || c?.list?.length || readJSON(SPOTS_OFFERED_KEY, null)) return;
   writeJSON(SPOTS_OFFERED_KEY, Date.now()); openSpotsOffer();
 }
 function openSpots() {
-  if (!spotsCache()?.owned) { if (spotsOn()) openSpotsOffer(); return; }
-  $('spotsSheet').hidden = false; renderSpots();
+  if (!spotsOn() || !session) return;
+  $('spotsSheet').hidden = false; renderSpots(); checkSpotsReady(); refreshSpots().catch(() => {});
 }
+const fmtExpiry = t => new Date(t).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
 function renderSpots() {
-  const c = spotsCache(), body = $('ssBody');
+  const c = spotsCache() || {balance: 0, list: []}, body = $('ssBody');
   if (spots.checking) { $('ssTitle').textContent = 'Thanks — nearly there.'; body.innerHTML = '<p class="small">Confirming your payment…</p>'; return; }
-  if (!c?.list?.length) {
-    $('ssTitle').textContent = 'Where are you based?';
-    body.innerHTML = `<p>Put your postcode in and we’ll pick your ${SPOT_COUNT} spots: the best near you first and, if there’s nothing top-tier close by, the best in Britain.</p>
-      <form id="ssForm" class="sync-form"><input class="field" id="ssPostcode" placeholder="Postcode or town" autocomplete="postal-code" required aria-label="Postcode or town"><button class="btn lime" id="ssGo" type="submit">Pick my spots</button></form>
-      <p class="small">Your spots are picked once, from this location, and saved to your account.</p>`;
-    $('ssForm').onsubmit = claimSpots; return;
-  }
-  const n = c.list.length, near = c.list.filter(x => x.nearby).length;
-  $('ssTitle').textContent = `Your ${n} spots`;
-  body.innerHTML = `<p class="small">Picked from ${esc(c.place || 'your location')}. ${near ? `${near} near you${near < n ? `, plus ${n - near} of the best further afield` : ''}.` : 'Nothing top-tier close to you, so these are the big leagues: the best on our map in Britain.'}</p>
-    <div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>★${i + 1} ${esc(x.name)}</b>${x.tier === 1 ? '<span class="chip">Top tier</span>' : ''}</div>
-      <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')}${x.distance_km != null ? ` · ${Math.round(x.distance_km)} km away` : ''}</div>
-      ${x.access ? `<div class="small"><b>Access:</b> ${esc(x.access)}</div>` : ''}
-      ${x.notes ? `<p class="small">${esc(x.notes)}</p>` : ''}
+  $('ssTitle').textContent = 'Spot credits';
+  const counts = new Map((spots.counts || []).map(r => [r.nation, r]));
+  const bal = c.balance || 0;
+  body.innerHTML = `<p class="ss-bal">${bal ? `<b>${bal}</b> credit${bal === 1 ? '' : 's'} left${c.nextExpiry ? ` · valid until ${fmtExpiry(c.nextExpiry)}` : ''}` : 'No credits yet'}</p>
+    <p class="small">One credit reveals today’s best available spot in the nation you choose: a score of 90+, confirmed grassland, heath or bog, on land the public can walk. None in a nation today? Keep your credits for a better week.</p>
+    <div class="ss-nations">${NATIONS.map(n => { const r = counts.get(n), k = r?.available ?? null;
+      return `<div class="ss-nation"><div><b>${n}</b><div class="small">${spots.counts == null ? 'Checking…' : k ? `${k} spot${k === 1 ? '' : 's'} today · best ${r.best}` : 'None right now'}</div></div>
+      <button class="btn ${k && bal ? 'lime' : 'secondary'}" type="button" data-nation="${n}" ${k && bal ? '' : 'disabled'}>Reveal · 1 credit</button></div>`; }).join('')}</div>
+    ${bal ? '' : `<a class="btn lime" id="ssBuy" href="${esc(spotsBuyHref())}" rel="noopener">Get ${SPOT_COUNT} credits · £20</a><p class="pw-fine">One payment, no subscription. Credits last 12 months. Unused credits can be refunded within 14 days. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p>`}
+    ${c.list?.length ? `<h3 class="ss-h">Your spots</h3><div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>★${i + 1} ${esc(x.name)}</b><span class="chip">${x.score}</span></div>
+      <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')} · ${esc(x.habitat || '')}</div>
+      <div class="small"><b>Access:</b> ${esc(x.access || '')}</div>
+      <div class="small">Revealed ${fmtExpiry(x.revealed_at)}${x.rain14 != null ? ` · ${Math.round(x.rain14)} mm rain in the 14 days before` : ''}</div>
       <div class="spot-a"><button class="btn secondary" type="button" data-spot="${i}">Show on map</button>${coordLink(x.lat, x.lon)}</div></div>`).join('')}</div>
-    <p class="small">Your spots stay pinned on the map as ★1–★${n}. Tap the ★ button on the map to open this list again.</p>
-    <p class="pw-fine">Sites come from recorders’ finds published on the <a href="https://nbnatlas.org" target="_blank" rel="noopener">NBN Atlas</a> (CC-BY, CC0 and OGL records) with official habitat, access and protected-site data. A past record is not a promise for today. Always check access and get the landowner’s permission where you need it; on protected sites look and record rather than pick. Only pick what you can identify with certainty. Never eat a wild mushroom because of an app.</p>`;
+      <p class="small">Scores are from the day each spot was revealed. Tap a spot to see today’s conditions.</p>` : ''}
+    <p class="pw-fine">Spots are picked by MycoField’s experimental Conditions Index from weather, terrain and official habitat and access maps. A strong score is not a promise that anything is fruiting. Follow the Countryside Code (or the Scottish Outdoor Access Code), keep to access land, don’t pick on nature reserves or Sites of Special Scientific Interest, and never eat a wild mushroom because of an app.</p>`;
+  body.querySelectorAll('[data-nation]').forEach(b => b.onclick = () => revealSpot(b.dataset.nation));
   body.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => {
     const x = c.list[+b.dataset.spot]; $('spotsSheet').hidden = true; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name});
   });
 }
-async function claimSpots(e) {
-  e.preventDefault();
-  const q = $('ssPostcode').value.trim(), btn = $('ssGo'); if (!q) return;
-  btn.disabled = true; btn.textContent = 'Finding your spots…';
+async function revealSpot(nation) {
+  if (spots.busy) return;
+  const c = spotsCache(), r = (spots.counts || []).find(x => x.nation === nation);
+  if (!await askConfirm(`Reveal a spot in ${nation}?`, `This uses 1 of your ${c?.balance || 0} credits on today’s best available ${nation} spot${r?.best ? ` (scoring ${r.best})` : ''}. If none is left by the time you confirm, no credit is taken.`, {ok: 'Reveal it', cancel: 'Not now'})) return;
+  spots.busy = true;
   try {
-    const [r] = await searchPlaces(q);
-    if (!r) throw new Error(`we couldn’t find “${q}”`);
-    if (!await askConfirm(`Pick your spots from ${r.name}?`, `We’ll choose your ${SPOT_COUNT} spots from here. They’re locked in once chosen, so make sure it’s the right place.`, {ok: 'Yes, pick my spots', cancel: 'Change location'})) return;
-    const list = await sbFetch('/rest/v1/rpc/claim_spots', {method: 'POST', body: {p_lat: r.lat, p_lon: r.lon, p_place: r.name, p_count: SPOT_COUNT}});
-    if (!list?.length) throw new Error('the spot list is being updated. Try again shortly, or email help@mycofield.com');
-    writeJSON(SPOTS_KEY, {userId: session.user.id, owned: true, place: r.name, list}); renderSpots(); renderSpotsEntry();
-  } catch (err) { toast(`Couldn’t pick your spots: ${err.message}`); }
-  finally { btn.disabled = false; btn.textContent = 'Pick my spots'; }
+    const got = await sbFetch('/rest/v1/rpc/reveal_spot', {method: 'POST', body: {p_nation: nation}});
+    const x = Array.isArray(got) ? got[0] : got;
+    await Promise.all([refreshSpots(), checkSpotsReady()]);
+    if (x) { toast(`Revealed: ${x.name}`); $('spotsSheet').hidden = true; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 13.5, place: x.name}); }
+  } catch (err) {
+    const m = String(err.message || '');
+    if (/none_available/.test(m)) { toast(`No ${nation} spots left right now. Your credit wasn’t used.`); checkSpotsReady(); }
+    else if (/no_credits/.test(m)) { toast('You’re out of credits.'); refreshSpots().catch(() => {}); }
+    else toast(`Couldn’t reveal a spot: ${m}`);
+  } finally { spots.busy = false; }
 }
-// Back from Stripe (?spots=1): wait for the webhook, then ask for their postcode.
+// Back from Stripe (?spots=1): wait for the webhook to add the credits.
 async function confirmSpotsPayment() {
+  const before = spotsCache()?.balance || 0;
   spots.checking = true; $('spotsSheet').hidden = false; renderSpots();
   for (let i = 0; i < 60; i++) {
-    try { if ((await refreshSpots())?.owned) { spots.checking = false; renderSpots(); return; } } catch {}
+    try { if (((await refreshSpots())?.balance || 0) > before) { spots.checking = false; renderSpots(); toast('Credits added.'); return; } } catch {}
     await new Promise(r => setTimeout(r, 3000));
   }
-  spots.checking = false; $('spotsSheet').hidden = true;
-  toast('Spot pack payment not confirmed yet. If you paid, reopen the app in a minute or email help@mycofield.com.');
+  spots.checking = false; renderSpots();
+  toast('Payment not confirmed yet. If you paid, reopen the app in a minute or email help@mycofield.com.');
 }
 async function startGate() {
   if (!paywallOn()) { firstRunLocate(); return; }

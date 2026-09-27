@@ -1,0 +1,27 @@
+# Nightly: score the UK with the live app and load the day's sellable spots (scanner/scan.cjs).
+name: Nightly spot scan
+on:
+  schedule:
+    - cron: '17 2 * * *'   # 02:17 UTC (03:17 UK summer time)
+  workflow_dispatch: {}
+concurrency: spot-scan
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save playwright@1.48.2 && npx playwright install --with-deps chromium
+      - run: node scanner/scan.cjs
+        env:
+          SPOT_SCANNER_TOKEN: ${{ secrets.SPOT_SCANNER_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spots
+          path: spots.json
+          if-no-files-found: ignore
+          retention-days: 7

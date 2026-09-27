@@ -1,12 +1,14 @@
 // MycoField — Stripe webhook → paid access.
 // Stripe calls this after a Payment Link checkout. It verifies the Stripe signature, then extends the
-// buyer's access by ACCESS_DAYS from today (or from their current expiry, if later).
+// buyer's access by ACCESS_DAYS from today (or from their current expiry, if later). A "spots_<id>"
+// purchase (£20) instead adds a lot of SPOT_CREDITS credits valid for CREDIT_MONTHS.
 // Secrets (Supabase → Edge Functions → Secrets): STRIPE_WEBHOOK_SECRET (whsec_…).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided to Edge Functions automatically.
 // Deploy with JWT verification OFF — Stripe does not send a Supabase token; the signature check is the auth.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const ACCESS_DAYS = 90;
+const ACCESS_DAYS = 365;        // £8 = a year
+const SPOT_CREDITS = 10, CREDIT_MONTHS = 12;  // £20 = 10 spot credits for 12 months
 const TOLERANCE_S = 300;
 const enc = new TextEncoder();
 
@@ -42,7 +44,7 @@ Deno.serve(async req => {
   // 'no_payment_required' = a 100%-off promo code (e.g. FREE4ALL); still a completed checkout.
   if (s.payment_status !== 'paid' && s.payment_status !== 'no_payment_required')
     return new Response('not paid yet', {status: 200});
-  // client_reference_id is the MycoField account id; "spots_<id>" marks the £20 spot pack.
+  // client_reference_id is the MycoField account id; "spots_<id>" marks the £20 spot credits.
   const ref = /^(spots_)?([0-9a-f-]{36})$/i.exec(s.client_reference_id ?? '');
   const userId = ref?.[2], product = ref?.[1] ? 'spots' : 'access';
   if (!userId) {
@@ -59,9 +61,10 @@ Deno.serve(async req => {
     return new Response('db error', {status: 500});
   }
   if (product === 'spots') {
-    const {error} = await db.from('spot_packs').upsert({user_id: userId}, {onConflict: 'user_id', ignoreDuplicates: true});
-    if (error) { console.error('spot pack insert failed', error); await db.from('payments').delete().eq('id', s.id); return new Response('db error', {status: 500}); }
-    return new Response(JSON.stringify({ok: true, spot_pack: true}), {status: 200, headers: {'Content-Type': 'application/json'}});
+    const exp = new Date(); exp.setUTCMonth(exp.getUTCMonth() + CREDIT_MONTHS);
+    const {error} = await db.from('credit_lots').insert({user_id: userId, qty: SPOT_CREDITS, remaining: SPOT_CREDITS, expires_at: exp.toISOString(), payment_id: s.id});
+    if (error && error.code !== '23505') { console.error('credit lot insert failed', error); await db.from('payments').delete().eq('id', s.id); return new Response('db error', {status: 500}); }
+    return new Response(JSON.stringify({ok: true, credits: SPOT_CREDITS, expires_at: exp.toISOString()}), {status: 200, headers: {'Content-Type': 'application/json'}});
   }
   const {data: cur} = await db.from('entitlements').select('paid_until').eq('user_id', userId).maybeSingle();
   const from = Math.max(Date.now(), cur?.paid_until ? Date.parse(cur.paid_until) : 0);

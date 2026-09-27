@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.24.0 — Spot credits, and a year for £8
+- £8 now buys a year of access (was 90 days); existing access extended by 275 days.
+- Spot credits: £20 buys 10 credits valid 12 months. One credit reveals today's best spot in the
+  nation you pick: 90+, confirmed grassland/heath/bog, on land the public can walk. Max 5 buyers a
+  spot per week; never the same spot twice; a failed reveal costs nothing. Old spot packs become
+  10 credits.
+- England now checks Natural England's CRoW open-access layer (the point card says when you can walk
+  there).
+- Nightly GitHub Action scans the UK with the live app and loads the day's sellable spots.
+
 ## 2.23.0
 - Free look raised from 15 seconds to 3 minutes. Trial records reset (new key), so everyone who
   already used the old 15-second look gets the full 3 minutes once.
