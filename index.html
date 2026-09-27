@@ -193,7 +193,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%}
 .pw-hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,61,46,.05) 0%,rgba(11,61,46,.35) 45%,rgba(8,40,30,.92) 100%)}
 .pw-hero-txt{position:absolute;left:20px;right:20px;bottom:14px}
-.pw-hero-logo{display:block;margin-bottom:6px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+.pw-hero-logo{position:absolute;left:20px;top:16px;height:32px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.45))}
 .pw-eyebrow{font:700 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin:0 0 4px!important}
 .pw-card .pw-hero h2{color:#fff;margin:0;font-size:26px;text-shadow:0 2px 12px rgba(0,0,0,.35)}
 .pw-body{padding:16px 20px 18px}
@@ -224,7 +224,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pay-mount{flex:1;min-height:0;overflow:auto;scrollbar-width:none;margin:10px -4px 0;border-radius:14px;background:#fff}
 .pay-mount::-webkit-scrollbar{display:none}
 .pay-loading{display:grid;place-items:center;gap:10px;height:100%;min-height:260px;color:var(--muted);font-size:14px;text-align:center;padding:20px}
-@media(max-height:760px){.pw-hero{height:118px}.pw-card .pw-hero h2{font-size:22px}.pw-hero-logo{display:none}.pw-amount{font-size:40px}.pw-feats{gap:6px;margin-bottom:10px}.pw-feats li{font-size:13px}.pw-body{padding:12px 16px 14px}.pw-cta{min-height:50px!important}}
+@media(max-height:760px){.pw-hero{height:118px}.pw-card .pw-hero h2{font-size:22px}.pw-hero-logo{height:26px;top:12px}.pw-amount{font-size:40px}.pw-feats{gap:6px;margin-bottom:10px}.pw-feats li{font-size:13px}.pw-body{padding:12px 16px 14px}.pw-cta{min-height:50px!important}}
 @media(prefers-reduced-motion:reduce){.pw-spin{animation:none}}
 .pw-price{font-size:15px}.pw-price b{font-family:var(--head);font-size:30px;color:var(--forest);margin-right:4px}
 .pw-list{padding-left:18px;margin:6px 0 14px;font-size:14px;line-height:1.5}
@@ -261,7 +261,7 @@ nav button{position:relative}.nav-dot{position:absolute;top:8px;left:calc(50% + 
 .ac-top{display:grid;gap:12px;margin:20px 0 12px}@media(min-width:700px){.ac-top{grid-template-columns:1.2fr 1fr}}
 #view-account .card+.card,#view-account .ac-top+.card{margin-top:12px}
 .ac-wallet{background:linear-gradient(135deg,var(--forest),#14563f);color:#fff;border:0;overflow:hidden}
-.ac-wallet h3{color:rgba(255,255,255,.8)}.ac-wallet .small{color:rgba(255,255,255,.78)}
+.ac-wallet h3{color:rgba(255,255,255,.8)}.ac-logo{height:20px;width:auto;opacity:.95}.ac-wallet .small{color:rgba(255,255,255,.78)}
 .ac-bal{display:flex;align-items:baseline;gap:8px;margin:2px 0 6px}.ac-bal b{font-family:var(--head);font-size:52px;line-height:1;color:var(--lime)}.ac-bal span{font-size:15px;font-weight:600}
 .ac-wallet .btn{margin-top:12px;width:100%}.ac-wallet .btn.secondary{background:rgba(255,255,255,.12);color:#fff}
 .ac-wallet::before{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(167,216,46,.35),transparent 70%);pointer-events:none}
@@ -501,7 +501,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 </nav>
 <div class="gate" id="walkthrough" hidden role="dialog" aria-modal="true" aria-labelledby="wtTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><div class="wt-progress" id="wtProgress" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2 id="wtTitle"></h2><p id="wtText"></p><button class="btn lime" id="wtNext" type="button">Next</button></div></div>
 <div class="gate pw-gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card pw-card">
-<div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><div class="pw-hero-txt"><p class="pw-eyebrow">MycoField · Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
+<div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><img class="pw-hero-logo" src="assets/logo-light.png" alt="MycoField" width="124" height="32"><div class="pw-hero-txt"><p class="pw-eyebrow">Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
 <div class="pw-body">
 <p class="pw-step" id="pwStep"></p>
 <div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>One payment · no subscription · nothing renews by itself</small></div></div>
@@ -2876,7 +2876,7 @@ function renderSpots() {
   if (on) {
     w.innerHTML = spots.checking ? `<h3>Spot credits</h3><div class="ac-bal"><b>…</b></div><p class="small">Thanks — confirming your payment. This usually takes a few seconds.</p>`
       : !signedIn ? `<h3>Spot credits</h3><div class="ac-bal"><b>${SPOT_COUNT}</b><span>credits · £20</span></div><p class="small">Each credit reveals today’s best spot in the nation you pick. Sign in first so your credits are kept safe with your account.</p><button class="btn lime" type="button" data-go="signin">Sign in to get credits</button>`
-      : `<h3>Spot credits</h3><div class="ac-bal"><b data-tick="${bal}" aria-label="${bal}">${bal}</b><span>credit${bal === 1 ? '' : 's'} left</span></div>
+      : `<h3>Spot credits <img class="ac-logo" src="assets/logo-light.png" alt="" width="78" height="20"></h3><div class="ac-bal"><b data-tick="${bal}" aria-label="${bal}">${bal}</b><span>credit${bal === 1 ? '' : 's'} left</span></div>
         <p class="small">${bal ? `Valid until ${fmtExpiry(c.nextExpiry)}. Spend them when the weather’s right.` : `${SPOT_COUNT} credits for a one-off £20, valid 12 months. Unused credits can be refunded within 14 days.`}</p>
         <a class="btn ${bal ? 'secondary' : 'lime'}" data-buy="spots" href="${esc(spotsBuyHref())}" rel="noopener">${bal ? `Top up · ${SPOT_COUNT} more for £20` : `Get ${SPOT_COUNT} credits · £20`}</a>`;
   }
