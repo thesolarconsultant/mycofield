@@ -187,6 +187,45 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .wt-progress i.on::after{animation:wtfill var(--wt-dur,7.5s) linear forwards}
 @keyframes wtfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .gate-card .btn{width:100%}
+/* premium paywall + in-card checkout */
+.gate-card.pw-card{padding:0;overflow:auto;max-width:420px}
+.pw-hero{position:relative;height:150px;background:linear-gradient(135deg,var(--forest),#14563f 60%,#2b7a4b);border-radius:24px 24px 0 0;overflow:hidden;color:#fff}
+.pw-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%}
+.pw-hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,61,46,.05) 0%,rgba(11,61,46,.35) 45%,rgba(8,40,30,.92) 100%)}
+.pw-hero-txt{position:absolute;left:20px;right:20px;bottom:14px}
+.pw-hero-logo{display:block;margin-bottom:6px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+.pw-eyebrow{font:700 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin:0 0 4px!important}
+.pw-card .pw-hero h2{color:#fff;margin:0;font-size:26px;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.pw-body{padding:16px 20px 18px}
+.pw-body .pw-step:empty{display:none}
+.pw-pricebox{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--stone);border-radius:18px;padding:12px 16px;margin:2px 0 12px;box-shadow:0 6px 18px rgba(11,61,46,.07)}
+.pw-amount{font-family:var(--head);font-size:48px;line-height:1;color:var(--forest);letter-spacing:-.02em}.pw-amount span{font-size:26px;vertical-align:top;margin-right:1px;position:relative;top:4px}
+.pw-per b{display:block;color:var(--forest);font-size:16px}.pw-per small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35;margin-top:2px}
+.pw-feats{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:9px}
+.pw-feats li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4;color:var(--ink)}
+.pw-feats svg{flex:none;width:20px;height:20px;border-radius:50%;background:rgba(167,216,46,.28);padding:3px;fill:none;stroke:var(--moss-ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;margin-top:1px}
+.pw-feats b{color:var(--forest)}
+.pw-cta{width:100%;min-height:54px!important;font-size:16.5px!important;font-weight:700!important;box-shadow:0 8px 22px rgba(120,170,20,.35)}
+.pw-trust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);margin:10px 0 0!important;text-align:center}
+.pw-trust svg{width:14px;height:14px;flex:none;stroke:var(--moss-ink)}
+.pw-note:empty{display:none}.pw-note{text-align:center;margin:4px 0 0!important;font-size:12px}
+.pw-have{display:block;margin:10px auto 0;font-weight:600}
+.pw-signin{margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
+.pw-card .pw-fine{margin-top:14px!important;text-align:center}
+.pw-card .pw-fine a,.gate-card .pw-fine a{color:var(--moss-ink)}
+#pwChecking{text-align:center;padding:8px 0}
+.pw-spin{width:34px;height:34px;margin:4px auto 10px;border-radius:50%;border:3px solid var(--stone);border-top-color:var(--moss);animation:spin 1s linear infinite}
+.pay-gate{z-index:96;align-items:center}
+.gate-card.pay-card{max-width:480px;padding:14px 14px 12px;height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));max-height:860px;display:flex;flex-direction:column}
+.pay-head{display:flex;align-items:center;gap:10px;padding:2px 4px 10px;border-bottom:1px solid var(--line)}
+.pay-head .pw-eyebrow{color:var(--moss-ink)}.pay-head>div{flex:1;min-width:0}.pay-card .pay-head h2{margin:0;font-size:20px}
+.pay-back{width:44px;height:44px;flex:none;border:0;border-radius:999px;background:var(--stone-2);color:var(--forest);display:grid;place-items:center;cursor:pointer}
+.pay-back svg{width:20px;height:20px}.pay-logo{flex:none;opacity:.9}
+.pay-mount{flex:1;min-height:0;overflow:auto;scrollbar-width:none;margin:10px -4px 0;border-radius:14px;background:#fff}
+.pay-mount::-webkit-scrollbar{display:none}
+.pay-loading{display:grid;place-items:center;gap:10px;height:100%;min-height:260px;color:var(--muted);font-size:14px;text-align:center;padding:20px}
+@media(max-height:760px){.pw-hero{height:118px}.pw-card .pw-hero h2{font-size:22px}.pw-hero-logo{display:none}.pw-amount{font-size:40px}.pw-feats{gap:6px;margin-bottom:10px}.pw-feats li{font-size:13px}.pw-body{padding:12px 16px 14px}.pw-cta{min-height:50px!important}}
+@media(prefers-reduced-motion:reduce){.pw-spin{animation:none}}
 .pw-price{font-size:15px}.pw-price b{font-family:var(--head);font-size:30px;color:var(--forest);margin-right:4px}
 .pw-list{padding-left:18px;margin:6px 0 14px;font-size:14px;line-height:1.5}
 .pw-step{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--moss-ink);margin:0 0 6px!important}
@@ -461,15 +500,21 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <button data-view="account" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Account<i class="nav-dot" id="navDot" hidden></i></button>
 </nav>
 <div class="gate" id="walkthrough" hidden role="dialog" aria-modal="true" aria-labelledby="wtTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><div class="wt-progress" id="wtProgress" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2 id="wtTitle"></h2><p id="wtText"></p><button class="btn lime" id="wtNext" type="button">Next</button></div></div>
-<div class="gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
-<h2 id="pwTitle">Keep reading the ground.</h2>
+<div class="gate pw-gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card pw-card">
+<div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><div class="pw-hero-txt"><p class="pw-eyebrow">MycoField · Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
+<div class="pw-body">
 <p class="pw-step" id="pwStep"></p>
-<p class="pw-price" id="pwPrice"><b>£8</b> for a year · one payment, no subscription</p>
-<ul class="pw-list" id="pwList"><li>Conditions for any spot you tap: rain, soil moisture, cold nights, frost</li><li>Official habitat maps across Great Britain, and grazing in Wales</li><li>Unlimited saved areas, finds and blanks, synced to your account</li></ul>
-<div id="pwSignIn"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button></div>
-<div id="pwPay" hidden><a class="btn lime" id="pwPayBtn" href="#" rel="noopener">Pay £8 securely with Stripe</a><p class="small" id="pwPayNote" style="margin-top:8px"></p></div>
-<div id="pwChecking" hidden><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
-<p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div>
+<div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>One payment · no subscription · nothing renews by itself</small></div></div>
+<ul class="pw-feats" id="pwList"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Any spot you tap</b> — rain, soil moisture, cold nights and frost over the last month</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Official habitat maps</b> across Great Britain, and grazing in Wales</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Unlimited saved areas</b>, finds and blanks, synced to your account</span></li></ul>
+<div id="pwPay"><a class="btn lime pw-cta" id="pwPayBtn" href="#" rel="noopener">Pay £8 · get in now</a><p class="pw-trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Secured by Stripe · Apple Pay · Google Pay · card</span></p><p class="small pw-note" id="pwPayNote"></p></div>
+<div id="pwChecking" hidden><div class="pw-spin" aria-hidden="true"></div><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
+<button class="pw-link pw-have" id="pwHave" type="button" hidden>Already paid? Sign in with your email</button>
+<div id="pwSignIn" class="pw-signin"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button></div>
+<p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div></div>
+<div class="gate pay-gate" id="payBox" hidden role="dialog" aria-modal="true" aria-labelledby="payTitle"><div class="gate-card pay-card">
+<div class="pay-head"><button class="pay-back" id="payBack" type="button" aria-label="Back"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div><p class="pw-eyebrow" id="payEyebrow">MycoField · Full access</p><h2 id="payTitle">£8 for a year</h2></div><img src="assets/logo-mark.png" alt="" width="40" height="30" class="pay-logo"></div>
+<div class="pay-mount" id="payMount"></div>
+<p class="pw-trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Payments by Stripe. MycoField never sees your card details.</span></p></div></div>
 <div class="gate mascot-gate" id="mascotBox" hidden role="dialog" aria-modal="true" aria-label="Welcome to MycoField"><div class="gate-card mb-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
 <div class="mb-video"><video id="mbVideo" playsinline muted preload="none" aria-describedby="mbCaption"></video><p class="sr" id="mbCaption"></p>
 <button class="mb-sound mb-icon" type="button" data-video="mbVideo" aria-label="Play with sound"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button></div>
@@ -2451,7 +2496,7 @@ async function refreshAccess() {
   renderSync();
   return hasAccess();
 }
-const gate = {timer: null, trialTimer: null, slide: 0, checking: false};
+const gate = {timer: null, trialTimer: null, slide: 0, checking: false, showSignIn: false};
 const SLIDES = [
   ['Read the pattern, not one day.', 'Grassland fungi respond to weeks of weather, not today’s forecast. MycoField reads the last month for any spot you choose.'],
   ['Tap any hillside.', 'Rain, modelled soil moisture, cold nights and frost for that exact point, rolled into one Conditions Index.'],
@@ -2502,26 +2547,111 @@ function showPaywall() {
 function renderPaywall() {
   if ($('paywall').hidden) return;
   const signedIn = !!session, a = cachedAccess(), expired = !!a?.paidUntil && Date.parse(a.paidUntil) <= Date.now();
-  const verifying = !signedIn && !!sync.pendingEmail;
+  // Pay first (the in-app checkout is live): the email given to Stripe becomes the account. Otherwise the
+  // older two steps: verify an email, then pay with the Stripe link.
+  const direct = pay.ready === true, verifying = !signedIn && !!sync.pendingEmail;
+  const showSignIn = !signedIn && !gate.checking && (!direct || gate.showSignIn || verifying);
+  if (MASCOT.welcome.poster && !$('pwHeroImg').src) { const im = $('pwHeroImg'); im.onload = () => { im.hidden = false; }; im.src = MASCOT.welcome.poster; }
   $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : expired ? 'Your year is up.'
     : signedIn ? '£8 to get in.' : verifying ? 'Check your email.' : 'That’s your free look.';
-  $('pwStep').textContent = gate.checking || expired ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
+  $('pwStep').textContent = gate.checking || expired || direct ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
     : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · sign in with your email to keep going';
-  // Price is always stated before sign-up; the full pitch shows once they're verified.
-  $('pwList').hidden = !signedIn && !expired;
-  $('pwPrice').innerHTML = signedIn || expired ? '<b>£8</b> for a year · one payment, no subscription' : 'Then <b class="sm">£8</b> for a whole year, one payment. No subscription.';
+  $('pwPrice').hidden = $('pwList').hidden = gate.checking;
   $('pwChecking').hidden = !gate.checking;
-  $('pwSignIn').hidden = gate.checking || signedIn;
+  $('pwSignIn').hidden = !showSignIn;
+  $('pwHave').hidden = !direct || signedIn || showSignIn || gate.checking;
   $('pwEmailForm').hidden = !!sync.pendingEmail;
   $('pwCodeForm').hidden = $('pwChangeEmail').hidden = !sync.pendingEmail;
-  $('pwSignInNote').textContent = sync.pendingEmail ? `We’ve sent a verification email to ${sync.pendingEmail}. Tap “Confirm & sign in” in it, or type the code from it here. (Check junk if it’s not there.)` : 'We’ll send you a verification email. Your account holds your access and your records.';
-  $('pwPay').hidden = gate.checking || !signedIn;
-  if (signedIn) {
+  $('pwSignInNote').textContent = sync.pendingEmail ? `We’ve sent a verification email to ${sync.pendingEmail}. Tap “Confirm & sign in” in it, or type the code from it here. (Check junk if it’s not there.)`
+    : direct ? 'Paid already? Enter the email you paid with and we’ll send you a sign-in link.' : 'We’ll send you a verification email. Your account holds your access and your records.';
+  $('pwPay').hidden = gate.checking || !(signedIn || direct);
+  const btn = $('pwPayBtn');
+  btn.textContent = expired ? 'Renew · £8 for another year' : direct ? 'Pay £8 · get in now' : 'Pay £8 securely with Stripe';
+  if (direct) { btn.href = '#'; btn.onclick = e => { e.preventDefault(); openCheckout('access'); }; }
+  else if (signedIn) {
+    btn.onclick = null;
     const q = new URLSearchParams({client_reference_id: session.user?.id || '', ...(session.user?.email ? {prefilled_email: session.user.email} : {})});
-    $('pwPayBtn').href = `${STRIPE_PAYMENT_LINK}${STRIPE_PAYMENT_LINK.includes('?') ? '&' : '?'}${q}`;
-    $('pwPayBtn').textContent = expired ? 'Renew — £8 for 3 more months' : 'Pay £8 securely with Stripe';
-    $('pwPayNote').innerHTML = `Signed in as ${esc(session.user?.email || 'your account')} · <button class="pw-link" id="pwSignOut" type="button">not you?</button>`;
-    $('pwSignOut').onclick = () => { setSession(null); try { localStorage.removeItem(ACCESS_KEY); } catch {} sync.pendingEmail = null; renderSync(); renderPaywall(); };
+    btn.href = `${STRIPE_PAYMENT_LINK}${STRIPE_PAYMENT_LINK.includes('?') ? '&' : '?'}${q}`;
+  }
+  $('pwPayNote').innerHTML = signedIn ? `Signed in as ${esc(session.user?.email || 'your account')} · <button class="pw-link" id="pwSignOut" type="button">not you?</button>`
+    : direct ? 'No password — you’re signed in with the email you pay with.' : '';
+  if (signedIn) $('pwSignOut').onclick = () => { setSession(null); try { localStorage.removeItem(ACCESS_KEY); } catch {} sync.pendingEmail = null; renderSync(); renderPaywall(); };
+  fitCard($('paywall').querySelector('.gate-card'));
+}
+// ---------- in-app checkout (Stripe's embedded checkout, from supabase/functions/checkout) ----------
+// Until that function is deployed and configured, `ping` fails and the app keeps the Stripe links.
+const CHECKOUT_FN = SUPABASE_URL + '/functions/v1/checkout';
+const pay = {ready: null, stripe: null, pk: null, embed: null, busy: false};
+async function checkoutCall(body) {
+  if (session) await ensureFreshSession().catch(() => {});
+  const r = await fetch(CHECKOUT_FN, {method: 'POST', body: JSON.stringify(body),
+    headers: {apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json', ...(session ? {Authorization: `Bearer ${session.access_token}`} : {})}});
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(d.error || `HTTP ${r.status}`), {code: d.error, httpStatus: r.status});
+  return d;
+}
+async function checkCheckout() {
+  if (pay.ready !== null) return pay.ready;
+  pay.ready = false;
+  try { pay.ready = !!(await checkoutCall({action: 'ping'}))?.ok; } catch {}
+  renderPaywall(); return pay.ready;
+}
+let stripeJs;
+const loadStripe = () => stripeJs ||= new Promise((res, rej) => {
+  if (window.Stripe) return res(window.Stripe);
+  const el = document.createElement('script'); el.src = 'https://js.stripe.com/v3/'; el.async = true;
+  el.onload = () => window.Stripe ? res(window.Stripe) : rej(new Error('Stripe did not load'));
+  el.onerror = () => { stripeJs = null; rej(new Error('Stripe did not load')); };
+  document.head.appendChild(el);
+});
+async function openCheckout(product) {
+  if (pay.busy) return; pay.busy = true;
+  const spots = product === 'spots';
+  $('payEyebrow').textContent = spots ? 'MycoField · Spot credits' : 'MycoField · Full access';
+  $('payTitle').textContent = spots ? `${SPOT_COUNT} spot credits · £20` : '£8 for a whole year';
+  $('payMount').innerHTML = '<div class="pay-loading"><div><div class="pw-spin"></div>Opening secure checkout…</div></div>';
+  $('payBox').hidden = false;
+  try {
+    const [d, Stripe] = await Promise.all([checkoutCall({action: 'start', product}), loadStripe()]);
+    if ($('payBox').hidden) return;
+    if (pay.pk !== d.publishableKey) { pay.stripe = Stripe(d.publishableKey); pay.pk = d.publishableKey; }
+    try { pay.embed?.destroy(); } catch {}
+    pay.embed = await pay.stripe.initEmbeddedCheckout({fetchClientSecret: async () => d.clientSecret});
+    $('payMount').innerHTML = ''; pay.embed.mount('#payMount');
+  } catch (err) {
+    closeCheckout();
+    if (spots) { if (session && SPOTS_PAYMENT_LINK) location.href = spotsBuyHref(); else toast('Checkout couldn’t open. Please try again.'); }
+    else { pay.ready = false; renderPaywall(); toast('Checkout couldn’t open here — sign in with your email and pay on Stripe instead.'); }
+  } finally { pay.busy = false; }
+}
+function closeCheckout() { try { pay.embed?.destroy(); } catch {} pay.embed = null; $('payBox').hidden = true; }
+// Back from the in-app checkout (?cs=…): the server checks the payment, makes the account for the Stripe
+// email if it's new, grants what was bought, and hands back a one-time sign-in — no email round trip.
+async function claimCheckout(cs) {
+  gate.checking = true; showPaywall(); $('pwCheckingText').textContent = 'Payment received — setting up your account…';
+  try {
+    const d = await checkoutCall({action: 'claim', sessionId: cs});
+    if (d.tokenHash) {
+      setSession(await sbFetch('/auth/v1/verify', {method: 'POST', body: {type: 'magiclink', token_hash: d.tokenHash}, auth: false}));
+      sync.pendingEmail = null; renderSync(); runSync();
+    }
+    if (d.product === 'spots') {
+      gate.checking = false;
+      if (await refreshAccess().catch(() => false)) openApp(false); else { renderPaywall(); }
+      if (SPOTS_ENABLED) confirmSpotsPayment();
+      return;
+    }
+    if (await refreshAccess()) {
+      gate.checking = false; openApp();
+      toast(`You’re in${d.email ? ` as ${d.email}` : ''} — access until ${fmtLongDate(cachedAccess().paidUntil)}.`);
+      return;
+    }
+    gate.checking = false; confirmPayment();
+  } catch (err) {
+    gate.checking = false;
+    if (session) { confirmPayment(); return; }
+    gate.showSignIn = true; renderPaywall();
+    $('pwPayNote').textContent = 'We couldn’t finish setting up here. If you paid, sign in with the email you paid with — your access is waiting.';
   }
 }
 // Back from Stripe (?paid=1): the webhook usually lands within seconds; poll for up to 3 minutes.
@@ -2748,7 +2878,7 @@ function renderSpots() {
       : !signedIn ? `<h3>Spot credits</h3><div class="ac-bal"><b>${SPOT_COUNT}</b><span>credits · £20</span></div><p class="small">Each credit reveals today’s best spot in the nation you pick. Sign in first so your credits are kept safe with your account.</p><button class="btn lime" type="button" data-go="signin">Sign in to get credits</button>`
       : `<h3>Spot credits</h3><div class="ac-bal"><b data-tick="${bal}" aria-label="${bal}">${bal}</b><span>credit${bal === 1 ? '' : 's'} left</span></div>
         <p class="small">${bal ? `Valid until ${fmtExpiry(c.nextExpiry)}. Spend them when the weather’s right.` : `${SPOT_COUNT} credits for a one-off £20, valid 12 months. Unused credits can be refunded within 14 days.`}</p>
-        <a class="btn ${bal ? 'secondary' : 'lime'}" href="${esc(spotsBuyHref())}" rel="noopener">${bal ? `Top up · ${SPOT_COUNT} more for £20` : `Get ${SPOT_COUNT} credits · £20`}</a>`;
+        <a class="btn ${bal ? 'secondary' : 'lime'}" data-buy="spots" href="${esc(spotsBuyHref())}" rel="noopener">${bal ? `Top up · ${SPOT_COUNT} more for £20` : `Get ${SPOT_COUNT} credits · £20`}</a>`;
   }
   // Access
   const x = $('acAccess'), a = cachedAccess();
@@ -2814,8 +2944,10 @@ async function confirmSpotsPayment() {
 }
 async function startGate() {
   if (!paywallOn()) { firstRunLocate(); return; }
-  const params = new URLSearchParams(location.search), paidReturn = params.get('paid') === '1', spotsReturn = params.get('spots') === '1';
-  if (paidReturn || spotsReturn) history.replaceState(null, '', location.pathname + location.hash);
+  const params = new URLSearchParams(location.search), paidReturn = params.get('paid') === '1', spotsReturn = params.get('spots') === '1', cs = params.get('cs');
+  if (paidReturn || spotsReturn || cs) history.replaceState(null, '', location.pathname + location.hash);
+  checkCheckout();
+  if (cs) { claimCheckout(cs); return; }
   if (session && spotsReturn) { openApp(false); if (SPOTS_ENABLED) confirmSpotsPayment(); return; }
   if (session && paidReturn) { confirmPayment(); return; }
   if (session && hasAccess()) { openApp(); refreshAccess().then(ok => { if (!ok && navigator.onLine) showPaywall(); }).catch(() => {}); return; }
@@ -2833,7 +2965,11 @@ function initGate() {
     try { if (await signInWithCode($('pwCode'))) { toast('Signed in.'); startGate(); } } finally { btn.disabled = false; }
   };
   $('soSkip').onclick = () => { stopClip('soVideo'); $('spotsOffer').hidden = true; };
-  $('soBuy').onclick = () => { stopClip('soVideo'); $('spotsOffer').hidden = true; };
+  $('soBuy').onclick = e => { stopClip('soVideo'); $('spotsOffer').hidden = true; if (pay.ready) { e.preventDefault(); openCheckout('spots'); } };
+  $('payBack').onclick = closeCheckout;
+  $('pwHave').onclick = () => { gate.showSignIn = true; renderPaywall(); $('pwEmail').focus(); };
+  // Credit buttons anywhere (Account tab): the in-app checkout when it's live, else the Stripe link.
+  document.addEventListener('click', e => { const a = e.target.closest?.('a[data-buy="spots"]'); if (a && pay.ready) { e.preventDefault(); openCheckout('spots'); } });
   $('spotsOpen').onclick = () => { closeSaved(); openSpots(); };
   $('spotsFab').onclick = openSpots;
   renderSpotsEntry();

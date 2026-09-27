@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.29.0 — Pay first, inside the app
+- New premium paywall card: mascot banner, big price, feature ticks, one "Pay £8 · get in now" button.
+- Stripe's embedded checkout opens inside the app (card, Apple Pay, Google Pay). The price is set by the
+  server. After paying, the email given to Stripe becomes the account and the buyer is signed straight in:
+  no separate sign-up or confirmation email (supabase/functions/checkout).
+- Credits (£20) use the same in-app checkout.
+- Webhook: the product is decided by the price paid, not by the link's reference (closes a loophole where
+  £8 could buy £20 of credits); a buyer with no account gets one for their Stripe email.
+- Until the checkout function is deployed, the app keeps the old sign-in-then-pay flow in the new design.
+
 ## 2.28.0 — Account tab
 - New Account tab: credits wallet (balance, expiry, top up), access with days left, a nation picker
   to reveal spots, every revealed spot, and sign-in & sync (moved from History).

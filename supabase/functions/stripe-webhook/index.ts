@@ -1,7 +1,8 @@
 // MycoField — Stripe webhook → paid access.
 // Stripe calls this after a Payment Link checkout. It verifies the Stripe signature, then extends the
-// buyer's access by ACCESS_DAYS from today (or from their current expiry, if later). A "spots_<id>"
-// purchase (£20) instead adds a lot of SPOT_CREDITS credits valid for CREDIT_MONTHS.
+// buyer's access by ACCESS_DAYS from today (or from their current expiry, if later). A £20 spots purchase
+// instead adds a lot of SPOT_CREDITS credits valid for CREDIT_MONTHS. The in-app checkout (functions/checkout)
+// grants the same thing when the buyer returns; whichever runs first does it, the payments row stops the other.
 // Secrets (Supabase → Edge Functions → Secrets): STRIPE_WEBHOOK_SECRET (whsec_…).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided to Edge Functions automatically.
 // Deploy with JWT verification OFF — Stripe does not send a Supabase token; the signature check is the auth.
@@ -44,15 +45,25 @@ Deno.serve(async req => {
   // 'no_payment_required' = a 100%-off promo code (e.g. FREE4ALL); still a completed checkout.
   if (s.payment_status !== 'paid' && s.payment_status !== 'no_payment_required')
     return new Response('not paid yet', {status: 200});
-  // client_reference_id is the MycoField account id; "spots_<id>" marks the £20 spot credits.
-  const ref = /^(spots_)?([0-9a-f-]{36})$/i.exec(s.client_reference_id ?? '');
-  const userId = ref?.[2], product = ref?.[1] ? 'spots' : 'access';
+  // What was bought comes from the session our checkout made (metadata) or, for the old Payment Links, the
+  // price before discounts (£8 vs £20) — never from client_reference_id, which a buyer can edit in the URL.
+  const product = s.metadata?.product === 'spots' || s.metadata?.product === 'access' ? s.metadata.product
+    : (s.amount_subtotal ?? 0) >= 2000 ? 'spots' : 'access';
+  const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {auth: {persistSession: false}});
+  // Who: the signed-in buyer's account id if the checkout carried one, else the account for the email they
+  // paid with (made now if new — paying confirms the email; they sign in with it and everything's there).
+  let userId = /^(?:spots_)?([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(s.client_reference_id ?? '')?.[1];
+  const email = s.customer_details?.email ?? s.customer_email ?? null;
+  if (!userId && email) {
+    let r = await db.auth.admin.generateLink({type: 'magiclink', email});
+    if (r.error) { await db.auth.admin.createUser({email, email_confirm: true}); r = await db.auth.admin.generateLink({type: 'magiclink', email}); }
+    userId = r.data?.user?.id;
+  }
   if (!userId) {
-    console.error('Paid session without a MycoField user id', s.id, s.customer_details?.email);
-    return new Response('no user id — grant manually', {status: 200});
+    console.error('Paid session without a MycoField account or email', s.id);
+    return new Response('no user — grant manually', {status: 200});
   }
 
-  const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {auth: {persistSession: false}});
   // Idempotency: record the session first; a duplicate webhook stops here.
   const {error: dup} = await db.from('payments').insert({id: s.id, user_id: userId, email: s.customer_details?.email ?? null, amount: s.amount_total ?? null, currency: s.currency ?? null});
   if (dup) {
