@@ -1100,6 +1100,8 @@ const map = new maplibregl.Map({container: 'map', style, ...loadCamera(), maxPit
 // Pinch-zoom on phones; zoom buttons only on wider screens.
 map.addControl(new maplibregl.NavigationControl({visualizePitch: true, showZoom: matchMedia('(min-width: 761px)').matches}), 'top-right');
 map.addControl(new maplibregl.AttributionControl({compact: true}), 'bottom-left');
+// Keep the compass just below the button stack, however many buttons are showing.
+(() => { const fabs = document.querySelector('.fabs'), place = () => { const c = document.querySelector('.mapwrap .maplibregl-ctrl-top-right'); if (c && fabs) c.style.top = (fabs.offsetTop + fabs.offsetHeight + 10) + 'px'; }; new ResizeObserver(place).observe(fabs); addEventListener('resize', place); place(); })();
 (() => setTimeout(() => { const a = document.querySelector('.maplibregl-ctrl-attrib.maplibregl-compact-show'); if (a) a.querySelector('.maplibregl-ctrl-attrib-button')?.click(); }, 6000))();
 let terrain3d = pref('mycofield-3d', true), mapLoaded = false;
 // Run once the style is in — not on 'load', which waits for every terrain tile (slow on poor signal).
