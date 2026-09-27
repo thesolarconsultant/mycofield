@@ -2508,8 +2508,10 @@ document.addEventListener('click', e => {
   const v = $(b.dataset.video); v.muted = false; v.currentTime = 0; v.play().catch(() => {}); b.hidden = true;
 });
 // Once, the first time someone is in with paid access. Resolves when they close it.
+// ?welcome in the address shows him again (for previewing).
+const forceWelcome = new URLSearchParams(location.search).has('welcome');
 function maybeWelcome() {
-  if (!session || !hasAccess() || readJSON(WELCOME_KEY, null)) return Promise.resolve();
+  if (!forceWelcome && (!session || !hasAccess() || readJSON(WELCOME_KEY, null))) return Promise.resolve();
   writeJSON(WELCOME_KEY, Date.now());
   return new Promise(resolve => {
     const box = $('mascotBox'), done = () => { stopClip('mbVideo'); box.hidden = true; document.removeEventListener('keydown', key); resolve(); };
@@ -2652,6 +2654,7 @@ async function startGate() {
   else if (t.trialEndsAt && Date.now() < t.trialEndsAt) startTrial();
   else showPaywall();
 }
+if (forceWelcome) setTimeout(() => { if ($('mascotBox').hidden) maybeWelcome(); }, 1200);
 function initGate() {
   $('wtNext').onclick = nextSlide;
   $('pwCodeForm').onsubmit = async e => {
