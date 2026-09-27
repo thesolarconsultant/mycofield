@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.25.0 — Mascot pop-ups
+- The parrot waxcap mascot: a welcome clip shown once when someone first gets in with paid access
+  (before the location question), and a spot-credits clip at the top of the credits offer.
+- Clips play muted and inline with the words written underneath; "Sound on" replays them with sound.
+  They stop when the card closes, and don't autoplay for people who ask for reduced motion.
+- Clips (about 0.7 MB each) are hosted with the video service; the service worker leaves them alone.
+
 ## 2.24.0 — Spot credits, and a year for £8
 - £8 now buys a year of access (was 90 days); existing access extended by 275 days.
 - Spot credits: £20 buys 10 credits valid 12 months. One credit reveals today's best spot in the

@@ -180,6 +180,13 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-price b.sm{font-size:inherit;font-family:inherit;margin:0}
 .spots-open{width:100%;margin-top:12px}
 .spot-list{display:grid;gap:10px;margin:10px 0}
+.mascot-card{text-align:left}
+.mb-video{position:relative;margin:0 auto 12px;width:min(100%,260px);aspect-ratio:9/16;max-height:46vh;border-radius:18px;overflow:hidden;background:var(--forest);box-shadow:var(--shadow)}
+@media(max-height:700px){.mb-video{max-height:38vh}}
+.mb-video video{width:100%;height:100%;object-fit:cover;display:block}
+.mb-sound{position:absolute;right:10px;bottom:10px;min-height:40px;padding:8px 14px;border-radius:999px;border:0;background:rgba(11,61,46,.82);color:#fff;font:600 13px var(--body);cursor:pointer}
+.mb-sound:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.mb-caption{font-size:14px;color:var(--forest);font-style:italic;margin:0 0 12px}
 .ss-bal{font-size:15px;margin:0 0 6px}.ss-bal b{font-family:var(--head);font-size:22px;color:var(--forest)}
 .ss-nations{display:grid;gap:8px;margin:12px 0}
 .ss-nation{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--white);border:1px solid var(--stone);border-radius:14px;padding:10px 12px}
@@ -412,7 +419,10 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div id="pwPay" hidden><a class="btn lime" id="pwPayBtn" href="#" rel="noopener">Pay £8 securely with Stripe</a><p class="small" id="pwPayNote" style="margin-top:8px"></p></div>
 <div id="pwChecking" hidden><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
 <p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div>
-<div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
+<div class="gate" id="mascotBox" hidden role="dialog" aria-modal="true" aria-labelledby="mbTitle"><div class="gate-card mascot-card"><div class="mb-video"><video id="mbVideo" playsinline muted preload="none" aria-describedby="mbCaption"></video><button class="mb-sound" type="button" data-video="mbVideo">Sound on</button></div>
+<h2 id="mbTitle">Welcome to MycoField</h2><p class="mb-caption" id="mbCaption"></p><button class="btn lime" id="mbGo" type="button">Let’s go</button></div></div>
+<div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card mascot-card"><div class="mb-video" id="soVideoWrap" hidden><video id="soVideo" playsinline muted preload="none" aria-describedby="soCaption"></video><button class="mb-sound" type="button" data-video="soVideo">Sound on</button></div>
+<p class="mb-caption" id="soCaption" hidden></p>
 <p class="pw-step">Before you get started</p>
 <h2 id="soTitle">Want to go straight to the best ground?</h2>
 <p>Every night MycoField scores England, Wales, Scotland and Northern Ireland and keeps the strongest spots. <b id="soCount">10</b> spot credits cost a one-off <b>£20</b>, and each one reveals today’s best spot in the nation you pick.</p>
@@ -2396,7 +2406,7 @@ const SLIDES = [
   ['Log finds and blanks.', 'Your own records test the index against what you actually find, so it keeps getting sharper.']
 ];
 function openApp(offer = true) {
-  const located = firstRunLocate();  // one card at a time: the spot offer waits for the location card
+  const located = maybeWelcome().then(firstRunLocate);  // one card at a time: welcome, then location, then the offer
   if (session && SPOTS_ENABLED) checkSpotsReady().then(() => spotsOn() && refreshSpots())
     .catch(() => {}).finally(() => { if (offer) located.then(maybeOfferSpots); });
   $('walkthrough').hidden = $('paywall').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
@@ -2467,6 +2477,41 @@ async function confirmPayment() {
   gate.checking = false; renderPaywall();
   $('pwPayNote').textContent = 'Payment not confirmed yet. If you paid, it can take a minute — reopen the app, or contact us with your receipt.';
 }
+// ---------- mascot pop-ups (the parrot waxcap) ----------
+// Short clips hosted with the video service. Muted autoplay with the words shown underneath;
+// "Sound on" replays with sound (phones block audio until a tap). Empty src = no clip, card still works.
+const MASCOT = {
+  welcome: {src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3ErnVtuGq0uA5LPn5YWAkd2kRlk/bc799bc6-f0cd-4cb7-95bb-9d417f869770.mp4', poster: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3ErnVtuGq0uA5LPn5YWAkd2kRlk/1fb33853-7c56-4423-9d96-ef4bd0566965.jpg', caption: '“Hi, welcome to MycoField! Thanks for joining. Tap any hillside and I’ll tell you how the ground’s doing.”'},
+  credits: {src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3ErnVtuGq0uA5LPn5YWAkd2kRlk/439384bb-9911-4d0c-b1ba-13f252f9e538.mp4', poster: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3ErnVtuGq0uA5LPn5YWAkd2kRlk/eed1d403-b4d3-4539-9a0a-da4b12e09521.jpg', caption: '“Want the best ground? Twenty quid gets you ten spot credits. Use them when the weather’s right, they last a whole year.”'}
+};
+const WELCOME_KEY = 'mycofield-welcomed';
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function playClip(id, clip) {
+  const v = $(id); if (!v || !clip?.src) return false;
+  if (v.getAttribute('src') !== clip.src) { v.src = clip.src; if (clip.poster) v.poster = clip.poster; }
+  v.muted = true; v.currentTime = 0; v.closest('.mb-video').querySelector('.mb-sound').hidden = false;
+  if (!reduceMotion) v.play().catch(() => {});
+  return true;
+}
+function stopClip(id) { const v = $(id); if (v) { v.pause(); v.muted = true; } }
+document.addEventListener('click', e => {
+  const b = e.target.closest('.mb-sound'); if (!b) return;
+  const v = $(b.dataset.video); v.muted = false; v.currentTime = 0; v.play().catch(() => {}); b.hidden = true;
+});
+// Once, the first time someone is in with paid access. Resolves when they close it.
+function maybeWelcome() {
+  if (!session || !hasAccess() || readJSON(WELCOME_KEY, null)) return Promise.resolve();
+  writeJSON(WELCOME_KEY, Date.now());
+  return new Promise(resolve => {
+    const box = $('mascotBox'), done = () => { stopClip('mbVideo'); box.hidden = true; document.removeEventListener('keydown', key); resolve(); };
+    const key = e => { if (e.key === 'Escape') done(); };
+    $('mbCaption').textContent = MASCOT.welcome.caption;
+    $('mbVideo').closest('.mb-video').hidden = !MASCOT.welcome.src;
+    $('mbGo').onclick = done; document.addEventListener('keydown', key);
+    box.hidden = false; playClip('mbVideo', MASCOT.welcome); $('mbGo').focus();
+  });
+}
+
 // ---------- spot credits (£20 = 10 credits, valid 12 months) ----------
 // Spots are never shipped in the app. Each night the scanner loads that day's live spots (90+,
 // confirmed ground, land the public can walk) into Supabase; one credit reveals the best available
@@ -2515,7 +2560,11 @@ function spotsBuyHref() {
   const q = new URLSearchParams({client_reference_id: `spots_${session?.user?.id || ''}`, ...(session?.user?.email ? {prefilled_email: session.user.email} : {})});
   return `${SPOTS_PAYMENT_LINK}${SPOTS_PAYMENT_LINK.includes('?') ? '&' : '?'}${q}`;
 }
-function openSpotsOffer() { $('soCount').textContent = SPOT_COUNT; $('soBuy').href = spotsBuyHref(); $('spotsOffer').hidden = false; }
+function openSpotsOffer() {
+  $('soCount').textContent = SPOT_COUNT; $('soBuy').href = spotsBuyHref(); $('spotsOffer').hidden = false;
+  $('soVideoWrap').hidden = $('soCaption').hidden = !MASCOT.credits.src; $('soCaption').textContent = MASCOT.credits.caption;
+  playClip('soVideo', MASCOT.credits);
+}
 // Offered once, the first time someone is in with paid access and has no credits.
 function maybeOfferSpots() {
   const c = spotsCache();
@@ -2598,8 +2647,8 @@ function initGate() {
     e.preventDefault(); const btn = $('pwCodeBtn'); btn.disabled = true;
     try { if (await signInWithCode($('pwCode'))) { toast('Signed in.'); startGate(); } } finally { btn.disabled = false; }
   };
-  $('soSkip').onclick = () => { $('spotsOffer').hidden = true; };
-  $('soBuy').onclick = () => { $('spotsOffer').hidden = true; };
+  $('soSkip').onclick = () => { stopClip('soVideo'); $('spotsOffer').hidden = true; };
+  $('soBuy').onclick = () => { stopClip('soVideo'); $('spotsOffer').hidden = true; };
   $('ssClose').onclick = () => { $('spotsSheet').hidden = true; };
   $('spotsOpen').onclick = () => { closeSaved(); openSpots(); };
   $('spotsFab').onclick = openSpots;
