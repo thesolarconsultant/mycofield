@@ -20,16 +20,18 @@ const km = (a, b) => { const t = x => x * Math.PI / 180; return 12742 * Math.asi
 const ukDate = () => new Date().toLocaleDateString('en-CA', {timeZone: 'Europe/London'});
 
 async function openApp(ctx) {
-  const p = await ctx.newPage();
-  await p.goto(SITE);
-  await p.waitForFunction(() => window.__mf, null, {timeout: 60000});
-  return p;
+  for (let a = 1; ; a++) {
+    const p = await ctx.newPage();
+    try { await p.goto(SITE); await p.waitForFunction(() => window.__mf, null, {timeout: 60000}); return p; }
+    catch (e) { await p.close().catch(() => {}); if (a >= 3) throw e; log('app load retry', a); }
+  }
 }
 
 (async () => {
   if (!TOKEN && !DRY) throw new Error('SPOT_SCANNER_TOKEN is not set');
   const browser = await chromium.launch();
-  const ctx = await browser.newContext();
+  // No service worker: its cached copy of the app would skip the hook below in extra tabs.
+  const ctx = await browser.newContext({serviceWorkers: 'block'});
   // Expose the app's own scoring functions and open the paywall for this private run.
   await ctx.route(/^https:\/\/www\.mycofield\.com\/(\?.*)?$/, async r => {
     const res = await r.fetch(); let t = await res.text();
