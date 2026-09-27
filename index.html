@@ -182,15 +182,16 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .spot-list{display:grid;gap:10px;margin:10px 0}
 .mascot-card{text-align:left}
 .mascot-gate{align-items:center}
-.mb-full{position:relative;width:min(100%,420px);aspect-ratio:9/16;max-height:calc(100dvh - 32px);border-radius:24px;overflow:hidden;background:var(--forest);box-shadow:var(--shadow-lg);animation:mbIn .35s cubic-bezier(.2,.8,.2,1.2)}
+.mb-card{position:relative;max-width:340px;animation:mbIn .35s cubic-bezier(.2,.8,.2,1.2)}
+.mb-card .gate-logo{display:block;margin:0 auto 10px}
+.mb-card .mb-video{margin:0 auto}
 @keyframes mbIn{from{transform:scale(.85) translateY(24px);opacity:0}to{transform:none;opacity:1}}
-@media(prefers-reduced-motion:reduce){.mb-full{animation:none}}
-.mb-full video{width:100%;height:100%;object-fit:cover;display:block}
+@media(prefers-reduced-motion:reduce){.mb-card{animation:none}}
 .mb-icon{position:absolute;width:44px;height:44px;border-radius:999px;border:0;display:grid;place-items:center;background:rgba(11,61,46,.72);color:#fff;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .mb-icon svg{width:20px;height:20px}
 .mb-icon:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
-.mb-full .mb-sound{right:12px;bottom:12px;left:auto;padding:0;min-height:0}
-.mb-close{right:12px;top:12px}
+.mb-video .mb-icon.mb-sound{right:10px;bottom:10px;padding:0;min-height:0}
+.mb-card .mb-close{right:12px;top:12px;background:var(--stone-2);color:var(--forest)}
 .mb-video{position:relative;margin:0 auto 12px;width:min(100%,260px);aspect-ratio:9/16;max-height:46vh;border-radius:18px;overflow:hidden;background:var(--forest);box-shadow:var(--shadow)}
 @media(max-height:700px){.mb-video{max-height:38vh}}
 .mb-video video{width:100%;height:100%;object-fit:cover;display:block}
@@ -429,7 +430,10 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div id="pwPay" hidden><a class="btn lime" id="pwPayBtn" href="#" rel="noopener">Pay £8 securely with Stripe</a><p class="small" id="pwPayNote" style="margin-top:8px"></p></div>
 <div id="pwChecking" hidden><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
 <p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div>
-<div class="gate mascot-gate" id="mascotBox" hidden role="dialog" aria-modal="true" aria-label="Welcome to MycoField"><div class="mb-full"><video id="mbVideo" playsinline muted preload="none" aria-describedby="mbCaption"></video><p class="sr" id="mbCaption"></p><button class="mb-sound mb-icon" type="button" data-video="mbVideo" aria-label="Play with sound"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button><button class="mb-close mb-icon" id="mbGo" type="button" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
+<div class="gate mascot-gate" id="mascotBox" hidden role="dialog" aria-modal="true" aria-label="Welcome to MycoField"><div class="gate-card mb-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
+<div class="mb-video"><video id="mbVideo" playsinline muted preload="none" aria-describedby="mbCaption"></video><p class="sr" id="mbCaption"></p>
+<button class="mb-sound mb-icon" type="button" data-video="mbVideo" aria-label="Play with sound"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button></div>
+<button class="mb-close mb-icon" id="mbGo" type="button" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
 <div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card mascot-card"><div class="mb-video" id="soVideoWrap" hidden><video id="soVideo" playsinline muted preload="none" aria-describedby="soCaption"></video><button class="mb-sound" type="button" data-video="soVideo">Sound on</button></div>
 <p class="sr" id="soCaption"></p>
 <p class="pw-step">Before you get started</p>
