@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.26.0 — Mascot into walkthrough
+- New visitors meet the mascot first; when he finishes (or is closed) his card glides and reshapes
+  into the first walkthrough slide, with the backdrop held steady and the slide fading up inside.
+- If the clip can't load, the walkthrough follows straight away (never stuck behind a stalled video).
+- Paid users who never saw him still get him once; ?welcome replays him.
+
 ## 2.25.0 — Mascot pop-ups
 - The parrot waxcap mascot: a welcome clip shown once when someone first gets in with paid access
   (before the location question), and a spot-credits clip at the top of the credits offer.

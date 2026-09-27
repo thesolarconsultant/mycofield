@@ -182,6 +182,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .spot-list{display:grid;gap:10px;margin:10px 0}
 .mascot-card{text-align:left}
 .mascot-gate{align-items:center}
+.gate-handoff{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .mb-card{position:relative;max-width:340px;animation:mbIn .35s cubic-bezier(.2,.8,.2,1.2)}
 .mb-card .gate-logo{display:block;margin:0 auto 10px}
 .mb-card .mb-video{margin:0 auto}
@@ -2424,7 +2425,10 @@ function openApp(offer = true) {
     .catch(() => {}).finally(() => { if (offer) located.then(maybeOfferSpots); });
   $('walkthrough').hidden = $('paywall').hidden = true; document.body.classList.remove('gated'); clearInterval(gate.trialTimer); clearTimeout(gate.timer); }
 function showWalkthrough() {
-  document.body.classList.add('gated'); $('walkthrough').hidden = false; gate.slide = -1; nextSlide();
+  document.body.classList.add('gated'); gate.slide = -1;
+  // A new visitor meets him first; his card then turns into the first slide.
+  if (!welcomeSeen() && MASCOT.welcome.src) { $('walkthrough').hidden = true; showWelcome($('walkthrough'), nextSlide); return; }
+  $('walkthrough').hidden = false; nextSlide();
 }
 function nextSlide() {
   clearTimeout(gate.timer);
@@ -2511,22 +2515,57 @@ document.addEventListener('click', e => {
   const b = e.target.closest('.mb-sound'); if (!b) return;
   const v = $(b.dataset.video); v.muted = false; v.currentTime = 0; v.play().catch(() => {}); b.hidden = true;
 });
-// Once, the first time someone is in with paid access. Resolves when they close it.
-// ?welcome in the address shows him again (for previewing).
+// He appears once: first thing for a new visitor (then his card turns into the walkthrough), or,
+// for anyone who paid before he existed, when they next open the app. ?welcome replays him.
 const forceWelcome = new URLSearchParams(location.search).has('welcome');
-function maybeWelcome() {
-  if (!forceWelcome && (!session || !hasAccess() || readJSON(WELCOME_KEY, null))) return Promise.resolve();
+const welcomeSeen = () => !forceWelcome && !!readJSON(WELCOME_KEY, null);
+function showWelcome(next = null, prepare = null) {
   writeJSON(WELCOME_KEY, Date.now());
+  if (!MASCOT.welcome.src) return Promise.resolve(false);
   return new Promise(resolve => {
-    const box = $('mascotBox'), done = () => { stopClip('mbVideo'); box.hidden = true; document.removeEventListener('keydown', key); resolve(); };
-    const key = e => { if (e.key === 'Escape') done(); };
+    const box = $('mascotBox'), v = $('mbVideo');
+    let over = false, safety;
+    const key = e => { if (e.key === 'Escape') finish(); };
+    const finish = async () => {
+      if (over) return; over = true;
+      clearTimeout(safety); document.removeEventListener('keydown', key); v.onended = v.onerror = null; stopClip('mbVideo');
+      if (next) { prepare?.(); await morphInto(box.querySelector('.gate-card'), next); }
+      else await fadeOut(box);
+      box.hidden = true; resolve(true);
+    };
     $('mbCaption').textContent = MASCOT.welcome.caption;
-    $('mbGo').onclick = done; document.addEventListener('keydown', key);
-    box.onclick = e => { if (e.target === box) done(); };
-    $('mbVideo').onended = () => setTimeout(done, 900);
-    if (!MASCOT.welcome.src) { resolve(); return; }
+    $('mbGo').onclick = finish; box.onclick = e => { if (e.target === box) finish(); };
+    document.addEventListener('keydown', key);
+    v.onended = () => setTimeout(finish, 700);
+    v.onerror = () => finish();                       // no clip (offline, blocked): straight on
+    safety = setTimeout(finish, 16000);               // never stuck on a stalled download
     box.hidden = false; playClip('mbVideo', MASCOT.welcome); $('mbGo').focus();
   });
+}
+function fadeOut(el) {
+  if (reduceMotion) return Promise.resolve();
+  const card = el.querySelector('.gate-card');
+  return card.animate([{opacity: 1, transform: 'none'}, {opacity: 0, transform: 'scale(.94)'}], {duration: 220, easing: 'ease-in', fill: 'forwards'}).finished.catch(() => {});
+}
+// His card reshapes into the next card (the walkthrough): the backdrop never blinks, the card glides
+// to its new size and place, and the new content fades up inside it.
+function morphInto(fromCard, toGate) {
+  const from = fromCard.getBoundingClientRect(), toCard = toGate.querySelector('.gate-card');
+  toGate.classList.add('gate-handoff'); toGate.hidden = false;
+  const to = toCard.getBoundingClientRect();
+  $('mascotBox').hidden = true; toGate.classList.remove('gate-handoff');
+  if (reduceMotion || !to.width || !from.width) return Promise.resolve();
+  const dx = from.left + from.width / 2 - (to.left + to.width / 2), dy = from.top + from.height / 2 - (to.top + to.height / 2);
+  const anim = toCard.animate([{transform: `translate(${dx}px, ${dy}px) scale(${from.width / to.width}, ${from.height / to.height})`}, {transform: 'none'}],
+    {duration: 480, easing: 'cubic-bezier(.2,.85,.25,1)'});
+  [...toCard.children].forEach((c, i) => c.animate([{opacity: 0, transform: 'translateY(10px)'}, {opacity: 1, transform: 'none'}],
+    {duration: 300, delay: 260 + i * 45, easing: 'ease-out', fill: 'backwards'}));
+  return anim.finished.catch(() => {});
+}
+// Paid users who never met him (they joined before he existed).
+function maybeWelcome() {
+  if (!forceWelcome && (!session || !hasAccess() || welcomeSeen())) return Promise.resolve();
+  return showWelcome().then(() => {});
 }
 
 // ---------- spot credits (£20 = 10 credits, valid 12 months) ----------
@@ -2658,7 +2697,7 @@ async function startGate() {
   else if (t.trialEndsAt && Date.now() < t.trialEndsAt) startTrial();
   else showPaywall();
 }
-if (forceWelcome) setTimeout(() => { if ($('mascotBox').hidden) maybeWelcome(); }, 1200);
+if (forceWelcome) setTimeout(() => { if ($('mascotBox').hidden && $('walkthrough').hidden) showWelcome(); }, 1200);
 function initGate() {
   $('wtNext').onclick = nextSlide;
   $('pwCodeForm').onsubmit = async e => {
