@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.23.0
+- Free look raised from 15 seconds to 3 minutes. Trial records reset (new key), so everyone who
+  already used the old 15-second look gets the full 3 minutes once.
+
 ## 2.22.1
 - `FREE_UNTIL`: a timed free window (paywall off until then, back on by itself, no redeploy).
   Set for one hour on 26 Sept 2026 (until 10:45 UK time) for a social-media share.

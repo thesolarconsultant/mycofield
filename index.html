@@ -444,14 +444,14 @@ const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
 const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
 // Paid access: a Stripe Payment Link (one-off £8 → 90 days). Empty = paywall off, app fully open.
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
-const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 15;
+const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 180;  // 3-minute free look
 // Spot pack: a second Stripe Payment Link (one-off £20). Empty = the offer stays hidden; it also
 // stays hidden until the spots table has at least one active spot (spots_available()).
 const SPOTS_PAYMENT_LINK = 'https://buy.stripe.com/5kQ4gy1Wl9tTfGFa3HeAg03', SPOT_COUNT = 10;
 // Spot pack withdrawn: the sites didn't meet the quality bar. false hides the offer, the ★ button,
 // the pins and the list, and clears any spots cached on the device. The server side is left in place.
 const SPOTS_ENABLED = false;
-const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v1';
+const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v2';  // v2: everyone who had the old 15 s look gets the 3-minute one
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
 let session = readJSON(AUTH_KEY, null);
