@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.28.0 — Account tab
+- New Account tab: credits wallet (balance, expiry, top up), access with days left, a nation picker
+  to reveal spots, every revealed spot, and sign-in & sync (moved from History).
+- The ★ button and the credits button open the Account tab; the spots pop-up is gone.
+- The tab shows your credit balance as a badge.
+
+## 2.27.0 — Cards and motion
+- Pop-up cards fit the screen with no scrollbar; the mascot video shrinks, or sits beside the
+  headline on short screens.
+- Motion after Magic UI: Blur Fade, Border Beam, Shimmer Button, Magic Card spotlight, Number Ticker.
+  Off under reduced motion.
+- The map compass sits below the button stack instead of behind it.
+
 ## 2.26.0 — Mascot into walkthrough
 - New visitors meet the mascot first; when he finishes (or is closed) his card glides and reshapes
   into the first walkthrough slide, with the backdrop held steady and the slide fading up inside.

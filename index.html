@@ -218,7 +218,25 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .ss-nation{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--white);border:1px solid var(--stone);border-radius:14px;padding:10px 12px}
 .ss-nation b{color:var(--forest);font-size:15px}.ss-nation .btn{width:auto;flex:none;padding:8px 14px;min-height:40px}.ss-nation .btn:disabled{opacity:.5;cursor:default}
 .ss-h{font-family:var(--head);font-size:16px;color:var(--forest);margin:16px 0 4px}
-#ssBuy{margin-top:4px}
+nav button{position:relative}.nav-dot{position:absolute;top:8px;left:calc(50% + 8px);min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--lime);color:var(--forest);font:700 10px/16px var(--body);font-style:normal}
+.ac-top{display:grid;gap:12px;margin:20px 0 12px}@media(min-width:700px){.ac-top{grid-template-columns:1.2fr 1fr}}
+#view-account .card+.card,#view-account .ac-top+.card{margin-top:12px}
+.ac-wallet{background:linear-gradient(135deg,var(--forest),#14563f);color:#fff;border:0;overflow:hidden}
+.ac-wallet h3{color:rgba(255,255,255,.8)}.ac-wallet .small{color:rgba(255,255,255,.78)}
+.ac-bal{display:flex;align-items:baseline;gap:8px;margin:2px 0 6px}.ac-bal b{font-family:var(--head);font-size:52px;line-height:1;color:var(--lime)}.ac-bal span{font-size:15px;font-weight:600}
+.ac-wallet .btn{margin-top:12px;width:100%}.ac-wallet .btn.secondary{background:rgba(255,255,255,.12);color:#fff}
+.ac-wallet::before{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(167,216,46,.35),transparent 70%);pointer-events:none}
+.ac-meter{height:6px;border-radius:3px;background:var(--stone);overflow:hidden;margin:10px 0 4px}.ac-meter i{display:block;height:100%;background:var(--moss);border-radius:3px;transform-origin:left;animation:meter .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes meter{from{transform:scaleX(0)}}
+.ac-access .btn{margin-top:12px;width:100%}.ac-big{font-family:var(--head);font-size:22px;color:var(--forest);margin:0 0 2px}
+.ac-nations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}@media(min-width:700px){.ac-nations{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.ac-nation{display:flex;flex-direction:column;gap:4px;border:1px solid var(--stone);border-radius:16px;padding:12px;background:var(--white);min-width:0;transition:transform .2s,box-shadow .2s,border-color .2s}
+.ac-nation.live{border-color:rgba(167,216,46,.8);box-shadow:0 0 0 3px rgba(167,216,46,.18)}
+@media(hover:hover){.ac-nation.live:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(11,61,46,.14)}}
+.ac-nation b{color:var(--forest);font-size:15px}.ac-n{font-family:var(--head);font-size:30px;line-height:1;color:var(--forest)}.ac-n small{font:500 12px var(--body);color:var(--muted);margin-left:4px}
+.ac-nation .btn{margin-top:auto;width:100%;min-height:40px;padding:8px 10px;font-size:13px}.ac-nation .btn:disabled{opacity:.5;cursor:default}
+.ac-fine{margin:16px 0 8px!important}.ac-fine a{color:var(--moss-ink)}.ac-wallet a.btn,.ac-access a.btn{text-decoration:none}
+@media(prefers-reduced-motion:reduce){.ac-meter i{animation:none}}
 .spot{background:var(--white);border:1px solid var(--stone);border-radius:14px;padding:12px}
 .spot-h{display:flex;justify-content:space-between;align-items:center;gap:8px}.spot-h b{font-size:15px;color:var(--forest)}
 .spot p{margin:6px 0 0}.spot-a{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}.spot-a .btn{width:auto;padding:8px 14px}
@@ -359,7 +377,7 @@ details.method p{font-size:13px;line-height:1.55;color:var(--text);margin:10px 0
 
 /* ---------- bottom navigation ---------- */
 /* Slim, fixed, icon-first bar. Height is fixed so the map above it never shifts. */
-nav{position:fixed;bottom:0;left:0;right:0;z-index:40;height:calc(var(--nav-h) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);background:var(--forest);padding:0 6px env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(11,61,46,.16);transform:translateZ(0);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;height:calc(var(--nav-h) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);background:var(--forest);padding:0 6px env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(11,61,46,.16);transform:translateZ(0);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 nav button{height:var(--nav-h);border:0;background:transparent;color:rgba(255,255,255,.72);padding:0;font-size:11px;font-weight:500;letter-spacing:.01em;white-space:nowrap;display:grid;justify-items:center;align-content:center;gap:3px;touch-action:manipulation}
 nav button svg.i{width:44px;height:26px;padding:3px 11px;border-radius:999px;box-sizing:border-box;transition:background .15s,color .15s}
 nav button.active{color:#fff;font-weight:600}
@@ -370,7 +388,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
   .record{grid-template-columns:auto 1fr}.record .acts{grid-column:1/-1;justify-content:flex-start}
   .title{font-size:28px}
 }
-@media(min-width:761px){nav{grid-template-columns:repeat(4,minmax(0,150px));justify-content:center}}
+@media(min-width:761px){nav{grid-template-columns:repeat(5,minmax(0,150px));justify-content:center}}
 @media(max-width:380px){.wordmark{font-size:18px}.brand img{height:34px}.trk{grid-template-columns:56px minmax(0,1fr) 14px}.trk-spark{display:none}}
 </style>
 </head>
@@ -424,16 +442,23 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <p><b>How to trust it.</b> Every threshold above is a starting guess. Log finds <i>and</i> blanks, run Evidence on the History tab, and use the separation score (AUC) to see whether the index actually distinguishes them. Around 0.5 means it doesn't; above 0.7 is useful. The thresholds should be re-set from your records once there are enough of them.</p>
 <p><b>Sources.</b> Open-Meteo forecast, archive (ERA5) and elevation APIs; Copernicus DEM; OpenStreetMap via Overpass; Natural Resources Wales LANDMAP, grassland-fungi potential habitat and access-land layers via DataMapWales (contains Natural Resources Wales information © Natural Resources Wales and database right); Natural England Priority Habitat Inventory, Living England and registered common land, and the Rural Payments Agency Crop Map of England (© Natural England / RPA); NatureScot Habitat Map of Scotland (© NatureScot) — all under the Open Government Licence; postcodes.io and Nominatim for search.</p>
 </details></div></section>
-<section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" id="syncCard" style="margin-top:20px"><h3>Account &amp; sync <span class="chip" id="syncChip">Off</span></h3><div class="small" id="syncSub"></div><form id="syncEmailForm" class="sync-form"><input class="field" id="syncEmail" type="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><button class="btn" id="syncEmailBtn" type="submit">Email me a sign-in link</button></form><div id="syncPending" class="sync-form" hidden><button class="btn secondary" type="button" id="syncCodeBack">Use a different email</button><button class="btn secondary" type="button" id="syncShowCode">I have a code</button></div><form id="syncCodeForm" class="sync-form" hidden><input class="field" id="syncCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" type="submit">Sign in</button></form><div class="sync-form" id="syncSignedIn" hidden><button class="btn" id="syncNow" type="button">Sync now</button><button class="btn secondary" id="syncSignOut" type="button">Sign out</button></div></div><div class="card" style="margin-top:12px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div>
+<section class="view" id="view-history"><div class="page"><div class="eyebrow">History</div><h2 class="title">Rewind before an observation.</h2><div class="sub">Positive observations and blanks are both useful. Analyse any record to reconstruct the 30 days of weather that led up to it.</div><div class="card" style="margin-top:20px"><h3>Observation log</h3><div id="history" class="history"></div></div><div class="card" style="margin-top:12px" id="rewindCard"><h3><span id="rewindTitle">Historical rewind</span> <span class="chip hist" id="rewindChip">Historical</span></h3><div class="small" id="rewindSub">Tap Analyse on any record to rebuild its weather history.</div><div class="timeline" id="rewind"></div></div>
 <div class="card" style="margin-top:12px" id="evidenceCard"><h3>Evidence <span class="chip exp">Model check</span></h3><div class="small" id="evidenceSub">Does the index actually separate your finds from your blanks?</div><div class="pc-actions"><button class="btn" id="analyseAll" type="button">Analyse all records</button></div><div class="small" id="evidenceProgress" aria-live="polite"></div><div id="evidenceVerdict" class="verdict"></div><div id="evidence" class="evtable"></div></div>
 <div class="card" style="margin-top:12px"><h3>Export your data</h3><div class="pc-actions"><button class="btn secondary" id="exportCsv" type="button">CSV</button><button class="btn secondary" id="exportJson" type="button">JSON</button><button class="btn secondary" id="exportGeo" type="button">GeoJSON</button></div><div class="small" style="margin-top:10px">Exports include your private coordinates — share them carefully.</div><div class="small legal-links" style="margin-top:10px"><a href="/terms">Terms &amp; refunds</a> · <a href="/privacy">Privacy</a></div></div></div></section>
-<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field notes</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome — blanks included. Records are saved on this device, and backed up to your account when you sign in (History tab).</div><form class="card" id="logForm" style="margin-top:20px"><div class="attached" id="attachedPoint" hidden><div><strong><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div><div><label for="obsGrazing">Grazing</label><select class="field" id="obsGrazing"><option value="">Not sure</option><option value="now">Stock grazing now</option><option value="this-year">Grazed this year (dung, short sward)</option><option value="ungrazed">Ungrazed for years (long, rank sward)</option><option value="mown">Mown / cut, not grazed</option></select></div><div><label for="obsAnimal">Grazed by</label><select class="field" id="obsAnimal"><option value="">Not sure / n/a</option><option value="sheep">Sheep</option><option value="cattle">Cattle</option><option value="horses">Horses / ponies</option><option value="mixed">Mixed stock</option><option value="wild">Rabbits / deer only</option></select></div></div><div style="margin-top:14px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn lime" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:14px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
+<section class="view" id="view-account"><div class="page"><div class="eyebrow">Account</div><h2 class="title" id="acTitle">Your MycoField.</h2><div class="sub" id="acSub">Your access, your spot credits and every spot you’ve revealed, kept with your account.</div>
+<div class="ac-top"><div class="card ac-wallet" id="acWallet"></div><div class="card ac-access" id="acAccess"></div></div>
+<div class="card" id="acPick" hidden><h3>Reveal a spot <span class="chip" id="acScan"></span></h3><p class="small" id="acPickSub">One credit reveals today’s best available spot in the nation you choose: a score of 90+, confirmed grassland, heath or bog, on land the public can walk. None in a nation today? Keep your credits for a better week.</p><div class="ac-nations" id="acNations"></div></div>
+<div class="card" id="acSpots" hidden><h3>Your spots <span class="chip" id="acSpotCount"></span></h3><div class="spot-list" id="acSpotList"></div><p class="small">Scores are from the day each spot was revealed. Tap Show on map to see today’s conditions.</p></div>
+<div class="card" id="syncCard"><h3>Sign-in &amp; sync <span class="chip" id="syncChip">Off</span></h3><div class="small" id="syncSub"></div><form id="syncEmailForm" class="sync-form"><input class="field" id="syncEmail" type="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><button class="btn" id="syncEmailBtn" type="submit">Email me a sign-in link</button></form><div id="syncPending" class="sync-form" hidden><button class="btn secondary" type="button" id="syncCodeBack">Use a different email</button><button class="btn secondary" type="button" id="syncShowCode">I have a code</button></div><form id="syncCodeForm" class="sync-form" hidden><input class="field" id="syncCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" type="submit">Sign in</button></form><div class="sync-form" id="syncSignedIn" hidden><button class="btn" id="syncNow" type="button">Sync now</button><button class="btn secondary" id="syncSignOut" type="button">Sign out</button></div></div>
+<p class="pw-fine ac-fine">Spots are picked by MycoField’s experimental Conditions Index from weather, terrain and official habitat and access maps. A strong score is not a promise that anything is fruiting. Follow the Countryside Code (or the Scottish Outdoor Access Code), keep to access land, don’t pick on nature reserves or Sites of Special Scientific Interest, and never eat a wild mushroom because of an app. <a href="/terms" target="_blank" rel="noopener">Terms &amp; refunds</a> · <a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="mailto:help@mycofield.com">help@mycofield.com</a></p></div></section>
+<section class="view" id="view-log"><div class="page"><div class="eyebrow">Field notes</div><h2 class="title">Log what actually happened.</h2><div class="sub">Store date, habitat and outcome — blanks included. Records are saved on this device, and backed up to your account when you sign in (Account tab).</div><form class="card" id="logForm" style="margin-top:20px"><div class="attached" id="attachedPoint" hidden><div><strong><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>PRIVATE LOCATION ATTACHED</strong><p id="attachedCoords"></p><small id="attachedTerrain"></small></div><button class="btn secondary" type="button" id="removeLocation">Remove location</button></div><div class="grid2"><div><label for="obsDate">Date</label><input class="field" id="obsDate" type="date" required></div><div><label for="obsResult">Result</label><select class="field" id="obsResult"><option value="positive">Fruiting observed</option><option value="blank">Blank / no observation</option></select></div><div><label for="obsArea">Area</label><select class="field" id="obsArea"></select></div><div><label for="obsElevation">Elevation band</label><input class="field" id="obsElevation" placeholder="e.g. 300–500m"></div><div><label for="obsHabitat">Grass / habitat</label><input class="field" id="obsHabitat" placeholder="short grazed upland turf"></div><div><label for="obsGround">Ground</label><select class="field" id="obsGround"><option>Damp</option><option>Wet</option><option>Dry</option><option>Waterlogged</option></select></div><div><label for="obsGrazing">Grazing</label><select class="field" id="obsGrazing"><option value="">Not sure</option><option value="now">Stock grazing now</option><option value="this-year">Grazed this year (dung, short sward)</option><option value="ungrazed">Ungrazed for years (long, rank sward)</option><option value="mown">Mown / cut, not grazed</option></select></div><div><label for="obsAnimal">Grazed by</label><select class="field" id="obsAnimal"><option value="">Not sure / n/a</option><option value="sheep">Sheep</option><option value="cattle">Cattle</option><option value="horses">Horses / ponies</option><option value="mixed">Mixed stock</option><option value="wild">Rabbits / deer only</option></select></div></div><div style="margin-top:14px"><label for="obsNotes">Notes</label><textarea class="field" id="obsNotes" placeholder="Grazing, moss, exposure, recent weather, time spent looking…"></textarea></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn lime" type="submit">Save observation</button><button class="btn secondary" id="useMapCenter" type="button">Use map centre</button></div><div class="notice" style="margin-top:14px">Built for general grassland-fungi habitat and phenology research. It does not identify species or provide species-specific collection locations. Attached coordinates stay private on this device.</div></form></div></section>
 </main>
 <nav aria-label="Main">
 <button class="active" data-view="map" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>Map</button>
 <button data-view="dashboard" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Conditions</button>
 <button data-view="history" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/></svg>History</button>
 <button data-view="log" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/></svg>Notes</button>
+<button data-view="account" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Account<i class="nav-dot" id="navDot" hidden></i></button>
 </nav>
 <div class="gate" id="walkthrough" hidden role="dialog" aria-modal="true" aria-labelledby="wtTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><div class="wt-progress" id="wtProgress" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2 id="wtTitle"></h2><p id="wtText"></p><button class="btn lime" id="wtNext" type="button">Next</button></div></div>
 <div class="gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
@@ -458,9 +483,6 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <a class="btn lime" id="soBuy" href="#" rel="noopener">Get 10 credits · £20</a>
 <button class="pw-link" id="soSkip" type="button">No thanks, I’ll explore myself</button>
 <p class="pw-fine">One payment. Credits last 12 months from purchase. Unused credits can be refunded within 14 days of buying. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
-<div class="gate" id="spotsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="ssTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField">
-<h2 id="ssTitle">Your spots</h2><div id="ssBody"></div>
-<button class="pw-link" id="ssClose" type="button">Close</button></div></div>
 <div class="gate ask-gate" id="askBox" hidden role="alertdialog" aria-modal="true" aria-labelledby="askTitle" aria-describedby="askText"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><h2 id="askTitle"></h2><p id="askText"></p><div class="ask-acts"><button class="btn lime" id="askOk" type="button">OK</button><button class="btn secondary" id="askCancel" type="button">Cancel</button></div></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
@@ -2377,6 +2399,7 @@ async function runSync() {
   return sync.running;
 }
 function renderSync() {
+  queueMicrotask(() => { try { renderSpots(); } catch {} });
   const card = $('syncCard'); if (!card) return;
   card.hidden = !syncEnabled();
   const signedIn = !!session, chip = $('syncChip');
@@ -2547,8 +2570,8 @@ function fitCard(card) {
 }
 function tickNumbers(root) {
   root.querySelectorAll('[data-tick]').forEach(el => {
-    const to = +el.dataset.tick, from = +(el.closest('[data-ticked]')?.dataset.ticked ?? 0);
-    const host = el.closest('.gate-card'); if (host) host.dataset.ticked = to;
+    const to = +el.dataset.tick, from = +(el.closest('.gate-card, .card')?.dataset.ticked ?? 0);
+    const host = el.closest('.gate-card, .card'); if (host) host.dataset.ticked = to;
     if (from === to || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const t0 = performance.now(), dur = 700;
     const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - (1 - k) ** 3; el.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
@@ -2661,14 +2684,14 @@ function spotsCache() { if (!SPOTS_ENABLED) return null; const c = readJSON(SPOT
 async function checkSpotsReady() {
   if (!SPOTS_ENABLED || !paywallOn() || !SPOTS_PAYMENT_LINK) return false;
   try { spots.counts = await sbFetch('/rest/v1/rpc/spot_counts', {method: 'POST', body: {}, auth: !!session}); spots.dbReady = Array.isArray(spots.counts); } catch { spots.counts = null; }
-  renderSpotsEntry(); if (!$('spotsSheet').hidden) renderSpots(); return true;
+  renderSpotsEntry(); renderSpots(); return true;
 }
 async function refreshSpots() {
   if (!spotsOn() || !session?.user?.id) return null;
   const [cr, list] = await Promise.all([sbFetch('/rest/v1/rpc/my_credits', {method: 'POST', body: {}}), sbFetch('/rest/v1/rpc/my_spots', {method: 'POST', body: {}})]);
   const row = Array.isArray(cr) ? cr[0] : cr;
   const c = {userId: session.user.id, balance: row?.balance ?? 0, nextExpiry: row?.next_expiry ?? null, list: list || []};
-  writeJSON(SPOTS_KEY, c); renderSpotsEntry(); if (!$('spotsSheet').hidden) renderSpots(); return c;
+  writeJSON(SPOTS_KEY, c); renderSpotsEntry(); renderSpots(); return c;
 }
 // Revealed spots stay pinned on the map (★1, ★2…) with a ★ button to reopen the sheet.
 let spotMarkers = [];
@@ -2707,33 +2730,59 @@ function maybeOfferSpots() {
 }
 function openSpots() {
   if (!spotsOn() || !session) return;
-  $('spotsSheet').hidden = false; renderSpots(); checkSpotsReady(); refreshSpots().catch(() => {});
+  closeSaved(); switchView('account');
 }
 const fmtExpiry = t => new Date(t).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
+// The Account tab: access, the credits wallet, the nation picker and every revealed spot.
 function renderSpots() {
-  const c = spotsCache() || {balance: 0, list: []}, body = $('ssBody');
-  if (spots.checking) { $('ssTitle').textContent = 'Thanks — nearly there.'; body.innerHTML = '<p class="small">Confirming your payment…</p>'; return; }
-  $('ssTitle').textContent = 'Spot credits';
+  const signedIn = !!session, on = spotsOn(), c = spotsCache() || {balance: 0, list: []}, bal = c.balance || 0;
+  const dot = $('navDot'); dot.hidden = !(on && bal); dot.textContent = bal;
+  $('acTitle').textContent = signedIn ? 'Your MycoField.' : 'Sign in to keep your spots.';
+  $('acSub').textContent = signedIn ? `Signed in as ${session.user?.email || 'your account'}. Your access, spot credits and revealed spots live here, on every device you sign in on.`
+    : 'Your account holds your access, your spot credits and every spot you reveal. Sign in below with your email: no password needed.';
+  // Wallet
+  const w = $('acWallet');
+  w.hidden = !on;
+  if (on) {
+    w.innerHTML = spots.checking ? `<h3>Spot credits</h3><div class="ac-bal"><b>…</b></div><p class="small">Thanks — confirming your payment. This usually takes a few seconds.</p>`
+      : !signedIn ? `<h3>Spot credits</h3><div class="ac-bal"><b>${SPOT_COUNT}</b><span>credits · £20</span></div><p class="small">Each credit reveals today’s best spot in the nation you pick. Sign in first so your credits are kept safe with your account.</p><button class="btn lime" type="button" data-go="signin">Sign in to get credits</button>`
+      : `<h3>Spot credits</h3><div class="ac-bal"><b data-tick="${bal}" aria-label="${bal}">${bal}</b><span>credit${bal === 1 ? '' : 's'} left</span></div>
+        <p class="small">${bal ? `Valid until ${fmtExpiry(c.nextExpiry)}. Spend them when the weather’s right.` : `${SPOT_COUNT} credits for a one-off £20, valid 12 months. Unused credits can be refunded within 14 days.`}</p>
+        <a class="btn ${bal ? 'secondary' : 'lime'}" href="${esc(spotsBuyHref())}" rel="noopener">${bal ? `Top up · ${SPOT_COUNT} more for £20` : `Get ${SPOT_COUNT} credits · £20`}</a>`;
+  }
+  // Access
+  const x = $('acAccess'), a = cachedAccess();
+  x.hidden = !paywallOn();
+  if (paywallOn()) {
+    if (signedIn && hasAccess()) {
+      const left = Math.max(0, Math.ceil((Date.parse(a.paidUntil) - Date.now()) / 864e5));
+      x.innerHTML = `<h3>Full access <span class="chip">Active</span></h3><p class="ac-big">${left} day${left === 1 ? '' : 's'} left</p><div class="ac-meter"><i style="width:${Math.min(100, left / 365 * 100)}%"></i></div><p class="small">Until ${fmtLongDate(a.paidUntil)}. One payment, no subscription: nothing renews by itself.</p>`;
+    } else {
+      x.innerHTML = `<h3>Full access</h3><p class="ac-big">£8 for a year</p><p class="small">Conditions for any spot you tap, official habitat maps, and your areas and records synced to your account.</p><button class="btn lime" type="button" data-go="pay">${signedIn ? 'Get a year · £8' : 'Sign in & get access'}</button>`;
+    }
+  }
+  $('view-account').querySelector('.ac-top').hidden = w.hidden && x.hidden;
+  // Nation picker
   const counts = new Map((spots.counts || []).map(r => [r.nation, r]));
-  const bal = c.balance || 0;
-  body.innerHTML = `<p class="ss-bal">${bal ? `<b data-tick="${bal}" aria-label="${bal}">${bal}</b> credit${bal === 1 ? '' : 's'} left${c.nextExpiry ? ` · valid until ${fmtExpiry(c.nextExpiry)}` : ''}` : 'No credits yet'}</p>
-    <p class="small">One credit reveals today’s best available spot in the nation you choose: a score of 90+, confirmed grassland, heath or bog, on land the public can walk. None in a nation today? Keep your credits for a better week.</p>
-    <div class="ss-nations">${NATIONS.map(n => { const r = counts.get(n), k = r?.available ?? null;
-      return `<div class="ss-nation"><div><b>${n}</b><div class="small">${spots.counts == null ? 'Checking…' : k ? `${k} spot${k === 1 ? '' : 's'} today · best ${r.best}` : 'None right now'}</div></div>
-      <button class="btn ${k && bal ? 'lime' : 'secondary'}" type="button" data-nation="${n}" ${k && bal ? '' : 'disabled'}>Reveal · 1 credit</button></div>`; }).join('')}</div>
-    ${bal ? '' : `<a class="btn lime" id="ssBuy" href="${esc(spotsBuyHref())}" rel="noopener">Get ${SPOT_COUNT} credits · £20</a><p class="pw-fine">One payment, no subscription. Credits last 12 months. Unused credits can be refunded within 14 days. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p>`}
-    ${c.list?.length ? `<h3 class="ss-h">Your spots</h3><div class="spot-list">${c.list.map((x, i) => `<div class="spot"><div class="spot-h"><b>★${i + 1} ${esc(x.name)}</b><span class="chip">${x.score}</span></div>
+  $('acPick').hidden = !(on && signedIn);
+  $('acScan').textContent = spots.counts == null ? 'Checking…' : `${(spots.counts || []).reduce((n, r) => n + (r.available || 0), 0)} live today`;
+  $('acNations').innerHTML = NATIONS.map(n => { const r = counts.get(n), k = r?.available ?? null, go = !!(k && bal);
+    return `<div class="ac-nation${k ? ' live' : ''}"><b>${n}</b><div class="ac-n">${spots.counts == null ? '–' : k || 0}<small>spot${k === 1 ? '' : 's'}</small></div><div class="small">${spots.counts == null ? 'Checking…' : k ? `Best today: ${r.best}` : 'None right now'}</div>
+      <button class="btn ${go ? 'lime' : 'secondary'}" type="button" data-nation="${n}" ${go ? '' : 'disabled'}>${!k ? 'None today' : bal ? 'Reveal · 1 credit' : 'Needs a credit'}</button></div>`; }).join('');
+  // Revealed spots
+  $('acSpots').hidden = !(signedIn && c.list?.length);
+  $('acSpotCount').textContent = c.list?.length || '';
+  $('acSpotList').innerHTML = (c.list || []).map((x, i) => `<div class="spot"><div class="spot-h"><b>★${i + 1} ${esc(x.name)}</b><span class="chip">${x.score}</span></div>
       <div class="small">${[x.region, x.nation].filter(Boolean).map(esc).join(', ')} · ${esc(x.habitat || '')}</div>
       <div class="small"><b>Access:</b> ${esc(x.access || '')}</div>
       <div class="small">Revealed ${fmtExpiry(x.revealed_at)}${x.rain14 != null ? ` · ${Math.round(x.rain14)} mm rain in the 14 days before` : ''}</div>
-      <div class="spot-a"><button class="btn secondary" type="button" data-spot="${i}">Show on map</button>${coordLink(x.lat, x.lon)}</div></div>`).join('')}</div>
-      <p class="small">Scores are from the day each spot was revealed. Tap a spot to see today’s conditions.</p>` : ''}
-    <p class="pw-fine">Spots are picked by MycoField’s experimental Conditions Index from weather, terrain and official habitat and access maps. A strong score is not a promise that anything is fruiting. Follow the Countryside Code (or the Scottish Outdoor Access Code), keep to access land, don’t pick on nature reserves or Sites of Special Scientific Interest, and never eat a wild mushroom because of an app.</p>`;
-  tickNumbers(body); fitCard(body.closest('.gate-card'));
-  body.querySelectorAll('[data-nation]').forEach(b => b.onclick = () => revealSpot(b.dataset.nation));
-  body.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => {
-    const x = c.list[+b.dataset.spot]; $('spotsSheet').hidden = true; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name});
-  });
+      <div class="spot-a"><button class="btn secondary" type="button" data-spot="${i}">Show on map</button>${coordLink(x.lat, x.lon)}</div></div>`).join('');
+  const v = $('view-account');
+  tickNumbers(v);
+  v.querySelectorAll('[data-nation]').forEach(b => b.onclick = () => revealSpot(b.dataset.nation));
+  v.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => { const x = c.list[+b.dataset.spot]; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name}); });
+  v.querySelectorAll('[data-go="signin"]').forEach(b => b.onclick = () => { $('syncCard').scrollIntoView({behavior: 'smooth', block: 'center'}); setTimeout(() => $('syncEmail')?.focus({preventScroll: true}), 400); });
+  v.querySelectorAll('[data-go="pay"]').forEach(b => b.onclick = () => showPaywall());
 }
 async function revealSpot(nation) {
   if (spots.busy) return;
@@ -2744,7 +2793,7 @@ async function revealSpot(nation) {
     const got = await sbFetch('/rest/v1/rpc/reveal_spot', {method: 'POST', body: {p_nation: nation}});
     const x = Array.isArray(got) ? got[0] : got;
     await Promise.all([refreshSpots(), checkSpotsReady()]);
-    if (x) { toast(`Revealed: ${x.name}`); $('spotsSheet').hidden = true; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 13.5, place: x.name}); }
+    if (x) { toast(`Revealed: ${x.name}`); switchView('map'); analysePoint(x.lat, x.lon, {zoom: 13.5, place: x.name}); }
   } catch (err) {
     const m = String(err.message || '');
     if (/none_available/.test(m)) { toast(`No ${nation} spots left right now. Your credit wasn’t used.`); checkSpotsReady(); }
@@ -2755,7 +2804,7 @@ async function revealSpot(nation) {
 // Back from Stripe (?spots=1): wait for the webhook to add the credits.
 async function confirmSpotsPayment() {
   const before = spotsCache()?.balance || 0;
-  spots.checking = true; $('spotsSheet').hidden = false; renderSpots();
+  spots.checking = true; switchView('account'); renderSpots();
   for (let i = 0; i < 60; i++) {
     try { if (((await refreshSpots())?.balance || 0) > before) { spots.checking = false; renderSpots(); toast('Credits added.'); return; } } catch {}
     await new Promise(r => setTimeout(r, 3000));
@@ -2785,7 +2834,6 @@ function initGate() {
   };
   $('soSkip').onclick = () => { stopClip('soVideo'); $('spotsOffer').hidden = true; };
   $('soBuy').onclick = () => { stopClip('soVideo'); $('spotsOffer').hidden = true; };
-  $('ssClose').onclick = () => { $('spotsSheet').hidden = true; };
   $('spotsOpen').onclick = () => { closeSaved(); openSpots(); };
   $('spotsFab').onclick = openSpots;
   renderSpotsEntry();
@@ -2804,6 +2852,7 @@ function initGate() {
 function switchView(name) {
   document.body.dataset.view = name;
   if (name === 'dashboard') ensureAreasLoaded();
+  if (name === 'account') { renderSpots(); checkSpotsReady(); refreshSpots().catch(() => {}); }
   document.querySelectorAll('nav button').forEach(x => { x.classList.toggle('active', x.dataset.view === name); x.toggleAttribute('aria-current', x.dataset.view === name); });
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
   if (name === 'map') setTimeout(() => map.resize(), 50);
