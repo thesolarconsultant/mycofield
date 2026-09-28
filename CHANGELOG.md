@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.32.1 — Account fixes
+- A sign-in link for someone else now switches the account on that device (it used to keep the
+  previous person's account id, so a payment could have gone to the wrong account).
+- Deleting your last saved area on one device now deletes it everywhere (sync used to bring it back).
+- Revealing a spot always shows and pins it, even if the balance refresh straight after fails (it used
+  to say "Couldn't reveal a spot" although the credit was spent).
+
 ## 2.32.0 — Log in from the paywall
 - The paywall has an "Already have an account? Log in" section. Log in opens its own screen
   (Welcome back): email → 6-digit code (or the one-tap link in the email) → in. Paid accounts go

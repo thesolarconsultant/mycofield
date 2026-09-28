@@ -2402,8 +2402,13 @@ async function sbFetch(path, {method = 'GET', body, headers = {}, auth = true} =
   if (!r.ok) throw Object.assign(new Error(data?.msg || data?.message || data?.error_description || data?.error || `HTTP ${r.status}`), {httpStatus: r.status});
   return data;
 }
+// Who a login token belongs to, read from the token itself (the sign-in link carries no user object).
+function tokenUser(t) {
+  try { const p = JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); return p?.sub ? {id: p.sub, email: p.email} : null; } catch { return null; }
+}
 function setSession(s) {
-  session = s ? {access_token: s.access_token, refresh_token: s.refresh_token, expires_at: s.expires_at || Math.floor(Date.now() / 1000) + (s.expires_in || 3600), user: s.user ? {id: s.user.id, email: s.user.email} : session?.user} : null;
+  // Never carry the previous person's account over: the user comes from the response or the new token.
+  session = s ? {access_token: s.access_token, refresh_token: s.refresh_token, expires_at: s.expires_at || Math.floor(Date.now() / 1000) + (s.expires_in || 3600), user: s.user ? {id: s.user.id, email: s.user.email} : tokenUser(s.access_token)} : null;
   if (session) writeJSON(AUTH_KEY, session); else { try { localStorage.removeItem(AUTH_KEY); } catch {} }
 }
 async function ensureFreshSession() {
@@ -2479,7 +2484,9 @@ async function syncOnce() {
     const key = `a:${row.id}`;
     if (changedHere(key, areas[row.id])) continue;
     if (row.deleted) {
-      if (areas[row.id] && Object.keys(areas).length > 1) { delete areas[row.id]; delete state.areaData?.[row.id]; areasChanged = true; }
+      // Deleted elsewhere → deleted here too, even the last one (the app works fine with no saved areas;
+      // keeping it but forgetting its sync state used to re-upload it and bring it back everywhere).
+      if (areas[row.id]) { delete areas[row.id]; delete state.areaData?.[row.id]; areasChanged = true; }
       delete hashes[key];
     } else { if (hashOf(areas[row.id]) !== hashOf(row.data)) { areas[row.id] = row.data; areasChanged = true; } hashes[key] = hashOf(row.data); }
   }
@@ -3073,8 +3080,14 @@ async function revealSpot(nation) {
   try {
     const got = await sbFetch('/rest/v1/rpc/reveal_spot', {method: 'POST', body: {p_nation: nation}});
     const x = Array.isArray(got) ? got[0] : got;
-    await Promise.all([refreshSpots(), checkSpotsReady()]);
-    if (x) { toast(`Revealed: ${x.name}`); switchView('map'); analysePoint(x.lat, x.lon, {zoom: 13.5, place: x.name}); }
+    if (x) {
+      // The spot is theirs now: show and pin it first, then refresh quietly — a slow or failed refresh
+      // must never read as a failed reveal.
+      const cur = spotsCache();
+      if (cur) { writeJSON(SPOTS_KEY, {...cur, balance: Math.max(0, (cur.balance || 0) - 1), list: [x, ...(cur.list || []).filter(y => y.spot_key !== x.spot_key)]}); renderSpotsEntry(); }
+      toast(`Revealed: ${x.name}`); switchView('map'); analysePoint(x.lat, x.lon, {zoom: 13.5, place: x.name});
+    }
+    Promise.all([refreshSpots(), checkSpotsReady()]).catch(() => {});
   } catch (err) {
     const m = String(err.message || '');
     if (/none_available/.test(m)) { toast(`No ${nation} spots left right now. Your credit wasn’t used.`); checkSpotsReady(); }
