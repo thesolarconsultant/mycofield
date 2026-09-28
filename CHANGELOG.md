@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.32.0 — Log in from the paywall
+- The paywall has an "Already have an account? Log in" section. Log in opens its own screen
+  (Welcome back): email → 6-digit code (or the one-tap link in the email) → in. Paid accounts go
+  straight into the app; others land on the pay step, logged in. Back returns to the pay screen.
+- Pop-ups focus the card itself on open, so no button is highlighted until Tab is used.
+
 ## 2.31.0 — Rain map
 - The live layer has two views: Ready ground and Rain. Rain colours the map by how much fell (light to
   deep blue), with a strip of the last 15 days (each chip's bar = average rain in view) and a 7-day

@@ -220,7 +220,11 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-trust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);margin:10px 0 0!important;text-align:center}
 .pw-trust svg{width:14px;height:14px;flex:none;stroke:var(--moss-ink)}
 .pw-note:empty{display:none}.pw-note{text-align:center;margin:4px 0 0!important;font-size:12px}
-.pw-have{display:block;margin:10px auto 0;font-weight:600}
+.pw-login{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 14px;border:1px solid var(--stone);border-radius:16px;background:var(--white)}
+.pw-login span{font-size:14px;font-weight:600;color:var(--forest)}
+.pw-login .pw-login-btn{width:auto!important;flex:none;min-height:42px;padding:9px 20px}
+.pw-login-h{font:700 16px var(--head);color:var(--forest);margin:0 0 8px!important}
+.pw-back{display:block;margin:10px auto 0;font-weight:600}
 .pw-signin{margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
 .pw-card .pw-fine{margin-top:14px!important;text-align:center}
 .pw-card .pw-fine a,.gate-card .pw-fine a{color:var(--moss-ink)}
@@ -527,15 +531,14 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 </nav>
 <div class="gate" id="walkthrough" hidden role="dialog" aria-modal="true" aria-labelledby="wtTitle"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><div class="wt-progress" id="wtProgress" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2 id="wtTitle"></h2><p id="wtText"></p><button class="btn lime" id="wtNext" type="button">Next</button></div></div>
 <div class="gate pw-gate" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle"><div class="gate-card pw-card">
-<div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><img class="pw-hero-logo" src="assets/logo-light.png" alt="MycoField" width="124" height="32"><div class="pw-hero-txt"><p class="pw-eyebrow">Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
+<div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><img class="pw-hero-logo" src="assets/logo-light.png" alt="MycoField" width="124" height="32"><div class="pw-hero-txt"><p class="pw-eyebrow" id="pwEyebrow">Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
 <div class="pw-body">
 <p class="pw-step" id="pwStep"></p>
 <div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>One payment · no subscription · nothing renews by itself</small></div></div>
 <ul class="pw-feats" id="pwList"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Any spot you tap</b> — rain, soil moisture, cold nights and frost over the last month</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Official habitat maps</b> across Great Britain, and grazing in Wales</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Unlimited saved areas</b>, finds and blanks, synced to your account</span></li></ul>
 <div id="pwPay"><a class="btn lime pw-cta" id="pwPayBtn" href="#" rel="noopener">Pay £8 · get in now</a><p class="pw-trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Secured by Stripe · Apple Pay · Google Pay · card</span></p><p class="small pw-note" id="pwPayNote"></p></div>
 <div id="pwChecking" hidden><div class="pw-spin" aria-hidden="true"></div><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
-<button class="pw-link pw-have" id="pwHave" type="button" hidden>Already paid? Sign in with your email</button>
-<div id="pwSignIn" class="pw-signin"><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button></div>
+<div id="pwSignIn" class="pw-signin"><p class="pw-login-h" id="pwLoginH" hidden>Log in with your email</p><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button><button class="pw-link pw-back" id="pwBackToPay" type="button" hidden>← Back</button></div><div class="pw-login" id="pwLoginRow" hidden><span>Already have an account?</span><button class="btn secondary pw-login-btn" id="pwHave" type="button">Log in</button></div>
 <p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div></div>
 <div class="gate pay-gate" id="payBox" hidden role="dialog" aria-modal="true" aria-labelledby="payTitle"><div class="gate-card pay-card">
 <div class="pay-head"><button class="pay-back" id="payBack" type="button" aria-label="Back"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div><p class="pw-eyebrow" id="payEyebrow">MycoField · Full access</p><h2 id="payTitle">£8 for a year</h2></div><img src="assets/logo-mark.png" alt="" width="40" height="30" class="pay-logo"></div>
@@ -2582,7 +2585,7 @@ async function refreshAccess() {
   renderSync();
   return hasAccess();
 }
-const gate = {timer: null, trialTimer: null, slide: 0, checking: false, showSignIn: false};
+const gate = {timer: null, trialTimer: null, slide: 0, checking: false, login: false};
 const SLIDES = [
   ['Read the pattern, not one day.', 'Grassland fungi respond to weeks of weather, not today’s forecast. MycoField reads the last month for any spot you choose.'],
   ['Tap any hillside.', 'Rain, modelled soil moisture, cold nights and frost for that exact point, rolled into one Conditions Index.'],
@@ -2633,24 +2636,33 @@ function showPaywall() {
 function renderPaywall() {
   if ($('paywall').hidden) return;
   const signedIn = !!session, a = cachedAccess(), expired = !!a?.paidUntil && Date.parse(a.paidUntil) <= Date.now();
+  if (signedIn) gate.login = false;
   // Pay first (the in-app checkout is live): the email given to Stripe becomes the account. Otherwise the
-  // older two steps: verify an email, then pay with the Stripe link.
+  // older two steps: verify an email, then pay with the Stripe link. Either way, anyone with an account
+  // can log in from here (email → 6-digit code or one-tap link).
   const direct = pay.ready === true, verifying = !signedIn && !!sync.pendingEmail;
-  const showSignIn = !signedIn && !gate.checking && (!direct || gate.showSignIn || verifying);
+  const login = !signedIn && !gate.checking && (gate.login || (direct && verifying));   // the "log in" screen
+  const showSignIn = !signedIn && !gate.checking && (login || !direct || verifying);
   if (MASCOT.welcome.poster && !$('pwHeroImg').src) { const im = $('pwHeroImg'); im.onload = () => { im.hidden = false; }; im.src = MASCOT.welcome.poster; }
-  $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : expired ? 'Your year is up.'
-    : signedIn ? '£8 to get in.' : verifying ? 'Check your email.' : 'That’s your free look.';
-  $('pwStep').textContent = gate.checking || expired || direct ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
-    : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · sign in with your email to keep going';
-  $('pwPrice').hidden = $('pwList').hidden = gate.checking;
+  $('pwEyebrow').textContent = login ? 'Log in' : 'Full access';
+  $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : verifying ? 'Check your email.' : login ? 'Welcome back.'
+    : expired ? 'Your year is up.' : signedIn ? '£8 to get in.' : 'That’s your free look.';
+  $('pwStep').textContent = gate.checking || expired || direct || login ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
+    : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · start with your email';
+  $('pwPrice').hidden = $('pwList').hidden = gate.checking || login;
   $('pwChecking').hidden = !gate.checking;
   $('pwSignIn').hidden = !showSignIn;
-  $('pwHave').hidden = !direct || signedIn || showSignIn || gate.checking;
+  $('pwLoginH').hidden = !login || verifying;
+  $('pwBackToPay').hidden = !login;
+  $('pwLoginRow').hidden = signedIn || login || verifying || gate.checking;
   $('pwEmailForm').hidden = !!sync.pendingEmail;
+  $('pwEmailBtn').textContent = login ? 'Send my code' : 'Continue';
+  $('pwCodeBtn').textContent = login ? 'Log in' : 'Sign in';
   $('pwCodeForm').hidden = $('pwChangeEmail').hidden = !sync.pendingEmail;
-  $('pwSignInNote').textContent = sync.pendingEmail ? `We’ve sent a verification email to ${sync.pendingEmail}. Tap “Confirm & sign in” in it, or type the code from it here. (Check junk if it’s not there.)`
-    : direct ? 'Paid already? Enter the email you paid with and we’ll send you a sign-in link.' : 'We’ll send you a verification email. Your account holds your access and your records.';
-  $('pwPay').hidden = gate.checking || !(signedIn || direct);
+  $('pwSignInNote').textContent = sync.pendingEmail ? `We’ve emailed a 6-digit code to ${sync.pendingEmail}. Type it here, or tap the button in the email. (Check junk if it’s not there.)`
+    : login ? 'Enter the email you use for MycoField. We’ll email you a 6-digit code and a one-tap link — no password.'
+    : 'We’ll send you a verification email. Your account holds your access and your records.';
+  $('pwPay').hidden = gate.checking || login || !(signedIn || direct);
   const btn = $('pwPayBtn');
   btn.textContent = expired ? 'Renew · £8 for another year' : direct ? 'Pay £8 · get in now' : 'Pay £8 securely with Stripe';
   if (direct) { btn.href = '#'; btn.onclick = e => { e.preventDefault(); openCheckout('access'); }; }
@@ -2741,8 +2753,8 @@ async function claimCheckout(cs) {
   } catch (err) {
     gate.checking = false;
     if (session) { confirmPayment(); return; }
-    gate.showSignIn = true; renderPaywall();
-    $('pwPayNote').textContent = 'We couldn’t finish setting up here. If you paid, sign in with the email you paid with — your access is waiting.';
+    gate.login = true; renderPaywall();
+    $('pwSignInNote').textContent = 'We couldn’t finish setting up here. If you paid, sign in with the email you paid with — your access is waiting.';
   }
 }
 // Back from Stripe (?paid=1): the webhook usually lands within seconds; poll for up to 3 minutes.
@@ -2824,7 +2836,7 @@ function tickNumbers(root) {
     const t = top(); behind.forEach(el => { if (t) el.setAttribute('aria-hidden', 'true'); else el.removeAttribute('aria-hidden'); });
     if (t) {
       if (!returnTo && !t.contains(document.activeElement)) returnTo = document.activeElement;
-      if (!t.contains(document.activeElement)) requestAnimationFrame(() => { if (!t.hidden && !t.contains(document.activeElement)) (focusables(t)[0] || t.querySelector('.gate-card'))?.focus({preventScroll: true}); });
+      if (!t.contains(document.activeElement)) requestAnimationFrame(() => { if (!t.hidden && !t.contains(document.activeElement)) t.querySelector('.gate-card')?.focus({preventScroll: true}); });
     } else if (returnTo) {
       // Only if the app hasn't already put focus somewhere on purpose (e.g. the postcode box after the walkthrough).
       const a = document.activeElement;
@@ -3101,12 +3113,20 @@ function initGate() {
   $('wtNext').onclick = nextSlide;
   $('pwCodeForm').onsubmit = async e => {
     e.preventDefault(); const btn = $('pwCodeBtn'); btn.disabled = true;
-    try { if (await signInWithCode($('pwCode'))) { toast('Signed in.'); startGate(); } } finally { btn.disabled = false; }
+    try {
+      if (await signInWithCode($('pwCode'))) {
+        // Logged in from the paywall: straight in if they've paid, otherwise the pay step (no intro again).
+        gate.login = false; toast('Logged in.');
+        let ok = false; try { ok = await refreshAccess(); } catch {}
+        if (ok) openApp(); else showPaywall();
+      }
+    } finally { btn.disabled = false; }
   };
   $('soSkip').onclick = () => { stopClip('soVideo'); $('spotsOffer').hidden = true; };
   $('soBuy').onclick = e => { stopClip('soVideo'); $('spotsOffer').hidden = true; if (pay.ready) { e.preventDefault(); openCheckout('spots'); } };
   $('payBack').onclick = closeCheckout;
-  $('pwHave').onclick = () => { gate.showSignIn = true; renderPaywall(); $('pwEmail').focus(); };
+  $('pwHave').onclick = () => { gate.login = true; renderPaywall(); $('pwEmail').focus(); };
+  $('pwBackToPay').onclick = () => { gate.login = false; sync.pendingEmail = null; renderSync(); renderPaywall(); };
   // Credit buttons anywhere (Account tab): the in-app checkout when it's live, else the Stripe link.
   document.addEventListener('click', e => { const a = e.target.closest?.('a[data-buy="spots"]'); if (a && pay.ready) { e.preventDefault(); openCheckout('spots'); } });
   $('spotsOpen').onclick = () => { closeSaved(); openSpots(); };
