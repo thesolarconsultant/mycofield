@@ -669,13 +669,20 @@ const cache = {
     catch { pruneCache(0); try { localStorage.setItem('mf:' + key, raw); } catch {} }
   }
 };
-function pruneCache(maxAgeMs = 2 * 864e5) {
+// The local cache holds weather (hours), terrain, habitat and land (weeks). Old entries go on start-up and,
+// if the browser's storage is ever full, the oldest half goes so records can always be saved.
+const CACHE_MAX_AGE = {weather3: 2 * 864e5, hist3: 30 * 864e5};
+function pruneCache(maxAgeMs = null) {
   try {
+    const rows = [];
     for (const k of Object.keys(localStorage)) {
-      if (!k.startsWith('mf:weather:')) continue;
-      const v = JSON.parse(localStorage.getItem(k));
-      if (!v || Date.now() - v.fetchedAt > maxAgeMs) localStorage.removeItem(k);
+      if (!k.startsWith('mf:')) continue;
+      let v; try { v = JSON.parse(localStorage.getItem(k)); } catch { v = null; }
+      const at = v?.fetchedAt || v?.t || 0, kind = k.slice(3).split(':')[0];
+      const limit = maxAgeMs ?? CACHE_MAX_AGE[kind] ?? 200 * 864e5;
+      if (!v || !at || Date.now() - at > limit) localStorage.removeItem(k); else rows.push([at, k]);
     }
+    if (maxAgeMs === 0) rows.sort((x, y) => x[0] - y[0]).slice(0, Math.ceil(rows.length / 2)).forEach(([, k]) => localStorage.removeItem(k));
   } catch {}
 }
 const cacheStats = {hit: 0, miss: 0};
@@ -906,7 +913,10 @@ const LAYERS = {
 };
 const inWales = (lat, lon) => lat > 51.3 && lat < 53.5 && lon > -5.4 && lon < -2.6;
 const inEngland = (lat, lon) => lat > 49.8 && lat < 55.85 && lon > -6.5 && lon < 1.9;
-const inScotland = (lat, lon) => lat > 54.6 && lat < 61 && lon > -8.8 && lon < -0.6;
+// Ireland (Northern Ireland and the Republic) sits inside Scotland's latitude band: carve it out, keeping
+// Kintyre, Sanda and the Rhins of Galloway on the Scottish side.
+const inIreland = (lat, lon) => lat < 55.45 && lon < -5.35 && !(lat > 55.25 && lon > -5.9);
+const inScotland = (lat, lon) => lat > 54.6 && lat < 61 && lon > -8.8 && lon < -0.6 && !inIreland(lat, lon);
 function dmwPointURL(layer, props, geom, lat, lon) {
   return `${DMW_WFS}&typeName=${layer}&propertyName=${props}&CQL_FILTER=${encodeURIComponent(`INTERSECTS(${geom},SRID=4326;POINT(${lon.toFixed(6)} ${lat.toFixed(6)}))`)}`;
 }
@@ -1027,6 +1037,9 @@ async function fetchLand(lat, lon, opts) {
   if (!tries.length) return {covered: false, status: 'outside'};
   const res = await Promise.all(tries.map(([, fn]) => fn(lat, lon, k, opts).catch(err => ({hit: false, failed: true, reason: err}))));
   const hit = res.find(r => r.hit);
+  // NatureScot answers "nothing mapped here" as a hit; near the border that's no proof of Scotland when
+  // England's layers couldn't be read.
+  if (hit?.land?.nation === 'Scotland' && !hit.land.survey && res.some(r => r.failed)) throw res.find(r => r.failed).reason || new Error('Land lookup failed');
   if (hit) return hit.land;
   if (res.every(r => r.failed)) throw res[0].reason || new Error('Land lookup failed');
   return {covered: false, status: 'outside'};
