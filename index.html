@@ -2426,7 +2426,25 @@ function consumeAuthRedirect() {
   toast('Signed in — syncing your data.');
   return true;
 }
+// Common slips in email addresses ("outlook.con", "gmial.com"): offer the fix before a code goes nowhere.
+const EMAIL_DOMAINS = {gmail: 'gmail.com', googlemail: 'googlemail.com', hotmail: 'hotmail.com', outlook: 'outlook.com', live: 'live.com', yahoo: 'yahoo.com', icloud: 'icloud.com', aol: 'aol.com', btinternet: 'btinternet.com', sky: 'sky.com'};
+const DOMAIN_SLIPS = {gmial: 'gmail', gmai: 'gmail', gmal: 'gmail', gamil: 'gmail', gnail: 'gmail', gmaill: 'gmail', hotmial: 'hotmail', hotmal: 'hotmail', hotmai: 'hotmail', hotmil: 'hotmail', homail: 'hotmail',
+  outlok: 'outlook', outloo: 'outlook', otlook: 'outlook', outlool: 'outlook', yaho: 'yahoo', yahooo: 'yahoo', iclod: 'icloud', icoud: 'icloud', icluod: 'icloud', btinternt: 'btinternet'};
+function emailSuggestion(email) {
+  const m = /^([^@\s]+)@([^@\s]+)$/.exec(email.trim().toLowerCase()); if (!m) return null;
+  const [, user, domain] = m, parts = domain.split('.'), name = DOMAIN_SLIPS[parts[0]] || parts[0], tld = parts.slice(1).join('.');
+  let fixed = domain;
+  if (EMAIL_DOMAINS[name] && !['co.uk', 'com', 'fr', 'de', 'es', 'it', 'ie'].includes(tld)) fixed = EMAIL_DOMAINS[name];       // outlook.con → outlook.com
+  else if (EMAIL_DOMAINS[name] && name !== parts[0]) fixed = `${name}.${tld}`;                                            // gmial.com → gmail.com
+  else if (/^(con|cmo|comm|om|vom|xom|co,|c0m)$/.test(tld)) fixed = `${parts[0]}.com`;                                   // anything.con → .com
+  else if (/^co\.(uk|u|k)$/.test(tld) && tld !== 'co.uk') fixed = `${parts[0]}.co.uk`;
+  return fixed !== domain ? `${user}@${fixed}` : null;
+}
 async function sendSignInEmail(email, btn) {
+  const better = emailSuggestion(email);
+  if (better && await askConfirm(`Did you mean ${better}?`, `You typed ${email}. The code would go to that address exactly, so a slip means it never arrives.`, {ok: `Use ${better.split('@')[1]}`, cancel: 'No, keep it'})) {
+    email = better; for (const id of ['pwEmail', 'syncEmail']) if ($(id)?.value.trim()) $(id).value = better;
+  }
   const label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
   try {
     await sbFetch(`/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin + location.pathname)}`, {method: 'POST', body: {email, create_user: true}, auth: false});

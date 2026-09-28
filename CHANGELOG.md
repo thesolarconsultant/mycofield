@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.32.2 — Email typo check
+- Before a sign-in code is sent, common slips in the address ("outlook.con", "gmial.com",
+  "hotmial.co.uk") get a "Did you mean …?" with one tap to fix, so codes don't go nowhere.
+
 ## 2.32.1 — Account fixes
 - A sign-in link for someone else now switches the account on that device (it used to keep the
   previous person's account id, so a payment could have gone to the wrong account).
