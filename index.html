@@ -219,6 +219,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-cta{width:100%;min-height:54px!important;font-size:16.5px!important;font-weight:700!important;box-shadow:0 8px 22px rgba(120,170,20,.35)}
 .pw-trust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);margin:10px 0 0!important;text-align:center}
 .pw-trust svg{width:14px;height:14px;flex:none;stroke:var(--moss-ink)}
+.pw-week{display:block;text-align:center;margin:10px auto 0;padding:8px 12px;font-size:14px;color:var(--forest);text-decoration:none;border-radius:999px}.pw-week b{text-decoration:underline;text-underline-offset:3px}.pw-week:hover b{color:var(--moss-ink)}
 .pw-note:empty{display:none}.pw-note{text-align:center;margin:4px 0 0!important;font-size:12px}
 .pw-login{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 14px;border:1px solid var(--stone);border-radius:16px;background:var(--white)}
 .pw-login span{font-size:14px;font-weight:600;color:var(--forest)}
@@ -285,7 +286,7 @@ nav button{position:relative}.nav-dot{position:absolute;top:8px;left:calc(50% + 
 .ac-wallet::before{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(167,216,46,.35),transparent 70%);pointer-events:none}
 .ac-meter{height:6px;border-radius:3px;background:var(--stone);overflow:hidden;margin:10px 0 4px}.ac-meter i{display:block;height:100%;background:var(--moss);border-radius:3px;transform-origin:left;animation:meter .9s cubic-bezier(.2,.8,.2,1) both}
 @keyframes meter{from{transform:scaleX(0)}}
-.ac-access .btn{margin-top:12px;width:100%}.ac-big{font-family:var(--head);font-size:22px;color:var(--forest);margin:0 0 2px}
+.ac-access .btn{margin-top:12px;width:100%}.ac-week{display:block;margin:10px auto 0;font-weight:600}.ac-big{font-family:var(--head);font-size:22px;color:var(--forest);margin:0 0 2px}
 .ac-nations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}@media(min-width:700px){.ac-nations{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .ac-nation{display:flex;flex-direction:column;gap:4px;border:1px solid var(--stone);border-radius:16px;padding:12px;background:var(--white);min-width:0;transition:transform .2s,box-shadow .2s,border-color .2s}
 .ac-nation.live{border-color:rgba(167,216,46,.8);box-shadow:0 0 0 3px rgba(167,216,46,.18)}
@@ -534,9 +535,9 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><img class="pw-hero-logo" src="assets/logo-light.png" alt="MycoField" width="124" height="32"><div class="pw-hero-txt"><p class="pw-eyebrow" id="pwEyebrow">Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
 <div class="pw-body">
 <p class="pw-step" id="pwStep"></p>
-<div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>One payment · no subscription · nothing renews by itself</small></div></div>
+<div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>Less than 16p a week · one payment · nothing renews by itself</small></div></div>
 <ul class="pw-feats" id="pwList"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Any spot you tap</b> — rain, soil moisture, cold nights and frost over the last month</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Official habitat maps</b> across Great Britain, and grazing in Wales</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Unlimited saved areas</b>, finds and blanks, synced to your account</span></li></ul>
-<div id="pwPay"><a class="btn lime pw-cta" id="pwPayBtn" href="#" rel="noopener">Pay £8 · get in now</a><p class="pw-trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Secured by Stripe · Apple Pay · Google Pay · card</span></p><p class="small pw-note" id="pwPayNote"></p></div>
+<div id="pwPay"><a class="btn lime pw-cta" id="pwPayBtn" href="#" rel="noopener">Pay £8 · get in now</a><a class="pw-week" id="pwWeekBtn" href="#" rel="noopener" hidden>Just this week? <b>£2 for 7 days</b></a><p class="pw-trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Secured by Stripe · Apple Pay · Google Pay · card</span></p><p class="small pw-note" id="pwPayNote"></p></div>
 <div id="pwChecking" hidden><div class="pw-spin" aria-hidden="true"></div><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
 <div id="pwSignIn" class="pw-signin"><p class="pw-login-h" id="pwLoginH" hidden>Log in with your email</p><form id="pwEmailForm" class="sync-form"><input class="field" id="pwEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><button class="btn" id="pwEmailBtn" type="submit">Continue</button></form><p class="small" id="pwSignInNote" style="margin-top:8px">We’ll email you a sign-in link. Your account holds your access and your records.</p><form id="pwCodeForm" class="sync-form" hidden><input class="field" id="pwCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" id="pwCodeBtn" type="submit">Sign in</button></form><button class="pw-link" id="pwChangeEmail" type="button" hidden>Use a different email</button><button class="pw-link pw-back" id="pwBackToPay" type="button" hidden>← Back</button></div><div class="pw-login" id="pwLoginRow" hidden><span>Already have an account?</span><button class="btn secondary pw-login-btn" id="pwHave" type="button">Log in</button></div>
 <p class="pw-fine">MycoField is an experimental conditions guide. It helps you choose when and where to look; it can’t guarantee finds. By paying you agree to the <a href="/terms" target="_blank" rel="noopener">terms &amp; refunds</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p></div></div></div>
@@ -584,6 +585,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
 const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
 // Paid access: a Stripe Payment Link (one-off £8 → a year). Empty = paywall off, app fully open.
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
+// £2 for 7 days: a second Stripe Payment Link (after payment → https://www.mycofield.com/?paid=1). Empty = option hidden.
+const WEEK_PAYMENT_LINK = '';
 const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 180;  // 3-minute free look
 // Spot credits: a second Stripe Payment Link (one-off £20 → SPOT_COUNT credits for 12 months).
 // Empty link, or SPOTS_ENABLED false, hides the offer, the ★ button, the pins and the sheet.
@@ -2658,6 +2661,10 @@ function showPaywall() {
   closeSearch?.();
   document.body.classList.add('gated'); $('paywall').hidden = false; $('walkthrough').hidden = true; renderPaywall();
 }
+function weekBuyHref() {
+  const q = new URLSearchParams({client_reference_id: session?.user?.id || '', ...(session?.user?.email ? {prefilled_email: session.user.email} : {})});
+  return `${WEEK_PAYMENT_LINK}${WEEK_PAYMENT_LINK.includes('?') ? '&' : '?'}${q}`;
+}
 function renderPaywall() {
   if ($('paywall').hidden) return;
   const signedIn = !!session, a = cachedAccess(), expired = !!a?.paidUntil && Date.parse(a.paidUntil) <= Date.now();
@@ -2671,7 +2678,7 @@ function renderPaywall() {
   if (MASCOT.welcome.poster && !$('pwHeroImg').src) { const im = $('pwHeroImg'); im.onload = () => { im.hidden = false; }; im.src = MASCOT.welcome.poster; }
   $('pwEyebrow').textContent = login ? 'Log in' : 'Full access';
   $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : verifying ? 'Check your email.' : login ? 'Welcome back.'
-    : expired ? 'Your year is up.' : signedIn ? '£8 to get in.' : 'That’s your free look.';
+    : expired ? 'Your access has ended.' : signedIn ? '£8 to get in.' : 'That’s your free look.';
   $('pwStep').textContent = gate.checking || expired || direct || login ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
     : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · start with your email';
   $('pwPrice').hidden = $('pwList').hidden = gate.checking || login;
@@ -2690,6 +2697,11 @@ function renderPaywall() {
   $('pwPay').hidden = gate.checking || login || !(signedIn || direct);
   const btn = $('pwPayBtn');
   btn.textContent = expired ? 'Renew · £8 for another year' : direct ? 'Pay £8 · get in now' : 'Pay £8 securely with Stripe';
+  // The week pass sits under the year as the smaller choice.
+  const wk = $('pwWeekBtn');
+  wk.hidden = !(direct || (signedIn && WEEK_PAYMENT_LINK));
+  if (direct) { wk.href = '#'; wk.onclick = e => { e.preventDefault(); openCheckout('week'); }; }
+  else if (signedIn && WEEK_PAYMENT_LINK) { wk.onclick = null; wk.href = weekBuyHref(); }
   if (direct) { btn.href = '#'; btn.onclick = e => { e.preventDefault(); openCheckout('access'); }; }
   else if (signedIn) {
     btn.onclick = null;
@@ -2736,7 +2748,7 @@ async function openCheckout(product) {
   if (pay.busy) return; pay.busy = true;
   const spots = product === 'spots';
   $('payEyebrow').textContent = spots ? 'MycoField · Spot credits' : 'MycoField · Full access';
-  $('payTitle').textContent = spots ? `${SPOT_COUNT} spot credits · £20` : '£8 for a whole year';
+  $('payTitle').textContent = spots ? `${SPOT_COUNT} spot credits · £20` : product === 'week' ? '£2 for 7 days' : '£8 for a whole year';
   $('payMount').innerHTML = '<div class="pay-loading"><div><div class="pw-spin"></div>Opening secure checkout…</div></div>';
   $('payBox').hidden = false;
   try {
@@ -3062,9 +3074,9 @@ function renderSpots() {
   if (paywallOn()) {
     if (signedIn && hasAccess()) {
       const left = Math.max(0, Math.ceil((Date.parse(a.paidUntil) - Date.now()) / 864e5));
-      x.innerHTML = `<h3>Full access <span class="chip">Active</span></h3><p class="ac-big">${left} day${left === 1 ? '' : 's'} left</p><div class="ac-meter"><i style="width:${Math.min(100, left / 365 * 100)}%"></i></div><p class="small">Until ${fmtLongDate(a.paidUntil)}. One payment, no subscription: nothing renews by itself.</p>`;
+      x.innerHTML = `<h3>Full access <span class="chip">Active</span></h3><p class="ac-big">${left} day${left === 1 ? '' : 's'} left</p><div class="ac-meter"><i style="width:${Math.min(100, left / (left <= 7 ? 7 : 365) * 100)}%"></i></div><p class="small">Until ${fmtLongDate(a.paidUntil)}. One payment, no subscription: nothing renews by itself.</p>`;
     } else {
-      x.innerHTML = `<h3>Full access</h3><p class="ac-big">£8 for a year</p><p class="small">Conditions for any spot you tap, official habitat maps, and your areas and records synced to your account.</p><button class="btn lime" type="button" data-go="pay">${signedIn ? 'Get a year · £8' : 'Sign in & get access'}</button>`;
+      x.innerHTML = `<h3>Full access</h3><p class="ac-big">£8 for a year</p><p class="small">Conditions for any spot you tap, official habitat maps, and your areas and records synced to your account.</p><button class="btn lime" type="button" data-go="pay">${signedIn ? 'Get a year · £8' : 'Sign in & get access'}</button>${signedIn && (pay.ready || WEEK_PAYMENT_LINK) ? '<button class="pw-link ac-week" type="button" data-go="week">Just this week? £2 for 7 days</button>' : ''}`;
     }
   }
   $('view-account').querySelector('.ac-top').hidden = w.hidden && x.hidden;
@@ -3089,6 +3101,7 @@ function renderSpots() {
   v.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => { const x = c.list[+b.dataset.spot]; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name}); });
   v.querySelectorAll('[data-go="signin"]').forEach(b => b.onclick = () => { $('syncCard').scrollIntoView({behavior: 'smooth', block: 'center'}); setTimeout(() => $('syncEmail')?.focus({preventScroll: true}), 400); });
   v.querySelectorAll('[data-go="pay"]').forEach(b => b.onclick = () => showPaywall());
+  v.querySelectorAll('[data-go="week"]').forEach(b => b.onclick = () => { if (pay.ready) openCheckout('week'); else location.href = weekBuyHref(); });
 }
 async function revealSpot(nation) {
   if (spots.busy) return;

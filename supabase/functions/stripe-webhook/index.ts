@@ -1,6 +1,6 @@
 // MycoField — Stripe webhook → paid access.
 // Stripe calls this after a Payment Link checkout. It verifies the Stripe signature, then extends the
-// buyer's access by ACCESS_DAYS from today (or from their current expiry, if later). A £20 spots purchase
+// buyer's access by ACCESS_DAYS (£8) or WEEK_DAYS (£2) from today (or from their current expiry, if later). A £20 spots purchase
 // instead adds a lot of SPOT_CREDITS credits valid for CREDIT_MONTHS. The in-app checkout (functions/checkout)
 // grants the same thing when the buyer returns; whichever runs first does it, the payments row stops the other.
 // Secrets (Supabase → Edge Functions → Secrets): STRIPE_WEBHOOK_SECRET (whsec_…).
@@ -9,6 +9,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const ACCESS_DAYS = 365;        // £8 = a year
+const WEEK_DAYS = 7;            // £2 = a week
 const SPOT_CREDITS = 10, CREDIT_MONTHS = 12;  // £20 = 10 spot credits for 12 months
 const TOLERANCE_S = 300;
 const enc = new TextEncoder();
@@ -47,8 +48,9 @@ Deno.serve(async req => {
     return new Response('not paid yet', {status: 200});
   // What was bought comes from the session our checkout made (metadata) or, for the old Payment Links, the
   // price before discounts (£8 vs £20) — never from client_reference_id, which a buyer can edit in the URL.
-  const product = s.metadata?.product === 'spots' || s.metadata?.product === 'access' ? s.metadata.product
-    : (s.amount_subtotal ?? 0) >= 2000 ? 'spots' : 'access';
+  const sub = s.amount_subtotal ?? 0;
+  const product = ['spots', 'access', 'week'].includes(s.metadata?.product) ? s.metadata.product
+    : sub >= 2000 ? 'spots' : sub > 0 && sub <= 200 ? 'week' : 'access';
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {auth: {persistSession: false}});
   // Who: the signed-in buyer's account id if the checkout carried one, else the account for the email they
   // paid with (made now if new — paying confirms the email; they sign in with it and everything's there).
@@ -79,7 +81,7 @@ Deno.serve(async req => {
   }
   const {data: cur} = await db.from('entitlements').select('paid_until').eq('user_id', userId).maybeSingle();
   const from = Math.max(Date.now(), cur?.paid_until ? Date.parse(cur.paid_until) : 0);
-  const paidUntil = new Date(from + ACCESS_DAYS * 864e5).toISOString();
+  const paidUntil = new Date(from + (product === 'week' ? WEEK_DAYS : ACCESS_DAYS) * 864e5).toISOString();
   const {error} = await db.from('entitlements').upsert({user_id: userId, paid_until: paidUntil, updated_at: new Date().toISOString()});
   if (error) { console.error('entitlement upsert failed', error); await db.from('payments').delete().eq('id', s.id); return new Response('db error', {status: 500}); }
   return new Response(JSON.stringify({ok: true, paid_until: paidUntil}), {status: 200, headers: {'Content-Type': 'application/json'}});

@@ -14,10 +14,11 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const PRODUCTS = {
   access: {amount: 800, name: 'MycoField — a year of full access', description: 'Conditions for any spot, official habitat maps, synced areas and records. One payment, no subscription.'},
+  week: {amount: 200, name: 'MycoField — 7 days of full access', description: 'A week of conditions, habitat maps and synced records. One payment, no subscription.'},
   spots: {amount: 2000, name: 'MycoField — 10 spot credits', description: 'Each credit reveals the day’s best spot in the nation you pick. Valid 12 months.'},
 } as const;
 type Product = keyof typeof PRODUCTS;
-const ACCESS_DAYS = 365, SPOT_CREDITS = 10, CREDIT_MONTHS = 12;
+const ACCESS_DAYS = 365, WEEK_DAYS = 7, SPOT_CREDITS = 10, CREDIT_MONTHS = 12;
 const CLAIM_WINDOW_S = 48 * 3600;   // a return link signs in only within 2 days of paying
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const SITE = (Deno.env.get('SITE_URL') || 'https://www.mycofield.com').replace(/\/$/, '');
@@ -55,8 +56,9 @@ async function stripe(path: string, init: {method?: string, body?: Record<string
 // price before discounts (£8 vs £20), never by anything the buyer can edit.
 export function productOf(s: {metadata?: Record<string, string>, amount_subtotal?: number}): Product {
   const m = s.metadata?.product;
-  if (m === 'access' || m === 'spots') return m;
-  return (s.amount_subtotal ?? 0) >= PRODUCTS.spots.amount ? 'spots' : 'access';
+  if (m === 'access' || m === 'spots' || m === 'week') return m;
+  const sub = s.amount_subtotal ?? 0;
+  return sub >= PRODUCTS.spots.amount ? 'spots' : sub > 0 && sub <= PRODUCTS.week.amount ? 'week' : 'access';
 }
 
 // The account for an email: made if new (already confirmed — they just paid with it), and a one-time
@@ -84,7 +86,7 @@ async function fulfil(s: any, userId: string, product: Product) {
     } else {
       const {data: cur} = await db.from('entitlements').select('paid_until').eq('user_id', userId).maybeSingle();
       const from = Math.max(Date.now(), cur?.paid_until ? Date.parse(cur.paid_until) : 0);
-      const {error} = await db.from('entitlements').upsert({user_id: userId, paid_until: new Date(from + ACCESS_DAYS * 864e5).toISOString(), updated_at: new Date().toISOString()});
+      const {error} = await db.from('entitlements').upsert({user_id: userId, paid_until: new Date(from + (product === 'week' ? WEEK_DAYS : ACCESS_DAYS) * 864e5).toISOString(), updated_at: new Date().toISOString()});
       if (error) { await db.from('payments').delete().eq('id', s.id); throw error; }
     }
   }
@@ -105,7 +107,7 @@ Deno.serve(async req => {
   try {
     if (body.action === 'ping') return json(req, {ok: true});   // the app uses this to know the checkout is live
     if (body.action === 'start') {
-      const product = body.product === 'spots' ? 'spots' : 'access', p = PRODUCTS[product as Product];
+      const product = (['spots', 'week'].includes(body.product) ? body.product : 'access') as Product, p = PRODUCTS[product];
       const user = await caller(req);
       const s = await stripe('checkout/sessions', {method: 'POST', body: {
         ui_mode: 'embedded', mode: 'payment', return_url: `${SITE}/?cs={CHECKOUT_SESSION_ID}`,

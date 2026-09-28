@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.33.0 — £2 week pass
+- "Just this week? £2 for 7 days" under the £8 year on the paywall and the Account tab (hidden until
+  WEEK_PAYMENT_LINK is set). The year's price box adds "Less than 16p a week".
+- Webhook and checkout: a £2 payment grants 7 days (added on top of any access you already have).
+- Terms list the week pass.
+
 ## 2.32.2 — Email typo check
 - Before a sign-in code is sent, common slips in the address ("outlook.con", "gmial.com",
   "hotmial.co.uk") get a "Did you mean …?" with one tap to fix, so codes don't go nowhere.
