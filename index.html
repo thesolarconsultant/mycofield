@@ -701,7 +701,7 @@ async function shareSpot() {
   try { code = await sbFetch('/rest/v1/rpc/share_spot', {method: 'POST', body: {p_lat: r.coordinates.lat, p_lon: r.coordinates.lon, p_name: r.place && r.place !== 'My location' ? r.place : null}}); }
   catch (err) { btn.disabled = false; toast(err.httpStatus === 404 ? 'Sharing isn’t switched on yet.' : /too_many/.test(err.message) ? 'That’s a lot of shares today — try again tomorrow.' : `Couldn’t share: ${err.message}`); return; }
   btn.disabled = false;
-  const url = `https://www.mycofield.com/?s=${encodeURIComponent(String(code).replace(/"/g, ''))}`;
+  const url = `https://www.mycofield.com/s/${encodeURIComponent(String(code).replace(/"/g, ''))}`;   // its own page, so previews show the shared-spot card
   const score = $('pcScore').textContent.trim();
   const text = `I’ve shared a spot with you on MycoField${/^\d+$/.test(score) ? ` (${score}/100 today)` : ''}. Open it in the app to see where:`;
   if (navigator.share) { try { await navigator.share({title: 'A MycoField spot for you', text, url}); return; } catch (err) { if (err?.name === 'AbortError') return; } }

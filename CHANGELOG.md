@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.35.1 — Shared links get their own preview card
+- Share links are now mycofield.com/s/<code>: a small page (share.html) with its own preview image
+  (assets/og-share.jpg, "A spot’s been shared with you") that sends people straight on to /?s=<code>.
+
 ## 2.35.0 — Share a spot with another user
 - Share button on the reading card. The link (mycofield.com/?s=<code>) carries a private code only — no
   coordinates, no place name. It opens the spot in the other person's app once they're signed in with
