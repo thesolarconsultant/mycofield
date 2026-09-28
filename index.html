@@ -489,7 +489,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div id="pcLoading" class="loadingbar"></div>
 <div class="strip" id="pcStrip"></div>
 <div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcLand"></p><p class="sh-note" id="pcGrid"></p></div>
-<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
+<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcShare" type="button" aria-label="Share this spot" title="Share this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
 </div>
 <div class="sheet tall" id="savedSheet" hidden role="dialog" aria-label="Saved areas">
@@ -601,6 +601,17 @@ const SPOTS_PAYMENT_LINK = 'https://buy.stripe.com/5kQ4gy1Wl9tTfGFa3HeAg03', SPO
 const SPOTS_ENABLED = true;
 const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v2';  // v2: everyone who had the old 15 s look gets the 3-minute one
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+// A spot shared by another user: ?s=<code>. The link holds no location; the server hands it out only
+// to a signed-in account with access. Kept for a day so it still opens after signing in or paying.
+const SHARE_KEY = 'mycofield-shared-spot';
+(() => {
+  try {
+    const q = new URLSearchParams(location.search), c = (q.get('s') || '').toLowerCase(); if (!c) return;
+    q.delete('s'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    if (/^[a-z0-9]{6,16}$/.test(c)) localStorage.setItem(SHARE_KEY, JSON.stringify({code: c, at: Date.now()}));
+  } catch {}
+})();
+const pendingShare = () => { const v = readJSON(SHARE_KEY, null); return v?.code && Date.now() - v.at < 864e5 ? v.code : null; };
 // A link straight to a spot: ?at=lat,lon&name=… (from the Top Ground page, or shared). Opens the map
 // there with the full reading once the app is ready; the address bar is tidied straight away.
 const deepLink = (() => {
@@ -679,6 +690,41 @@ function distanceKm([lon1, lat1], [lon2, lat2]) {
 function coordLink(lat, lon, elevation, dp = 5) {
   const shown = fmtCoord(lat, lon, dp), full = fmtCoord(lat, lon, 5);
   return `<button type="button" class="earth" data-copy="${full}" title="Copy coordinates" aria-label="Copy coordinates ${full}">${shown}<svg class="i cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></button>`;
+}
+// Share the spot on the reading card with another MycoField user: the link carries only a private code
+// (no coordinates, no place name); it opens in their app once they're signed in with access.
+async function shareSpot() {
+  const r = state.pointAnalysis; if (!r?.coordinates) return;
+  if (!session) { toast('Sign in to share spots with other MycoField users.'); switchView('account'); return; }
+  const btn = $('pcShare'); btn.disabled = true;
+  let code;
+  try { code = await sbFetch('/rest/v1/rpc/share_spot', {method: 'POST', body: {p_lat: r.coordinates.lat, p_lon: r.coordinates.lon, p_name: r.place && r.place !== 'My location' ? r.place : null}}); }
+  catch (err) { btn.disabled = false; toast(err.httpStatus === 404 ? 'Sharing isn’t switched on yet.' : /too_many/.test(err.message) ? 'That’s a lot of shares today — try again tomorrow.' : `Couldn’t share: ${err.message}`); return; }
+  btn.disabled = false;
+  const url = `https://www.mycofield.com/?s=${encodeURIComponent(String(code).replace(/"/g, ''))}`;
+  const score = $('pcScore').textContent.trim();
+  const text = `I’ve shared a spot with you on MycoField${/^\d+$/.test(score) ? ` (${score}/100 today)` : ''}. Open it in the app to see where:`;
+  if (navigator.share) { try { await navigator.share({title: 'A MycoField spot for you', text, url}); return; } catch (err) { if (err?.name === 'AbortError') return; } }
+  toast(await copyText(`${text} ${url}`) ? 'Link copied — paste it to them.' : url);
+}
+// Open a spot someone shared (?s=code): needs this person signed in with access; otherwise it waits.
+let shareOpening = false;
+const shareNoted = new Set();   // each notice once per visit, however often this is retried
+const shareNote = msg => { if (!shareNoted.has(msg)) { shareNoted.add(msg); toast(msg); } };
+async function openSharedSpot() {
+  const code = pendingShare(); if (!code || shareOpening) return;
+  if (!session) { shareNote('Sign in to see the spot shared with you.'); return; }
+  shareOpening = true;
+  try {
+    const got = await sbFetch('/rest/v1/rpc/open_shared_spot', {method: 'POST', body: {p_code: code}});
+    const x = Array.isArray(got) ? got[0] : got;
+    try { localStorage.removeItem(SHARE_KEY); } catch {}
+    if (x) whenMapReady(() => { switchView('map'); analysePoint(x.lat, x.lon, {zoom: 13.5, place: x.name || 'Shared spot'}); toast('Here’s the spot shared with you.'); });
+  } catch (err) {
+    const m = String(err.message || '');
+    if (/not_found/.test(m)) { try { localStorage.removeItem(SHARE_KEY); } catch {} toast('That shared spot link has expired.'); }
+    else if (/access_required/.test(m)) shareNote('Get MycoField access to open the spot shared with you.');
+  } finally { shareOpening = false; }
 }
 async function copyText(text) {
   try { await navigator.clipboard.writeText(text); return true; } catch {}
@@ -1227,7 +1273,7 @@ const CAMERA_KEY = 'mycofield-camera', DEFAULT_CAMERA = {center: [-2.2, 52.9], z
 const hadCamera = (() => { try { return !!localStorage.getItem(CAMERA_KEY); } catch { return false; } })();
 let askingLocation = false;
 async function firstRunLocate() {
-  if (!navigator.geolocation || hadCamera || deepLink || askingLocation || pref('mycofield-asked-location', false)) return;
+  if (!navigator.geolocation || hadCamera || deepLink || pendingShare() || askingLocation || pref('mycofield-asked-location', false)) return;
   askingLocation = true;
   // Our own card first, so the browser's permission box never appears out of nowhere.
   const go = await askConfirm('Start from where you are?', 'MycoField can centre the map on your location. It stays on your phone and is never saved or shared.', {ok: 'Use my location', cancel: 'Not now'});
@@ -2580,7 +2626,7 @@ async function runSync() {
   return sync.running;
 }
 function renderSync() {
-  queueMicrotask(() => { try { renderSpots(); } catch {} });
+  queueMicrotask(() => { try { renderSpots(); } catch {} if (session && pendingShare() && (hasAccess() || !paywallOn())) openSharedSpot(); });
   const card = $('syncCard'); if (!card) return;
   card.hidden = !syncEnabled();
   const signedIn = !!session, chip = $('syncChip');
@@ -2640,6 +2686,7 @@ const SLIDES = [
   ['Log finds and blanks.', 'Your own records test the index against what you actually find, so it keeps getting sharper.']
 ];
 function openApp(offer = true) {
+  openSharedSpot();
   const located = maybeWelcome().then(firstRunLocate);  // one card at a time: welcome, then location, then the offer
   if (session && SPOTS_ENABLED) checkSpotsReady().then(() => spotsOn() && refreshSpots())
     .catch(() => {}).finally(() => { if (offer) located.then(maybeOfferSpots); });
@@ -3157,7 +3204,7 @@ async function confirmSpotsPayment() {
   toast('Payment not confirmed yet. If you paid, reopen the app in a minute or email help@mycofield.com.');
 }
 async function startGate() {
-  if (!paywallOn()) { firstRunLocate(); return; }
+  if (!paywallOn()) { firstRunLocate(); openSharedSpot(); return; }
   const params = new URLSearchParams(location.search), paidReturn = params.get('paid') === '1', spotsReturn = params.get('spots') === '1', cs = params.get('cs');
   if (paidReturn || spotsReturn || cs) history.replaceState(null, '', location.pathname + location.hash);
   checkCheckout();
@@ -3247,6 +3294,7 @@ function init() {
   $('exportJson').onclick = () => exportData('json');
   $('exportGeo').onclick = () => exportData('geojson');
   $('pcMoreBtn').onclick = () => setPointExpanded(!$('pointCard').classList.contains('expanded'));
+  $('pcShare').onclick = shareSpot;
   sheetGestures($('pointCard'), {tap: () => setPointExpanded(!$('pointCard').classList.contains('expanded')), up: () => setPointExpanded(true), down: () => $('pointCard').classList.contains('expanded') ? setPointExpanded(false) : clearPointAnalysis()});
   sheetGestures($('areaCard'), {down: closeAreaCard});
   sheetGestures($('savedSheet'), {down: closeSaved});

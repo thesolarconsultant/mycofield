@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.0 — Share a spot with another user
+- Share button on the reading card. The link (mycofield.com/?s=<code>) carries a private code only — no
+  coordinates, no place name. It opens the spot in the other person's app once they're signed in with
+  access; otherwise it waits (a day) and opens after they sign in or pay. Needs supabase/shared-spots.sql.
+- Links straight to a spot for the owner's own pages: ?at=lat,lon&name=… (used by Top Ground).
+
 ## 2.33.0 — £2 week pass
 - "Just this week? £2 for 7 days" under the £8 year on the paywall and the Account tab (hidden until
   WEEK_PAYMENT_LINK is set). The year's price box adds "Less than 16p a week".

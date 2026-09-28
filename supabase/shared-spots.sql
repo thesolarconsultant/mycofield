@@ -1,0 +1,13 @@
+-- MycoField: share a spot with another user. Paste all of it into Supabase → SQL Editor → Run. Safe to run again.
+-- The link carries only a random code; the location is handed out only to a signed-in account with access.
+create table if not exists public.shared_spots (code text primary key, lat double precision not null check (lat between 49 and 61.5), lon double precision not null check (lon between -11 and 2.5), name text, created_by uuid references auth.users (id) on delete set null, created_at timestamptz not null default now());
+create index if not exists shared_spots_by on public.shared_spots (created_by, created_at);
+alter table public.shared_spots enable row level security;
+revoke all on public.shared_spots from anon, authenticated;
+create or replace function public.share_spot(p_lat double precision, p_lon double precision, p_name text default null) returns text language plpgsql security definer set search_path = public as $$ declare uid uuid := auth.uid(); c text; begin if uid is null then raise exception 'sign_in_required' using errcode = '42501'; end if; if (select count(*) from public.shared_spots where created_by = uid and created_at > now() - interval '1 day') >= 100 then raise exception 'too_many_shares'; end if; loop c := substr(md5(random()::text || clock_timestamp()::text || uid::text), 1, 10); exit when not exists (select 1 from public.shared_spots where code = c); end loop; insert into public.shared_spots (code, lat, lon, name, created_by) values (c, round(p_lat::numeric, 5), round(p_lon::numeric, 5), left(nullif(trim(p_name), ''), 80), uid); return c; end $$;
+revoke all on function public.share_spot(double precision, double precision, text) from public, anon;
+grant execute on function public.share_spot(double precision, double precision, text) to authenticated;
+create or replace function public.open_shared_spot(p_code text) returns table (lat double precision, lon double precision, name text) language plpgsql security definer set search_path = public as $$ declare uid uuid := auth.uid(); begin if uid is null then raise exception 'sign_in_required' using errcode = '42501'; end if; if not exists (select 1 from public.entitlements e where e.user_id = uid and e.paid_until > now()) then raise exception 'access_required'; end if; return query select s.lat, s.lon, s.name from public.shared_spots s where s.code = lower(p_code) and s.created_at > now() - interval '90 days'; if not found then raise exception 'not_found'; end if; end $$;
+revoke all on function public.open_shared_spot(text) from public, anon;
+grant execute on function public.open_shared_spot(text) to authenticated;
+select 'sharing ready' as status;
