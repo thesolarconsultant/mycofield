@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.31.0 — Rain map
+- The live layer has two views: Ready ground and Rain. Rain colours the map by how much fell (light to
+  deep blue), with a strip of the last 15 days (each chip's bar = average rain in view) and a 7-day
+  total. Uses the same weather data as Ready ground, so no extra calls; the chosen view is remembered.
+
 ## 2.30.0 — Premium pass
 - Calm motion: the card edge light runs two laps then fades; button shimmer and map pulse settle.
   Shimmer placeholders instead of "Checking…" / "Loading…".
