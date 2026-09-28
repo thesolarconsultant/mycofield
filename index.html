@@ -601,6 +601,17 @@ const SPOTS_PAYMENT_LINK = 'https://buy.stripe.com/5kQ4gy1Wl9tTfGFa3HeAg03', SPO
 const SPOTS_ENABLED = true;
 const ACCESS_KEY = 'mycofield-access-v1', TRIAL_KEY = 'mycofield-trial-v2';  // v2: everyone who had the old 15 s look gets the 3-minute one
 const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+// A link straight to a spot: ?at=lat,lon&name=… (from the Top Ground page, or shared). Opens the map
+// there with the full reading once the app is ready; the address bar is tidied straight away.
+const deepLink = (() => {
+  try {
+    const q = new URLSearchParams(location.search), at = q.get('at'); if (!at) return null;
+    const [lat, lon] = at.split(',').map(Number);
+    q.delete('at'); const name = (q.get('name') || '').slice(0, 80).trim(); q.delete('name');
+    history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+    return Number.isFinite(lat) && Number.isFinite(lon) && lat > 49 && lat < 61.5 && lon > -11 && lon < 2.5 ? {lat, lon, name: name || null} : null;
+  } catch { return null; }
+})();
 // Declared early: saveAreas()/saveRecords() can run during start-up, before the sync code below.
 let session = readJSON(AUTH_KEY, null);
 const sync = {state: 'off', lastAt: null, error: null, running: null, again: false, timer: null, applying: false};
@@ -1216,7 +1227,7 @@ const CAMERA_KEY = 'mycofield-camera', DEFAULT_CAMERA = {center: [-2.2, 52.9], z
 const hadCamera = (() => { try { return !!localStorage.getItem(CAMERA_KEY); } catch { return false; } })();
 let askingLocation = false;
 async function firstRunLocate() {
-  if (!navigator.geolocation || hadCamera || askingLocation || pref('mycofield-asked-location', false)) return;
+  if (!navigator.geolocation || hadCamera || deepLink || askingLocation || pref('mycofield-asked-location', false)) return;
   askingLocation = true;
   // Our own card first, so the browser's permission box never appears out of nowhere.
   const go = await askConfirm('Start from where you are?', 'MycoField can centre the map on your location. It stays on your phone and is never saved or shared.', {ok: 'Use my location', cancel: 'Not now'});
@@ -1401,6 +1412,7 @@ function setReady(on) {
   if (on) updateReady();
 }
 whenMapReady(() => setReady(ready.on));
+if (deepLink) whenMapReady(() => { switchView('map'); analysePoint(deepLink.lat, deepLink.lon, {zoom: 13.5, place: deepLink.name}); });
 map.on('moveend', () => { if (!ready.on) return; clearTimeout(ready.timer); ready.timer = setTimeout(updateReady, 450); });
 // ---------- place names over imagery ----------
 // Aerial imagery has no names, so the label layers of OpenFreeMap's Liberty style (free, no key,
