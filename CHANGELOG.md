@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.30.0 — Premium pass
+- Calm motion: the card edge light runs two laps then fades; button shimmer and map pulse settle.
+  Shimmer placeholders instead of "Checking…" / "Loading…".
+- Type scale: readable text 12 px and up, small capitals 11 px. Tile values and area names wrap
+  instead of cutting off. Brand-green links everywhere; bigger touch areas on small links.
+- Logos: dark logo on light backgrounds (header uses the real logo image), white logo on dark
+  (paywall banner, credits wallet).
+- Mascot: on-screen subtitles; clips and posters served by the app itself; he waves from the paywall banner.
+- Faster: Ready ground scores kept on the phone for 3 hours; map library served by the app (no unpkg).
+- Pop-ups: Escape closes, Tab stays inside, focus returns; stronger focus ring. Paywall tightens
+  itself on short phones so it never scrolls.
+- Account (signed out): preview of today's spots per nation.
+- Fixes: Northern Ireland and Donegal no longer count as Scotland; the phone cache cleans itself
+  (heavy users could no longer save notes); offline tile cache capped.
+
 ## 2.29.0 — Pay first, inside the app
 - New premium paywall card: mascot banner, big price, feature ticks, one "Pay £8 · get in now" button.
 - Stripe's embedded checkout opens inside the app (card, Apple Pay, Google Pay). The price is set by the

@@ -28,7 +28,7 @@ button{cursor:pointer}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+:focus-visible{outline:2.5px solid var(--forest);outline-offset:2px;box-shadow:0 0 0 5px rgba(167,216,46,.6)}
 
 /* ---------- header ---------- */
 header{position:sticky;top:0;z-index:30;height:var(--head-h);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(250,250,246,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
@@ -109,7 +109,7 @@ select.field{appearance:none;-webkit-appearance:none;background-image:url("data:
 .maplibregl-ctrl-attrib{background:rgba(250,250,246,.92)!important;color:var(--muted)!important;font:500 11px/1.5 var(--body)!important;border-radius:999px!important;padding:2px 10px!important;margin:0 0 6px 6px!important;box-shadow:var(--shadow)}
 .maplibregl-ctrl-attrib a{color:var(--moss-ink)!important;text-decoration:none}
 .maplibregl-ctrl-attrib.maplibregl-compact{border-radius:999px!important}
-.maplibregl-ctrl button:focus,.maplibregl-ctrl button:focus-visible{outline:none!important;box-shadow:0 0 0 3px rgba(167,216,46,.45)!important}
+.maplibregl-ctrl button:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}.maplibregl-ctrl button:focus-visible{outline:2.5px solid var(--forest)!important;outline-offset:2px!important;box-shadow:0 0 0 5px rgba(167,216,46,.6)!important}
 .maplibregl-ctrl-attrib-button{background-color:var(--forest)!important;border-radius:999px!important;opacity:.85}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:60;background:var(--forest);color:#fff;padding:12px 18px;border-radius:999px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);max-width:calc(100% - 32px)}
 
@@ -174,6 +174,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .gate[hidden]{display:none}@media(min-width:700px){.gate{align-items:center}}
 .gate-card{position:relative;isolation:isolate;background:var(--off);color:var(--ink);border-radius:24px;max-width:440px;width:100%;padding:22px 20px;box-shadow:var(--shadow-lg);max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;scrollbar-width:none;overscroll-behavior:contain}
 .gate-card::-webkit-scrollbar{display:none}
+.gate-card:focus{outline:none;box-shadow:var(--shadow-lg)}
 /* Motion, after Magic UI: Border Beam round the edge, Magic Card spotlight under the pointer, Shimmer Button on the main action. */
 @property --beam{syntax:'<angle>';inherits:false;initial-value:0deg}
 .gate-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:3;background:conic-gradient(from var(--beam),transparent 0 72%,rgba(167,216,46,.15) 78%,var(--lime) 88%,#fff 90%,transparent 93%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:beam 3.4s linear 2,beamout 6.8s ease-in forwards}
@@ -205,6 +206,8 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-eyebrow{font:700 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin:0 0 4px!important}
 .pw-card .pw-hero h2{color:#fff;margin:0;font-size:26px;text-shadow:0 2px 12px rgba(0,0,0,.35)}
 .pw-body{padding:16px 20px 18px}
+.pw-tight .pw-hero{height:96px}.pw-tight .pw-hero-logo{height:22px;top:10px}.pw-tight .pw-hero-txt .pw-eyebrow{display:none}.pw-card.pw-tight .pw-hero h2{font-size:21px}.pw-tight .pw-pricebox{padding:8px 14px;margin-bottom:10px}.pw-tight .pw-amount{font-size:38px}.pw-tight .pw-fine{margin-top:8px!important}
+.pw-tighter .pw-feats{display:none}
 .pw-body .pw-step:empty{display:none}
 .pw-pricebox{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--stone);border-radius:18px;padding:12px 16px;margin:2px 0 12px;box-shadow:0 6px 18px rgba(11,61,46,.07)}
 .pw-amount{font-family:var(--head);font-size:48px;line-height:1;color:var(--forest);letter-spacing:-.02em}.pw-amount span{font-size:26px;vertical-align:top;margin-right:1px;position:relative;top:4px}
@@ -250,7 +253,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 @media(prefers-reduced-motion:reduce){.mb-card{animation:none}}
 .mb-icon{position:absolute;width:44px;height:44px;border-radius:999px;border:0;display:grid;place-items:center;background:rgba(11,61,46,.72);color:#fff;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .mb-icon svg{width:20px;height:20px}
-.mb-icon:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.mb-icon:focus-visible{outline:2.5px solid var(--forest);outline-offset:2px;box-shadow:0 0 0 5px rgba(167,216,46,.6)}
 .mb-video .mb-icon.mb-sound{right:10px;bottom:10px;padding:0;min-height:0}
 .mb-card .mb-close{right:12px;top:12px;background:var(--stone-2);color:var(--forest)}
 .mb-video{position:relative;margin:0 auto 12px;width:auto;height:min(46vh,462px);aspect-ratio:9/16;max-width:100%;flex:none;border-radius:18px;overflow:hidden;background:var(--forest);box-shadow:var(--shadow)}
@@ -258,7 +261,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 @media(max-height:760px){.gate-card{padding:16px 16px 14px}.gate-card h2{font-size:20px;margin:4px 0 6px}.gate-card p{line-height:1.38;margin-bottom:8px}.gate-card .pw-list{font-size:13px;line-height:1.4;margin:4px 0 10px}.gate-card .pw-fine{font-size:12px;margin-top:8px!important}.gate-logo{height:38px;margin-bottom:6px}.gate-card .btn{min-height:44px;padding:10px 18px}.mascot-card .mb-video{float:right;height:auto;width:38%;margin:2px 0 8px 12px}.mascot-card .mb-sound{min-height:32px;padding:5px 10px;font-size:12px;right:6px;bottom:6px}.mascot-card .pw-list{clear:both}}
 .mb-video video{width:100%;height:100%;object-fit:cover;display:block}
 .mb-sound{position:absolute;right:10px;bottom:10px;min-height:40px;padding:8px 14px;border-radius:999px;border:0;background:rgba(11,61,46,.82);color:#fff;font:600 13px var(--body);cursor:pointer}
-.mb-sound:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.mb-sound:focus-visible{outline:2.5px solid var(--forest);outline-offset:2px;box-shadow:0 0 0 5px rgba(167,216,46,.6)}
 .mb-sub{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 20px);margin:0;padding:6px 11px;border-radius:12px;background:rgba(8,40,30,.66);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);color:#fff;font:600 14px/1.3 var(--body);text-align:center;pointer-events:none}
 .mb-sub:empty{display:none}
 @media(max-height:760px){.mascot-card .mb-sub{display:none}}
@@ -1794,7 +1797,7 @@ function saveRename(e) {
 // Branded stand-in for window.confirm(): resolves true (OK) or false (Cancel, Esc, tap outside).
 function askConfirm(title, text, {ok = 'OK', cancel = 'Cancel', danger = false} = {}) {
   return new Promise(resolve => {
-    const box = $('askBox'), key = e => { if (e.key === 'Escape') done(false); };
+    const box = $('askBox'), key = () => {};  // Escape: handled with every other pop-up
     const done = v => { box.hidden = true; document.removeEventListener('keydown', key); resolve(v); };
     $('askTitle').textContent = title; $('askText').textContent = text;
     $('askOk').textContent = ok; $('askCancel').textContent = cancel;
@@ -2609,7 +2612,12 @@ function renderPaywall() {
   $('pwPayNote').innerHTML = signedIn ? `Signed in as ${esc(session.user?.email || 'your account')} · <button class="pw-link" id="pwSignOut" type="button">not you?</button>`
     : direct ? 'No password — you’re signed in with the email you pay with.' : '';
   if (signedIn) $('pwSignOut').onclick = () => { setSession(null); try { localStorage.removeItem(ACCESS_KEY); } catch {} sync.pendingEmail = null; renderSync(); renderPaywall(); };
-  fitCard($('paywall').querySelector('.gate-card'));
+  // Short screens: a slimmer banner first, then (only if still needed) the feature list goes — the price
+  // and the button always fit without scrolling.
+  const card = $('paywall').querySelector('.gate-card'), over = () => card.scrollHeight > card.clientHeight + 1;
+  card.classList.remove('pw-tight', 'pw-tighter');
+  if (over()) card.classList.add('pw-tight');
+  if (over()) card.classList.add('pw-tighter');
 }
 // ---------- in-app checkout (Stripe's embedded checkout, from supabase/functions/checkout) ----------
 // Until that function is deployed and configured, `ping` fails and the app keeps the Stripe links.
@@ -2754,11 +2762,40 @@ function tickNumbers(root) {
     blurIn([...card.children].filter(c => c.offsetParent), 90);
   }));
   const fit = new ResizeObserver(es => es.forEach(e => { const card = e.target.closest('.gate-card'); if (card && !card.closest('.gate').hidden) fitCard(card); }));
+  // Pop-ups behave like proper dialogs: the page behind is hidden from screen readers, Tab stays inside, Escape closes
+  // the ones that can be closed, and focus goes back where it was.
+  document.querySelectorAll('.gate-card').forEach(c => { c.tabIndex = -1; });
+  const gates = [...document.querySelectorAll('.gate')], behind = ['header', 'main', 'nav'].map(q => document.querySelector(q)).filter(Boolean);
+  const top = () => gates.filter(g => !g.hidden).sort((a, b) => (+getComputedStyle(b).zIndex || 0) - (+getComputedStyle(a).zIndex || 0))[0];
+  const ESC = {askBox: () => $('askCancel').click(), payBox: () => closeCheckout(), spotsOffer: () => $('soSkip').click()};
+  const focusables = g => [...g.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,iframe,[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent);
+  let returnTo = null;
+  new MutationObserver(() => {
+    const t = top(); behind.forEach(el => { if (t) el.setAttribute('aria-hidden', 'true'); else el.removeAttribute('aria-hidden'); });
+    if (t) {
+      if (!returnTo && !t.contains(document.activeElement)) returnTo = document.activeElement;
+      if (!t.contains(document.activeElement)) requestAnimationFrame(() => { if (!t.hidden && !t.contains(document.activeElement)) (focusables(t)[0] || t.querySelector('.gate-card'))?.focus({preventScroll: true}); });
+    } else if (returnTo) {
+      // Only if the app hasn't already put focus somewhere on purpose (e.g. the postcode box after the walkthrough).
+      const a = document.activeElement;
+      if ((!a || a === document.body || a.closest?.('.gate')) && document.contains(returnTo)) returnTo.focus?.({preventScroll: true});
+      returnTo = null;
+    }
+  }).observe(document.body, {subtree: true, attributes: true, attributeFilter: ['hidden']});
+  document.addEventListener('keydown', e => {
+    const t = top(); if (!t) return;
+    if (e.key === 'Escape' && ESC[t.id]) { e.preventDefault(); ESC[t.id](); return; }
+    if (e.key !== 'Tab') return;
+    const f = focusables(t); if (!f.length) return;
+    const first = f[0], last = f.at(-1);
+    if (e.shiftKey && (document.activeElement === first || !t.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (document.activeElement === last || !t.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+  });
   document.querySelectorAll('.gate').forEach(g => {
     opened.observe(g, {attributes: true, attributeFilter: ['hidden']});
     const card = g.querySelector('.gate-card'); if (card) [...card.children].forEach(c => fit.observe(c));
   });
-  addEventListener('resize', () => document.querySelectorAll('.gate:not([hidden]) .gate-card').forEach(fitCard));
+  addEventListener('resize', () => { document.querySelectorAll('.gate:not([hidden]) .gate-card').forEach(fitCard); if (!$('paywall').hidden) renderPaywall(); });
   // Magic Card spotlight follows the pointer (mouse and pen; on touch it stays off).
   document.addEventListener('pointermove', e => {
     if (e.pointerType === 'touch') return;
@@ -2946,11 +2983,11 @@ function renderSpots() {
   $('view-account').querySelector('.ac-top').hidden = w.hidden && x.hidden;
   // Nation picker
   const counts = new Map((spots.counts || []).map(r => [r.nation, r]));
-  $('acPick').hidden = !(on && signedIn);
+  $('acPick').hidden = !on;   // signed out: a preview of today's counts, reveal needs an account
   $('acScan').className = spots.counts == null ? 'chip sk sk-chip' : 'chip'; $('acScan').textContent = spots.counts == null ? '' : `${(spots.counts || []).reduce((n, r) => n + (r.available || 0), 0)} live today`;
-  $('acNations').innerHTML = NATIONS.map(n => { const r = counts.get(n), k = r?.available ?? null, go = !!(k && bal);
+  $('acNations').innerHTML = NATIONS.map(n => { const r = counts.get(n), k = r?.available ?? null, go = !!(k && bal && signedIn);
     return `<div class="ac-nation${k ? ' live' : ''}"><b>${n}</b>${spots.counts == null ? '<div class="ac-n"><span class="sk sk-num"></span></div><div class="small"><span class="sk sk-line"></span></div>' : `<div class="ac-n">${k || 0}<small>spot${k === 1 ? '' : 's'}</small></div><div class="small">${k ? `Best today: ${r.best}` : 'None right now'}</div>`}
-      <button class="btn ${go ? 'lime' : 'secondary'}" type="button" data-nation="${n}" ${go ? '' : 'disabled'}>${!k ? 'None today' : bal ? 'Reveal · 1 credit' : 'Needs a credit'}</button></div>`; }).join('');
+      <button class="btn ${go ? 'lime' : 'secondary'}" type="button" data-nation="${n}" ${go ? '' : 'disabled'}>${!k ? 'None today' : !signedIn ? 'Sign in to reveal' : bal ? 'Reveal · 1 credit' : 'Needs a credit'}</button></div>`; }).join('');
   // Revealed spots
   $('acSpots').hidden = !(signedIn && c.list?.length);
   $('acSpotCount').textContent = c.list?.length || '';
