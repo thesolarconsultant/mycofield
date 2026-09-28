@@ -1,0 +1,29 @@
+# One-off: copy the mascot clips and posters from the video service into the app's own assets,
+# so the app serves them itself. Run by hand; safe to run again (no commit if nothing changed).
+name: Fetch mascot media
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -e
+          B=https://d2ol7oe51mr4n9.cloudfront.net/user_3ErnVtuGq0uA5LPn5YWAkd2kRlk
+          mkdir -p assets/mascot tmp
+          curl -sfo tmp/w.mp4 $B/b35b942a-edf8-4709-af19-1a0d82687caa.mp4
+          curl -sfo tmp/c.mp4 $B/439384bb-9911-4d0c-b1ba-13f252f9e538.mp4
+          curl -sfo tmp/w.jpg $B/3b19cb62-2df8-4223-8779-2a572d3c5d79.jpg
+          curl -sfo tmp/c.jpg $B/eed1d403-b4d3-4539-9a0a-da4b12e09521.jpg
+          sudo apt-get install -y -qq ffmpeg >/dev/null
+          # moov atom first so playback starts before the whole file arrives
+          ffmpeg -loglevel error -y -i tmp/w.mp4 -c copy -movflags +faststart -map_metadata -1 assets/mascot/welcome.mp4
+          ffmpeg -loglevel error -y -i tmp/c.mp4 -c copy -movflags +faststart -map_metadata -1 assets/mascot/credits.mp4
+          ffmpeg -loglevel error -y -i tmp/w.jpg -q:v 4 assets/mascot/welcome.jpg
+          ffmpeg -loglevel error -y -i tmp/c.jpg -q:v 4 assets/mascot/credits.jpg
+          rm -rf tmp; ls -l assets/mascot
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/mascot
+          git diff --cached --quiet || { git commit -m "Mascot clips and posters served from the app's own assets"; git push; }
