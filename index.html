@@ -467,6 +467,30 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 }
 @media(min-width:761px){nav{grid-template-columns:repeat(5,minmax(0,150px));justify-content:center}}
 @media(max-width:380px){.wordmark{font-size:18px}.brand img,.brand .brand-logo{height:32px}.trk{grid-template-columns:56px minmax(0,1fr) 14px}.trk-spark{display:none}}
+/* ---------- ask: chat about why one area beats another ---------- */
+.gate.ask-panel{z-index:85;padding:0}
+.askp-card{position:relative;background:var(--white);width:100%;max-width:560px;height:min(88dvh,760px);border-radius:24px 24px 0 0;display:flex;flex-direction:column;padding:14px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:var(--shadow-lg)}
+@media(min-width:700px){.gate.ask-panel{padding:16px}.askp-card{border-radius:24px;padding-bottom:14px}}
+.askp-head{display:flex;gap:12px;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.askp-head>div{flex:1;min-width:0}.askp-head h2{font-family:var(--head);font-weight:700;font-size:17px;color:var(--forest);margin:3px 0 0}
+.askp-log{flex:1;overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:10px;padding:12px 2px}
+.msg{max-width:88%;padding:10px 13px;border-radius:16px;font-size:15px;line-height:1.45;overflow-wrap:anywhere}
+.msg p{margin:0 0 6px}.msg p:last-child{margin:0}.msg ul{margin:4px 0 6px;padding-left:18px}.msg li{margin:2px 0}
+.msg.u{align-self:flex-end;background:var(--forest);color:#fff;border-bottom-right-radius:6px}
+.msg.a{align-self:flex-start;background:var(--stone-2);color:var(--text);border-bottom-left-radius:6px}
+.msg.a.note{background:transparent;border:1px dashed var(--line-2);color:var(--muted);font-size:14px}
+.msg .btn{margin-top:8px;min-height:40px;padding:8px 16px;font-size:14px}
+.askp-dots{display:inline-flex;gap:4px;padding:4px 0}.askp-dots i{width:7px;height:7px;border-radius:50%;background:var(--sage);animation:askdot 1.2s ease-in-out infinite}
+.askp-dots i:nth-child(2){animation-delay:.15s}.askp-dots i:nth-child(3){animation-delay:.3s}
+@keyframes askdot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.askp-chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.askp-chips button{flex:none;border:1px solid var(--line-2);background:var(--white);color:var(--forest);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;min-height:40px;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.askp-form{display:flex;gap:8px;align-items:flex-end}
+.askp-form textarea.field{flex:1;min-height:48px;height:48px;max-height:120px;resize:none;padding-top:12px}
+.askp-form .btn{width:48px;padding:0;flex:none}
+.askp-fine{font-size:12px;color:var(--muted);margin:6px 2px 0}
+.ask-open{margin-top:12px;width:100%}
+@media(prefers-reduced-motion:reduce){.askp-dots i{animation:none}}
 </style>
 </head>
 <body data-view="map">
@@ -489,21 +513,21 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div id="pcLoading" class="loadingbar"></div>
 <div class="strip" id="pcStrip"></div>
 <div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcLand"></p><p class="sh-note" id="pcGrid"></p></div>
-<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcShare" type="button" aria-label="Share this spot" title="Share this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
+<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcShare" type="button" aria-label="Share this spot" title="Share this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="btn secondary icon" id="pcAsk" type="button" aria-label="Ask how this spot compares with your areas" title="Ask about this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg></button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
 </div>
 <div class="sheet tall" id="savedSheet" hidden role="dialog" aria-label="Saved areas">
 <button class="handle" type="button" aria-label="Saved areas — swipe down to close"></button>
 <div class="sh-head"><div class="sh-title"><span class="kicker">Optional</span><h2>Saved areas</h2></div><div class="sh-tools"><button class="iconbtn" id="savedClose" type="button" aria-label="Close saved areas"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
 <button class="strongest" id="strongestCard" type="button" aria-label="Go to strongest tracked area"><span class="n" id="strongestScore">…</span><span><strong>★ Strongest tracked area</strong><b id="strongestName">Comparing areas…</b><small id="strongestSub"></small></span></button>
-<label class="switch"><input type="checkbox" id="showAreasToggle"><span>Show saved areas on the map</span></label>
+<button class="btn secondary ask-open" type="button" data-ask style="margin:0 0 12px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg>Ask why one area beats another</button><label class="switch"><input type="checkbox" id="showAreasToggle"><span>Show saved areas on the map</span></label>
 <div class="tracker" id="savedList"></div>
 <p class="small" style="margin:12px 2px 0">Save new areas from any analysed point with <b>Save area</b>.</p>
 <button class="btn lime spots-open" id="spotsOpen" type="button" hidden></button>
 </div>
 </div></section>
 <section class="view" id="view-dashboard"><div class="page"><div class="eyebrow">Conditions</div><h2 class="title">Read the pattern, not one day.</h2><div class="sub">A general grassland-fungi signal built from moisture, overnight temperature and terrain context. <span id="dashArea"></span> Experimental research indicator only — not a probability or a guarantee of fruiting.</div>
-<div class="card" style="margin-top:20px"><h3><span>Tracked areas <span class="small" id="trackerCount"></span></span><span class="seg" id="trackerSort" role="group" aria-label="Sort areas"><button type="button" data-sort="index" class="active">Index</button><button type="button" data-sort="name">A–Z</button></span></h3><div id="tracker" class="tracker"></div><div class="small" style="margin-top:12px">Add areas and sub-areas from the Map: tap or search a spot, then <b>Save area</b>.</div></div>
+<div class="card" style="margin-top:20px"><h3><span>Tracked areas <span class="small" id="trackerCount"></span></span><span class="seg" id="trackerSort" role="group" aria-label="Sort areas"><button type="button" data-sort="index" class="active">Index</button><button type="button" data-sort="name">A–Z</button></span></h3><div id="tracker" class="tracker"></div><button class="btn lime ask-open" type="button" data-ask><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg>Ask why one area beats another</button><div class="small" style="margin-top:12px">Add areas and sub-areas from the Map: tap or search a spot, then <b>Save area</b>.</div></div>
 <div class="needs-area focus-head" id="focusHead"><div><div class="eyebrow">Focused area</div><h3 id="focusName"></h3><div class="small" id="focusSub"></div></div><div class="focus-acts"><button class="btn" type="button" id="focusMap">View map <span aria-hidden="true">→</span></button><button class="btn secondary" type="button" id="focusRename">Rename</button><button class="btn danger" type="button" id="focusDelete">Delete</button></div></div>
 <form class="renameform" id="renameForm" hidden><input class="field" id="renameInput" maxlength="60" required aria-label="Area name" autocomplete="off"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="renameCancel">Cancel</button></form>
 <div class="needs-area cards"><div class="card"><h3>Current signal <span class="chip exp">Experimental</span></h3><div class="statnum" id="dashScore">—</div><div class="statlabel">Conditions index</div><div class="delta flat" id="dashTrend"></div><svg id="sparkScore" class="spark" aria-label="Conditions Index trend"></svg><div class="small">Index · today → +9 days</div></div><div class="card"><h3>Moisture memory <span class="chip" id="dashRainChip">—</span></h3><div class="statnum" id="dashRain">—</div><div class="statlabel">14-day rainfall</div><div class="small" id="dashRainSub" style="margin-top:8px"></div><svg id="sparkRain" class="spark" aria-label="Daily rainfall trend"></svg><div class="small">Daily rain · 14 days back → +9 days</div></div><div class="card"><h3>Night temperature</h3><div class="statnum" id="dashTemp">—</div><div class="statlabel">Latest overnight low</div><svg id="sparkTemp" class="spark" aria-label="Overnight low trend"></svg><div class="small">Daily low · 14 days back → +9 days</div></div></div>
@@ -565,6 +589,13 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <a class="btn lime" id="soBuy" href="#" rel="noopener">Get 10 credits · £20</a>
 <button class="pw-link" id="soSkip" type="button">No thanks, I’ll explore myself</button>
 <p class="pw-fine">One payment. Credits last 12 months from purchase. Unused credits can be refunded within 14 days of buying. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
+<div class="gate ask-panel" id="askPanel" hidden role="dialog" aria-modal="true" aria-labelledby="askPTitle"><div class="askp-card">
+<div class="askp-head"><div><span class="kicker">Assistant · experimental</span><h2 id="askPTitle">Ask about your areas</h2></div><button class="iconbtn" id="askPNew" type="button" aria-label="Start a new chat" title="New chat"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button class="iconbtn" id="askPClose" type="button" aria-label="Close the assistant"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div class="askp-log" id="askLog" aria-live="polite"></div>
+<div class="askp-chips" id="askChips"></div>
+<form class="askp-form" id="askForm"><textarea class="field" id="askInput" rows="1" maxlength="600" placeholder="Ask about your areas…" aria-label="Your question" enterkeyhint="send"></textarea><button class="btn lime" type="submit" id="askSend" aria-label="Send"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button></form>
+<p class="askp-fine">Answers come from your areas’ readings and can be wrong. The index is experimental, not a promise anything is fruiting.</p>
+</div></div>
 <div class="gate ask-gate" id="askBox" hidden role="alertdialog" aria-modal="true" aria-labelledby="askTitle" aria-describedby="askText"><div class="gate-card"><img class="gate-logo" src="assets/logo.png" alt="MycoField"><h2 id="askTitle"></h2><p id="askText"></p><div class="ask-acts"><button class="btn lime" id="askOk" type="button">OK</button><button class="btn secondary" id="askCancel" type="button">Cancel</button></div></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
 <script type="module">
@@ -690,6 +721,134 @@ function distanceKm([lon1, lat1], [lon2, lat2]) {
 function coordLink(lat, lon, elevation, dp = 5) {
   const shown = fmtCoord(lat, lon, dp), full = fmtCoord(lat, lon, 5);
   return `<button type="button" class="earth" data-copy="${full}" title="Copy coordinates" aria-label="Copy coordinates ${full}">${shown}<svg class="i cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></button>`;
+}
+// ---------- ask: a chat that explains why one area scores better than another ----------
+// The app sends the readings it already shows (no coordinates) to the `ask` function, which asks Claude and
+// streams the answer back. The snapshot is taken on the first question so every turn talks about the same numbers.
+const ASK_FN = SUPABASE_URL + '/functions/v1/ask';
+const ASK_IDLE_MS = 30 * 60000;   // a chat left this long starts afresh (the readings will have moved on)
+const ask = {turns: [], context: null, busy: false, lastAt: 0};
+const askN = v => Number.isFinite(v) ? v : null;
+function askReading(d, land) {
+  const c = d?.conditions, w = d?.weather, ws = w?.days ? weatherSummary(w.days, w.todayIdx) : w, t = d?.terrain, h = d?.habitat;
+  return {
+    score: c?.score ?? null, label: c?.label ?? null,
+    parts: c ? Object.fromEntries(Object.entries(c.components).map(([k, v]) => [k, c.max[k] != null ? `${v}/${c.max[k]}` : v])) : null,
+    missing: c?.missing?.length ? c.missing : undefined,
+    weather: ws ? {rain7mm: askN(ws.rain7), rain14mm: askN(ws.rain14), rain30mm: askN(ws.rain30), wetDays14: askN(ws.wet14), soilMoisturePct: Number.isFinite(ws.soil) ? Math.round(ws.soil * 100) : null,
+      waterBalancePct: Number.isFinite(ws.balance) ? Math.round(ws.balance * 100) : null, lastNightLowC: Number.isFinite(ws.latestLow) ? round1(ws.latestLow) : null, meanLow7C: askN(ws.low7), frostNights7: askN(ws.frost7),
+      source: w.status === 'live' ? 'live' : 'cached'} : null,
+    terrain: t ? {elevationM: askN(t.elevation), slopeDeg: askN(t.slope), aspect: t.aspect ?? null} : null,
+    habitat: h?.cls ? {type: HABITAT_CLASSES[h.cls]?.label || h.cls, source: h.source || null} : null,
+    land: land ? landText(land) || undefined : undefined
+  };
+}
+function askContext() {
+  const recs = (state.records || []).filter(r => !r.demo);
+  const list = Object.keys(areas).filter(k => state.areaData[k]?.conditions).map(k => {
+    const d = state.areaData[k], mine = recs.filter(r => r.areaKey === k), found = mine.filter(r => r.result === 'positive');
+    const w = d.weather, next = w?.days && d.series ? d.series.slice(w.todayIdx, w.todayIdx + 10) : null;
+    return {name: areaLabel(k), ...askReading(d, d.habitatAuto?.land), trend: d.trend ? `${d.trend} (${d.delta >= 0 ? '+' : ''}${d.delta} over 3 days)` : undefined,
+      nextDays: next?.some(Number.isFinite) ? next : undefined,
+      myRecords: mine.length ? {finds: found.length, blanks: mine.length - found.length, lastFind: found.map(r => r.date).sort().at(-1) || null} : undefined};
+  }).sort((a, b) => b.score - a.score).slice(0, 25);
+  const p = state.pointAnalysis;
+  const point = p?.conditions ? {name: p.place && p.place !== 'My location' ? p.place : 'The spot open on the map', ...askReading(p, p.land)} : null;
+  const pending = Object.keys(areas).length - list.length;
+  return {today: new Date().toISOString().slice(0, 10), areas: list, ...(pending ? {areasWithoutReadings: pending} : {}), ...(point ? {point} : {})};
+}
+// Enough formatting for chat: paragraphs, bullets and **bold**, everything else escaped.
+function askMd(t) {
+  const inline = x => esc(x).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return String(t).trim().split(/\n{2,}/).map(block => {
+    const lines = block.split('\n');
+    if (lines.every(l => /^\s*[-•*]\s+/.test(l))) return `<ul>${lines.map(l => `<li>${inline(l.replace(/^\s*[-•*]\s+/, ''))}</li>`).join('')}</ul>`;
+    return `<p>${lines.map(inline).join('<br>')}</p>`;
+  }).join('');
+}
+function askBubble(who, html, cls = '') {
+  const el = document.createElement('div'); el.className = `msg ${who} ${cls}`.trim(); el.innerHTML = html;
+  $('askLog').append(el); $('askLog').scrollTop = $('askLog').scrollHeight; return el;
+}
+function askChips() {
+  const ids = Object.keys(areas).filter(k => state.areaData[k]?.conditions).sort((a, b) => state.areaData[b].conditions.score - state.areaData[a].conditions.score);
+  const q = [];
+  if (state.pointAnalysis?.conditions) q.push('How does this spot compare with my areas?');
+  if (ids.length >= 2) q.push(`Why is ${areas[ids[0]].name} my best area right now?`, `Compare ${areas[ids[0]].name} with ${areas[ids[1]].name}`);
+  if (ids.length >= 1) q.push('Which area looks best for the next few days?');
+  if (ids.length >= 3) q.push(`Why is ${areas[ids.at(-1)].name} scoring lowest?`);
+  if (!q.length) q.push('What makes a good waxcap field?');
+  $('askChips').innerHTML = ask.turns.length ? '' : q.map(x => `<button type="button">${esc(x)}</button>`).join('');
+  $('askChips').hidden = !!ask.turns.length;
+}
+function askReset() { ask.turns = []; ask.context = null; $('askLog').innerHTML = ''; askIntro(); askChips(); }
+function askIntro() {
+  const n = Object.keys(areas).length;
+  askBubble('a', n ? `<p>Ask me why one of your areas is scoring better than another, or what’s holding one back. I’ll compare the rain, soil, nights, terrain and habitat behind each score.</p>`
+    : `<p>You haven’t saved any areas yet. Tap a spot on the map and <b>Save area</b>, then I can compare them. You can still ask about the spot open on the map.</p>`);
+}
+function openAsk(question) {
+  ensureAreasLoaded();
+  if (Date.now() - ask.lastAt > ASK_IDLE_MS || !$('askLog').children.length) askReset();
+  else askChips();
+  $('askPanel').hidden = false;
+  if (!session) askBubble('a', '<p>Sign in to use the assistant.</p><button class="btn" type="button" data-go="account">Go to Account</button>', 'note');
+  else if (paywallOn() && !hasAccess()) askBubble('a', '<p>The assistant comes with full access.</p><button class="btn" type="button" data-go="account">Go to Account</button>', 'note');
+  if (question) sendAsk(question); else requestAnimationFrame(() => $('askInput').focus({preventScroll: true}));
+}
+function closeAsk() { $('askPanel').hidden = true; }
+const ASK_ERRORS = {sign_in_required: 'Sign in (Account tab) to use the assistant.', access_required: 'The assistant comes with full access.',
+  daily_limit: 'That’s today’s questions used up. Ask again tomorrow.', not_configured: 'The assistant isn’t switched on yet.'};
+// Areas load their weather in the background; give them a moment so the first answer sees their scores.
+async function askAreasReady(ms = 8000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms && Object.keys(areas).some(k => !state.areaData[k] || state.areaData[k].status === 'loading')) await new Promise(r => setTimeout(r, 250));
+}
+async function sendAsk(q) {
+  q = String(q || '').trim().slice(0, 600);
+  if (!q || ask.busy) return;
+  ask.busy = true; ask.lastAt = Date.now(); $('askSend').disabled = true; $('askInput').value = ''; askFit();
+  ask.turns.push({role: 'user', content: q}); askBubble('u', esc(q)); askChips();
+  const out = askBubble('a', '<span class="askp-dots" aria-label="Thinking"><i></i><i></i><i></i></span>');
+  let text = '';
+  try {
+    if (!session) throw Object.assign(new Error(), {code: 'sign_in_required'});
+    if (!ask.context) { await askAreasReady(); ask.context = askContext(); }
+    await ensureFreshSession().catch(() => {});
+    const r = await fetch(ASK_FN, {method: 'POST', body: JSON.stringify({messages: ask.turns, context: ask.context}),
+      headers: {apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}`}});
+    if (!r.ok) { const d = await r.json().catch(() => ({})); throw Object.assign(new Error(d.error || `HTTP ${r.status}`), {code: r.status === 404 ? 'not_configured' : d.error}); }
+    const reader = r.body.getReader(), dec = new TextDecoder();
+    for (;;) {
+      const {done, value} = await reader.read(); if (done) break;
+      text += dec.decode(value, {stream: true}); out.innerHTML = askMd(text); $('askLog').scrollTop = $('askLog').scrollHeight;
+    }
+    if (!text.trim()) throw new Error('empty');
+    ask.turns.push({role: 'assistant', content: text});
+  } catch (err) {
+    ask.turns.pop();   // the question goes unanswered, so it leaves the history and can simply be asked again
+    out.classList.add('note');
+    out.innerHTML = `<p>${esc(ASK_ERRORS[err.code] || (navigator.onLine === false ? 'You’re offline. Ask again when you have signal.' : 'Couldn’t reach the assistant. Try again in a moment.'))}</p>`;
+    if (err.code === 'sign_in_required' || err.code === 'access_required') out.insertAdjacentHTML('beforeend', '<button class="btn" type="button" data-go="account">Go to Account</button>');
+    askChips();
+  } finally {
+    ask.busy = false; ask.lastAt = Date.now(); $('askSend').disabled = false;
+  }
+}
+function askFit() { const t = $('askInput'); t.style.height = '48px'; t.style.height = Math.min(120, t.scrollHeight) + 'px'; }
+function initAsk() {
+  document.querySelectorAll('[data-ask]').forEach(b => b.onclick = () => openAsk());
+  $('pcAsk').onclick = () => openAsk('How does this spot compare with my areas?');
+  $('askPClose').onclick = closeAsk;
+  $('askPNew').onclick = () => { if (!ask.busy) { askReset(); $('askInput').focus(); } };
+  $('askPanel').addEventListener('click', e => {
+    if (e.target === $('askPanel')) return closeAsk();
+    const chip = e.target.closest('#askChips button'); if (chip) return sendAsk(chip.textContent);
+    const go = e.target.closest('[data-go="account"]'); if (go) { closeAsk(); switchView('account'); }
+  });
+  $('askForm').onsubmit = e => { e.preventDefault(); sendAsk($('askInput').value); };
+  $('askInput').addEventListener('input', askFit);
+  $('askInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); sendAsk($('askInput').value); } });
 }
 // Share the spot on the reading card with another MycoField user: the link carries only a private code
 // (no coordinates, no place name); it opens in their app once they're signed in with access.
@@ -2932,7 +3091,7 @@ function tickNumbers(root) {
   document.querySelectorAll('.gate-card').forEach(c => { c.tabIndex = -1; });
   const gates = [...document.querySelectorAll('.gate')], behind = ['header', 'main', 'nav'].map(q => document.querySelector(q)).filter(Boolean);
   const top = () => gates.filter(g => !g.hidden).sort((a, b) => (+getComputedStyle(b).zIndex || 0) - (+getComputedStyle(a).zIndex || 0))[0];
-  const ESC = {askBox: () => $('askCancel').click(), payBox: () => closeCheckout(), spotsOffer: () => $('soSkip').click()};
+  const ESC = {askPanel: () => closeAsk(), askBox: () => $('askCancel').click(), payBox: () => closeCheckout(), spotsOffer: () => $('soSkip').click()};
   const focusables = g => [...g.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,iframe,[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent);
   let returnTo = null;
   new MutationObserver(() => {
@@ -3295,6 +3454,7 @@ function init() {
   $('exportGeo').onclick = () => exportData('geojson');
   $('pcMoreBtn').onclick = () => setPointExpanded(!$('pointCard').classList.contains('expanded'));
   $('pcShare').onclick = shareSpot;
+  initAsk();
   sheetGestures($('pointCard'), {tap: () => setPointExpanded(!$('pointCard').classList.contains('expanded')), up: () => setPointExpanded(true), down: () => $('pointCard').classList.contains('expanded') ? setPointExpanded(false) : clearPointAnalysis()});
   sheetGestures($('areaCard'), {down: closeAreaCard});
   sheetGestures($('savedSheet'), {down: closeSaved});

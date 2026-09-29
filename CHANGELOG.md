@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.36.0 — Ask about your areas
+- An assistant in the app that explains why one area scores better than another: "Ask why one area beats
+  another" on Conditions and Saved areas, and a chat button on the spot card. It answers from the readings
+  the app already shows (each score's parts, rain, soil, nights, terrain, habitat, your finds and blanks);
+  no coordinates are sent. Signed-in accounts with access; 40 questions a day each.
+- Needs supabase/ask.sql, the `ask` Edge Function and an ANTHROPIC_API_KEY secret. Privacy page updated.
+
 ## 2.35.1 — Shared links get their own preview card
 - Share links are now mycofield.com/s/<code>: a small page (share.html) with its own preview image
   (assets/og-share.jpg, "A spot’s been shared with you") that sends people straight on to /?s=<code>.
