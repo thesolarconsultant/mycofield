@@ -588,7 +588,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="gate" id="leadBox" hidden role="dialog" aria-modal="true" aria-labelledby="leadTitle"><div class="gate-card mascot-card">
 <p class="pw-step" id="leadStep">Before your free look ends</p>
 <h2 id="leadTitle">Want a spot near you?</h2>
-<div id="leadAsk"><p>Every night MycoField scores Britain and keeps the strongest spots. Give us your postcode and we’ll pin <b>today’s best one nearest you</b>. We’ll email you a code to sign in, and it opens on your map once you’re in, from <b>£2 for a week</b>.</p>
+<div id="leadAsk"><p>Every night MycoField scores Britain and keeps the strongest spots. Give us your postcode and we’ll pin <b>today’s best one nearest you</b>, then email you a code to sign up.</p>
 <form class="lead-form" id="leadForm" novalidate><input class="field" id="leadEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><input class="field" id="leadPostcode" placeholder="Your postcode, e.g. LL23 7BS" autocomplete="postal-code" autocapitalize="characters" maxlength="10" required aria-label="Postcode"><p class="lead-err" id="leadErr" role="alert" hidden></p><button class="btn lime" id="leadBtn" type="submit">Find my spot</button></form>
 <button class="pw-link lead-skip" id="leadSkip" type="button">No thanks, keep looking</button></div>
 <div id="leadDone" hidden><p id="leadFound"></p><p id="leadSent"></p><button class="btn lime" id="leadCode" type="button">Enter my code</button></div>
@@ -793,7 +793,7 @@ async function submitLead(e) {
     $('leadTitle').textContent = x ? 'Found one near you.' : 'Nothing strong today.';
     $('leadFound').innerHTML = x ? `Today it scores <b>${x.score}/100</b>, about <b>${Math.max(1, Math.round(x.km))} km</b> from ${esc(x.postcode || where.postcode)}${x.region ? `, in ${esc(String(x.region).split(',')[0])}` : ''}.`
       : esc(LEAD_ERRORS.no_spots);
-    $('leadSent').innerHTML = `We’ve emailed a 6-digit code to <b>${esc(sync.pendingEmail)}</b>. Sign in${x ? ', then unlock it from <b>£2 for a week</b>. It opens straight onto your map.' : ' to carry on.'}`;
+    $('leadSent').innerHTML = `We’ve emailed a 6-digit code to <b>${esc(sync.pendingEmail)}</b>. Sign up with it${x ? ' and we’ll show you how to unlock your spot. It opens straight onto your map.' : ' to carry on.'}`;
     $('leadCode').focus({preventScroll: true});
   } catch (er) {
     const code = er.code || (/bad_email/.test(er.message) ? 'bad_email' : /bad_postcode/.test(er.message) ? 'bad_postcode' : /busy/.test(er.message) ? 'busy' : er.httpStatus === 404 ? 'off' : 'offline');
@@ -3010,7 +3010,7 @@ function renderPaywall() {
   $('pwAlt').hidden = gate.checking || login || signedIn || direct || !WEEK_PAYMENT_LINK;
   const li = leadInfo();
   $('pwLead').hidden = !li?.score || li.opened || gate.checking || login || (signedIn && hasAccess());
-  if (li?.score) $('pwLead').textContent = `📍 Your spot near ${li.postcode} (${li.score} today) opens as soon as you’re in, from £2 for a week.`;
+  if (li?.score) $('pwLead').textContent = `📍 Your spot near ${li.postcode} (${li.score} today) opens as soon as you’re in.`;
   $('pwChecking').hidden = !gate.checking;
   $('pwSignIn').hidden = !showSignIn;
   $('pwLoginH').hidden = !login || verifying;
