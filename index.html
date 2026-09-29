@@ -226,6 +226,7 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-cta{width:100%;min-height:54px!important;font-size:16.5px!important;font-weight:700!important;box-shadow:0 8px 22px rgba(120,170,20,.35)}
 .pw-trust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);margin:10px 0 0!important;text-align:center}
 .pw-trust svg{width:14px;height:14px;flex:none;stroke:var(--moss-ink)}
+.pw-alt{margin:-4px 2px 12px;font-size:14px;color:var(--forest);text-align:center}.pw-alt b{white-space:nowrap}
 .pw-week{display:block;text-align:center;margin:10px auto 0;padding:8px 12px;font-size:14px;color:var(--forest);text-decoration:none;border-radius:999px}.pw-week b{text-decoration:underline;text-underline-offset:3px}.pw-week:hover b{color:var(--moss-ink)}
 .pw-note:empty{display:none}.pw-note{text-align:center;margin:4px 0 0!important;font-size:12px}
 .pw-login{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 14px;border:1px solid var(--stone);border-radius:16px;background:var(--white)}
@@ -566,7 +567,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><img class="pw-hero-logo" src="assets/logo-light.png" alt="MycoField" width="124" height="32"><div class="pw-hero-txt"><p class="pw-eyebrow" id="pwEyebrow">Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
 <div class="pw-body">
 <p class="pw-step" id="pwStep"></p>
-<div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>Less than 16p a week · one payment · nothing renews by itself</small></div></div>
+<div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>Less than 16p a week · one payment · nothing renews by itself</small></div></div><p class="pw-alt" id="pwAlt" hidden>Only need a week? <b>£2 for 7 days</b>. You’ll pick after your email.</p>
 <ul class="pw-feats" id="pwList"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Any spot you tap</b> — rain, soil moisture, cold nights and frost over the last month</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Official habitat maps</b> across Great Britain, and grazing in Wales</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Unlimited saved areas</b>, finds and blanks, synced to your account</span></li></ul>
 <div id="pwPay"><a class="btn lime pw-cta" id="pwPayBtn" href="#" rel="noopener">Pay £8 · get in now</a><a class="pw-week" id="pwWeekBtn" href="#" rel="noopener" hidden>Just this week? <b>£2 for 7 days</b></a><p class="pw-trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Secured by Stripe · Apple Pay · Google Pay · card</span></p><p class="small pw-note" id="pwPayNote"></p></div>
 <div id="pwChecking" hidden><div class="pw-spin" aria-hidden="true"></div><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
@@ -2907,6 +2908,8 @@ function renderPaywall() {
   $('pwStep').textContent = gate.checking || expired || direct || login ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
     : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · start with your email';
   $('pwPrice').hidden = $('pwList').hidden = gate.checking || login;
+  // Before sign-in (older two-step flow) the week pass can't be bought yet, so it's named here and chosen at step 2.
+  $('pwAlt').hidden = gate.checking || login || signedIn || direct || !WEEK_PAYMENT_LINK;
   $('pwChecking').hidden = !gate.checking;
   $('pwSignIn').hidden = !showSignIn;
   $('pwLoginH').hidden = !login || verifying;
@@ -3301,7 +3304,7 @@ function renderSpots() {
       const left = Math.max(0, Math.ceil((Date.parse(a.paidUntil) - Date.now()) / 864e5));
       x.innerHTML = `<h3>Full access <span class="chip">Active</span></h3><p class="ac-big">${left} day${left === 1 ? '' : 's'} left</p><div class="ac-meter"><i style="width:${Math.min(100, left / (left <= 7 ? 7 : 365) * 100)}%"></i></div><p class="small">Until ${fmtLongDate(a.paidUntil)}. One payment, no subscription: nothing renews by itself.</p>`;
     } else {
-      x.innerHTML = `<h3>Full access</h3><p class="ac-big">£8 for a year</p><p class="small">Conditions for any spot you tap, official habitat maps, and your areas and records synced to your account.</p><button class="btn lime" type="button" data-go="pay">${signedIn ? 'Get a year · £8' : 'Sign in & get access'}</button>${signedIn && (pay.ready || WEEK_PAYMENT_LINK) ? '<button class="pw-link ac-week" type="button" data-go="week">Just this week? £2 for 7 days</button>' : ''}`;
+      x.innerHTML = `<h3>Full access</h3><p class="ac-big">£8 for a year</p><p class="small">Conditions for any spot you tap, official habitat maps, and your areas and records synced to your account.</p><button class="btn lime" type="button" data-go="pay">${signedIn ? 'Get a year · £8' : 'Sign in & get access'}</button>${pay.ready || WEEK_PAYMENT_LINK ? '<button class="pw-link ac-week" type="button" data-go="week">Just this week? £2 for 7 days</button>' : ''}`;
     }
   }
   $('view-account').querySelector('.ac-top').hidden = w.hidden && x.hidden;
@@ -3326,7 +3329,7 @@ function renderSpots() {
   v.querySelectorAll('[data-spot]').forEach(b => b.onclick = () => { const x = c.list[+b.dataset.spot]; switchView('map'); analysePoint(x.lat, x.lon, {zoom: 14.5, place: x.name}); });
   v.querySelectorAll('[data-go="signin"]').forEach(b => b.onclick = () => { $('syncCard').scrollIntoView({behavior: 'smooth', block: 'center'}); setTimeout(() => $('syncEmail')?.focus({preventScroll: true}), 400); });
   v.querySelectorAll('[data-go="pay"]').forEach(b => b.onclick = () => showPaywall());
-  v.querySelectorAll('[data-go="week"]').forEach(b => b.onclick = () => { if (pay.ready) openCheckout('week'); else location.href = weekBuyHref(); });
+  v.querySelectorAll('[data-go="week"]').forEach(b => b.onclick = () => { if (pay.ready) openCheckout('week'); else if (!session) showPaywall(); else location.href = weekBuyHref(); });
 }
 async function revealSpot(nation) {
   if (spots.busy) return;

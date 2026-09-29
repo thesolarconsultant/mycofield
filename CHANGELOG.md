@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.36.1 — £2 week pass shown before sign-in
+- The pop-up's first step and the signed-out Account card now show the £2 for 7 days option (it was only
+  visible after verifying an email). Picked at step 2 as before.
+
 ## 2.36.0 — Ask about your areas
 - An assistant in the app that explains why one area scores better than another: "Ask why one area beats
   another" on Conditions and Saved areas, and a chat button on the spot card. It answers from the readings
