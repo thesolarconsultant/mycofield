@@ -226,6 +226,10 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .pw-cta{width:100%;min-height:54px!important;font-size:16.5px!important;font-weight:700!important;box-shadow:0 8px 22px rgba(120,170,20,.35)}
 .pw-trust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);margin:10px 0 0!important;text-align:center}
 .pw-trust svg{width:14px;height:14px;flex:none;stroke:var(--moss-ink)}
+.lead-form{display:grid;gap:8px;margin:12px 0 4px}.lead-form .field{min-height:48px;height:48px}.lead-form .btn{width:100%}
+.lead-err{margin:0;color:var(--bad);font-size:14px}.lead-skip{display:block;margin:6px auto 0;font-size:14px}
+#leadDone .btn{width:100%;margin-top:6px}
+.pw-lead{margin:0 0 10px;padding:10px 12px;border-radius:14px;background:rgba(167,216,46,.18);color:var(--forest);font-size:14px;line-height:1.4}
 .pw-alt{margin:-4px 2px 12px;font-size:14px;color:var(--forest);text-align:center}.pw-alt b{white-space:nowrap}
 .pw-week{display:block;text-align:center;margin:10px auto 0;padding:8px 12px;font-size:14px;color:var(--forest);text-decoration:none;border-radius:999px}.pw-week b{text-decoration:underline;text-underline-offset:3px}.pw-week:hover b{color:var(--moss-ink)}
 .pw-note:empty{display:none}.pw-note{text-align:center;margin:4px 0 0!important;font-size:12px}
@@ -567,7 +571,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="pw-hero"><img class="pw-hero-img" id="pwHeroImg" alt="" hidden><div class="pw-hero-shade"></div><img class="pw-hero-logo" src="assets/logo-light.png" alt="MycoField" width="124" height="32"><div class="pw-hero-txt"><p class="pw-eyebrow" id="pwEyebrow">Full access</p><h2 id="pwTitle">Keep reading the ground.</h2></div></div>
 <div class="pw-body">
 <p class="pw-step" id="pwStep"></p>
-<div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>Less than 16p a week · one payment · nothing renews by itself</small></div></div><p class="pw-alt" id="pwAlt" hidden>Only need a week? <b>£2 for 7 days</b>. You’ll pick after your email.</p>
+<p class="pw-lead" id="pwLead" hidden></p><div class="pw-pricebox" id="pwPrice"><div class="pw-amount"><span>£</span>8</div><div class="pw-per"><b>for a whole year</b><small>Less than 16p a week · one payment · nothing renews by itself</small></div></div><p class="pw-alt" id="pwAlt" hidden>Only need a week? <b>£2 for 7 days</b>. You’ll pick after your email.</p>
 <ul class="pw-feats" id="pwList"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Any spot you tap</b> — rain, soil moisture, cold nights and frost over the last month</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Official habitat maps</b> across Great Britain, and grazing in Wales</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span><b>Unlimited saved areas</b>, finds and blanks, synced to your account</span></li></ul>
 <div id="pwPay"><a class="btn lime pw-cta" id="pwPayBtn" href="#" rel="noopener">Pay £8 · get in now</a><a class="pw-week" id="pwWeekBtn" href="#" rel="noopener" hidden>Just this week? <b>£2 for 7 days</b></a><p class="pw-trust"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Secured by Stripe · Apple Pay · Google Pay · card</span></p><p class="small pw-note" id="pwPayNote"></p></div>
 <div id="pwChecking" hidden><div class="pw-spin" aria-hidden="true"></div><p class="small" id="pwCheckingText">Confirming your payment…</p></div>
@@ -581,6 +585,14 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="mb-video"><video id="mbVideo" playsinline muted preload="none" aria-describedby="mbCaption"></video><p class="sr" id="mbCaption"></p>
 <button class="mb-sound mb-icon" type="button" data-video="mbVideo" aria-label="Play with sound"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button></div>
 <button class="mb-close mb-icon" id="mbGo" type="button" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
+<div class="gate" id="leadBox" hidden role="dialog" aria-modal="true" aria-labelledby="leadTitle"><div class="gate-card mascot-card">
+<p class="pw-step" id="leadStep">Before your free look ends</p>
+<h2 id="leadTitle">Want a spot near you?</h2>
+<div id="leadAsk"><p>Every night MycoField scores Britain and keeps the strongest spots. Give us your postcode and we’ll pin <b>today’s best one nearest you</b>. We’ll email you a code to sign in, and it opens on your map once you’re in, from <b>£2 for a week</b>.</p>
+<form class="lead-form" id="leadForm" novalidate><input class="field" id="leadEmail" type="email" placeholder="Your email" autocomplete="email" required aria-label="Email address"><input class="field" id="leadPostcode" placeholder="Your postcode, e.g. LL23 7BS" autocomplete="postal-code" autocapitalize="characters" maxlength="10" required aria-label="Postcode"><p class="lead-err" id="leadErr" role="alert" hidden></p><button class="btn lime" id="leadBtn" type="submit">Find my spot</button></form>
+<button class="pw-link lead-skip" id="leadSkip" type="button">No thanks, keep looking</button></div>
+<div id="leadDone" hidden><p id="leadFound"></p><p id="leadSent"></p><button class="btn lime" id="leadCode" type="button">Enter my code</button></div>
+</div></div>
 <div class="gate" id="spotsOffer" hidden role="dialog" aria-modal="true" aria-labelledby="soTitle"><div class="gate-card mascot-card"><div class="mb-video" id="soVideoWrap" hidden><video id="soVideo" playsinline muted preload="none" aria-describedby="soCaption"></video><button class="mb-sound" type="button" data-video="soVideo">Sound on</button></div>
 <p class="sr" id="soCaption"></p>
 <p class="pw-step">Before you get started</p>
@@ -626,6 +638,7 @@ const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
 // £2 for 7 days: a second Stripe Payment Link (after payment → https://www.mycofield.com/?paid=1). Empty = option hidden.
 const WEEK_PAYMENT_LINK = 'https://buy.stripe.com/28E5kC7gFeOddyxa3HeAg06';
+const LEAD_OFFER_AT = 60;   // seconds left in the free look when "a spot near you" is offered (0 = off)
 const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 180;  // 3-minute free look
 // Spot credits: a second Stripe Payment Link (one-off £20 → SPOT_COUNT credits for 12 months).
 // Empty link, or SPOTS_ENABLED false, hides the offer, the ★ button, the pins and the sheet.
@@ -722,6 +735,91 @@ function distanceKm([lon1, lat1], [lon2, lat2]) {
 function coordLink(lat, lon, elevation, dp = 5) {
   const shown = fmtCoord(lat, lon, dp), full = fmtCoord(lat, lon, 5);
   return `<button type="button" class="earth" data-copy="${full}" title="Copy coordinates" aria-label="Copy coordinates ${full}">${shown}<svg class="i cp" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></button>`;
+}
+// ---------- a spot near you: email + postcode near the end of the free look ----------
+// Pins today's nearest scanned spot to that email (supabase/lead-spots.sql) and sends the usual sign-in code.
+// The spot opens only for that email once it's signed in with access, from £2 a week.
+const LEAD_KEY = 'mycofield-lead-v1';
+const leadInfo = () => readJSON(LEAD_KEY, null);
+const leadWaiting = () => { const li = leadInfo(); return !!li?.score && !li.opened; };
+function offerLead(left) {
+  if (!LEAD_OFFER_AT || left > LEAD_OFFER_AT * 1000 || session || leadInfo() || !$('leadBox').hidden || !$('paywall').hidden || !$('walkthrough').hidden) return;
+  writeJSON(LEAD_KEY, {asked: Date.now()});   // offered once per device
+  clearInterval(gate.trialTimer);             // the free look waits while they fill it in
+  closeSearch?.(); $('leadAsk').hidden = false; $('leadDone').hidden = true; $('leadErr').hidden = true;
+  $('leadStep').textContent = 'Before your free look ends'; $('leadTitle').textContent = 'Want a spot near you?';
+  $('leadBox').hidden = false;
+}
+function skipLead() {
+  $('leadBox').hidden = true;
+  const t = readJSON(TRIAL_KEY, {});
+  writeJSON(TRIAL_KEY, {...t, trialEndsAt: Math.max(t.trialEndsAt || 0, Date.now() + 45000)});   // the rest of their look, not zero
+  startTrial();
+}
+// Postcode → its centre (postcodes.io, free and open). A full postcode or just the first half works.
+async function postcodeCentre(raw) {
+  const pc = raw.toUpperCase().replace(/\s+/g, ' ').trim();
+  const full = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/.test(pc), out = /^[A-Z]{1,2}\d[A-Z\d]?$/.test(pc);
+  if (!full && !out) throw Object.assign(new Error('bad_postcode'), {code: 'bad_postcode'});
+  let r;
+  try { r = await fetch(`https://api.postcodes.io/${full ? 'postcodes' : 'outcodes'}/${encodeURIComponent(pc)}`); }
+  catch { throw Object.assign(new Error('offline'), {code: 'offline'}); }
+  const d = await r.json().catch(() => ({})), x = d?.result;
+  if (!r.ok || !Number.isFinite(x?.latitude) || !Number.isFinite(x?.longitude)) throw Object.assign(new Error('bad_postcode'), {code: 'bad_postcode'});
+  return {postcode: x.postcode || x.outcode || pc, lat: x.latitude, lon: x.longitude};
+}
+const LEAD_ERRORS = {bad_postcode: 'We couldn’t find that postcode. Try the first half, like LL23.', bad_email: 'Check your email address.',
+  no_spots: 'No strong spots were found in today’s scan. Your sign-in code is on its way anyway.', busy: 'Lots of people asking right now. Try again in a minute.',
+  offline: 'Couldn’t reach MycoField. Check your signal and try again.'};
+async function pinLeadSpot(email, where) {
+  const got = await sbFetch('/rest/v1/rpc/lead_spot', {method: 'POST', auth: false, body: {p_email: email, p_postcode: where.postcode, p_lat: where.lat, p_lon: where.lon}});
+  return Array.isArray(got) ? got[0] : got;
+}
+async function submitLead(e) {
+  e.preventDefault();
+  const btn = $('leadBtn'), email = $('leadEmail').value.trim(), raw = $('leadPostcode').value.trim(), err = m => { $('leadErr').textContent = m; $('leadErr').hidden = !m; };
+  err('');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return err(LEAD_ERRORS.bad_email);
+  if (!raw) return err('Add your postcode.');
+  btn.disabled = true; btn.textContent = 'Finding your spot…';
+  try {
+    const where = await postcodeCentre(raw);
+    let x = await pinLeadSpot(email, where).catch(er => { if (/no_spots/.test(er.message)) return null; throw er; });
+    await sendSignInEmail(email, btn);                       // the usual 6-digit code (and it offers a fix for "outlook.con")
+    if (!sync.pendingEmail) return;                          // the email didn't send; the toast says why
+    if (x && sync.pendingEmail.toLowerCase() !== email.toLowerCase()) x = await pinLeadSpot(sync.pendingEmail, where).catch(() => x);
+    if (x) writeJSON(LEAD_KEY, {email: sync.pendingEmail, postcode: x.postcode || where.postcode, score: x.score, km: x.km, region: x.region, at: Date.now()});
+    $('leadAsk').hidden = true; $('leadDone').hidden = false; $('leadStep').textContent = x ? 'Pinned for you' : 'Check your email';
+    $('leadTitle').textContent = x ? 'Found one near you.' : 'Nothing strong today.';
+    $('leadFound').innerHTML = x ? `Today it scores <b>${x.score}/100</b>, about <b>${Math.max(1, Math.round(x.km))} km</b> from ${esc(x.postcode || where.postcode)}${x.region ? `, in ${esc(String(x.region).split(',')[0])}` : ''}.`
+      : esc(LEAD_ERRORS.no_spots);
+    $('leadSent').innerHTML = `We’ve emailed a 6-digit code to <b>${esc(sync.pendingEmail)}</b>. Sign in${x ? ', then unlock it from <b>£2 for a week</b>. It opens straight onto your map.' : ' to carry on.'}`;
+    $('leadCode').focus({preventScroll: true});
+  } catch (er) {
+    const code = er.code || (/bad_email/.test(er.message) ? 'bad_email' : /bad_postcode/.test(er.message) ? 'bad_postcode' : /busy/.test(er.message) ? 'busy' : er.httpStatus === 404 ? 'off' : 'offline');
+    if (code === 'off') { skipLead(); return; }             // not set up on the server yet: carry on with the free look
+    err(LEAD_ERRORS[code] || LEAD_ERRORS.offline);
+  } finally { btn.disabled = false; btn.textContent = 'Find my spot'; }
+}
+let leadOpening = false;
+async function openLeadSpot() {
+  if (!session || leadOpening || (paywallOn() && !hasAccess())) return;
+  const li = leadInfo(), uid = session.user?.id, checked = readJSON('mycofield-lead-checked', {});
+  if (!leadWaiting() && checked[uid]) return;              // nothing pinned on this device, and this account has been asked once
+  leadOpening = true;
+  try {
+    const got = await sbFetch('/rest/v1/rpc/open_lead_spot', {method: 'POST', body: {}});
+    const x = Array.isArray(got) ? got[0] : got;
+    writeJSON('mycofield-lead-checked', {...checked, [uid]: true});
+    if (li?.score) writeJSON(LEAD_KEY, {...li, opened: true});
+    if (x) whenMapReady(() => { switchView('map'); analysePoint(x.lat, x.lon, {zoom: 13.5, place: x.name || 'Your spot'}); toast(`Here’s your spot near ${x.postcode}.`); });
+  } catch (err) { if (!/access_required/.test(err.message)) writeJSON('mycofield-lead-checked', {...checked, [uid]: true}); }
+  finally { leadOpening = false; }
+}
+function initLead() {
+  $('leadForm').onsubmit = submitLead;
+  $('leadSkip').onclick = skipLead;
+  $('leadCode').onclick = () => { $('leadBox').hidden = true; showPaywall(); setTimeout(() => $('pwCode')?.focus({preventScroll: true}), 200); };
 }
 // ---------- ask: a chat that explains why one area scores better than another ----------
 // The app sends the readings it already shows (no coordinates) to the `ask` function, which asks Claude and
@@ -1433,7 +1531,7 @@ const CAMERA_KEY = 'mycofield-camera', DEFAULT_CAMERA = {center: [-2.2, 52.9], z
 const hadCamera = (() => { try { return !!localStorage.getItem(CAMERA_KEY); } catch { return false; } })();
 let askingLocation = false;
 async function firstRunLocate() {
-  if (!navigator.geolocation || hadCamera || deepLink || pendingShare() || askingLocation || pref('mycofield-asked-location', false)) return;
+  if (!navigator.geolocation || hadCamera || deepLink || pendingShare() || leadWaiting() || askingLocation || pref('mycofield-asked-location', false)) return;
   askingLocation = true;
   // Our own card first, so the browser's permission box never appears out of nowhere.
   const go = await askConfirm('Start from where you are?', 'MycoField can centre the map on your location. It stays on your phone and is never saved or shared.', {ok: 'Use my location', cancel: 'Not now'});
@@ -2786,7 +2884,7 @@ async function runSync() {
   return sync.running;
 }
 function renderSync() {
-  queueMicrotask(() => { try { renderSpots(); } catch {} if (session && pendingShare() && (hasAccess() || !paywallOn())) openSharedSpot(); });
+  queueMicrotask(() => { try { renderSpots(); } catch {} if (session && pendingShare() && (hasAccess() || !paywallOn())) openSharedSpot(); if (session && hasAccess()) openLeadSpot(); });
   const card = $('syncCard'); if (!card) return;
   card.hidden = !syncEnabled();
   const signedIn = !!session, chip = $('syncChip');
@@ -2846,7 +2944,7 @@ const SLIDES = [
   ['Log finds and blanks.', 'Your own records test the index against what you actually find, so it keeps getting sharper.']
 ];
 function openApp(offer = true) {
-  openSharedSpot();
+  openSharedSpot(); openLeadSpot();
   const located = maybeWelcome().then(firstRunLocate);  // one card at a time: welcome, then location, then the offer
   if (session && SPOTS_ENABLED) checkSpotsReady().then(() => spotsOn() && refreshSpots())
     .catch(() => {}).finally(() => { if (offer) located.then(maybeOfferSpots); });
@@ -2880,12 +2978,12 @@ function finishWalkthrough() {
 // The free look runs silently — no countdown on screen — then the paywall closes it.
 function startTrial() {
   const endsAt = readJSON(TRIAL_KEY, {}).trialEndsAt;
-  const tick = () => { if (Date.now() >= endsAt) { clearInterval(gate.trialTimer); showPaywall(); } };
+  const tick = () => { if (Date.now() >= endsAt) { clearInterval(gate.trialTimer); showPaywall(); } else offerLead(endsAt - Date.now()); };
   tick(); clearInterval(gate.trialTimer); gate.trialTimer = setInterval(tick, 250);
 }
 function showPaywall() {
   closeSearch?.();
-  document.body.classList.add('gated'); $('paywall').hidden = false; $('walkthrough').hidden = true; renderPaywall();
+  document.body.classList.add('gated'); $('paywall').hidden = false; $('walkthrough').hidden = $('leadBox').hidden = true; renderPaywall();
 }
 function weekBuyHref() {
   const q = new URLSearchParams({client_reference_id: session?.user?.id || '', ...(session?.user?.email ? {prefilled_email: session.user.email} : {})});
@@ -2910,6 +3008,9 @@ function renderPaywall() {
   $('pwPrice').hidden = $('pwList').hidden = gate.checking || login;
   // Before sign-in (older two-step flow) the week pass can't be bought yet, so it's named here and chosen at step 2.
   $('pwAlt').hidden = gate.checking || login || signedIn || direct || !WEEK_PAYMENT_LINK;
+  const li = leadInfo();
+  $('pwLead').hidden = !li?.score || li.opened || gate.checking || login || (signedIn && hasAccess());
+  if (li?.score) $('pwLead').textContent = `📍 Your spot near ${li.postcode} (${li.score} today) opens as soon as you’re in, from £2 for a week.`;
   $('pwChecking').hidden = !gate.checking;
   $('pwSignIn').hidden = !showSignIn;
   $('pwLoginH').hidden = !login || verifying;
@@ -3094,7 +3195,7 @@ function tickNumbers(root) {
   document.querySelectorAll('.gate-card').forEach(c => { c.tabIndex = -1; });
   const gates = [...document.querySelectorAll('.gate')], behind = ['header', 'main', 'nav'].map(q => document.querySelector(q)).filter(Boolean);
   const top = () => gates.filter(g => !g.hidden).sort((a, b) => (+getComputedStyle(b).zIndex || 0) - (+getComputedStyle(a).zIndex || 0))[0];
-  const ESC = {askPanel: () => closeAsk(), askBox: () => $('askCancel').click(), payBox: () => closeCheckout(), spotsOffer: () => $('soSkip').click()};
+  const ESC = {leadBox: () => { if (!$('leadAsk').hidden) skipLead(); else $('leadCode').click(); }, askPanel: () => closeAsk(), askBox: () => $('askCancel').click(), payBox: () => closeCheckout(), spotsOffer: () => $('soSkip').click()};
   const focusables = g => [...g.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,iframe,[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent);
   let returnTo = null;
   new MutationObserver(() => {
@@ -3457,7 +3558,7 @@ function init() {
   $('exportGeo').onclick = () => exportData('geojson');
   $('pcMoreBtn').onclick = () => setPointExpanded(!$('pointCard').classList.contains('expanded'));
   $('pcShare').onclick = shareSpot;
-  initAsk();
+  initAsk(); initLead();
   sheetGestures($('pointCard'), {tap: () => setPointExpanded(!$('pointCard').classList.contains('expanded')), up: () => setPointExpanded(true), down: () => $('pointCard').classList.contains('expanded') ? setPointExpanded(false) : clearPointAnalysis()});
   sheetGestures($('areaCard'), {down: closeAreaCard});
   sheetGestures($('savedSheet'), {down: closeSaved});

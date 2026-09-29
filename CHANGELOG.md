@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.37.0 — A spot near you
+- A minute before the free look ends: "Want a spot near you?" Email + postcode (postcodes.io turns it into
+  a position) pins today's nearest scanned spot to that email and sends the usual sign-in code. The pop-up
+  shows only the score, distance and county. The free look pauses while it's open; "No thanks" gives the
+  rest of the look back. Offered once per device.
+- The spot opens on the map once that same email is signed in with access (from £2 a week), on any device.
+  The paywall shows "Your spot near LL23 7BS (94 today) opens as soon as you're in".
+- Needs supabase/lead-spots.sql. Privacy page updated.
+
 ## 2.36.1 — £2 week pass shown before sign-in
 - The pop-up's first step and the signed-out Account card now show the £2 for 7 days option (it was only
   visible after verifying an email). Picked at step 2 as before.
