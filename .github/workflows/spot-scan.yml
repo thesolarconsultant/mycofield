@@ -1,10 +1,20 @@
 # Nightly: score the UK with the live app and load the day's sellable spots (scanner/scan.cjs).
 name: Nightly spot scan
+run-name: ${{ inputs.dry_run && 'Spot scan (dry run)' || 'Nightly spot scan' }}
 on:
   schedule:
     - cron: '17 2 * * *'   # 02:17 UTC (03:17 UK summer time)
     - cron: '43 4 * * *'   # backup: GitHub sometimes starts schedules hours late or not at all
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Test only: score but do not load spots'
+        type: boolean
+        default: false
+      bbox:
+        description: 'Test only: limit to "south,west,north,east"'
+        type: string
+        default: ''
 concurrency: spot-scan
 permissions:
   actions: read
@@ -14,13 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-      # A scheduled run stands down if today's scan already succeeded (manual runs always go).
+      # A scheduled run stands down if today's real scan already succeeded (manual runs always go; dry runs don't count).
       - id: done
         if: github.event_name == 'schedule'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          n=$(gh api "repos/${{ github.repository }}/actions/workflows/spot-scan.yml/runs?status=success&created=>=$(date -u +%F)" --jq '.total_count') || n=0   # can't tell → scan anyway
+          n=$(gh api "repos/${{ github.repository }}/actions/workflows/spot-scan.yml/runs?status=success&per_page=100&created=>=$(date -u +%F)" --jq '[.workflow_runs[] | select(.display_title | test("dry run") | not)] | length') || n=0   # can't tell → scan anyway
           echo "today=$n" >> "$GITHUB_OUTPUT"; echo "successful scans today: $n"
       - uses: actions/checkout@v4
         if: steps.done.outputs.today == '0' || github.event_name != 'schedule'
@@ -34,6 +44,8 @@ jobs:
         run: node scanner/scan.cjs
         env:
           SPOT_SCANNER_TOKEN: ${{ secrets.SPOT_SCANNER_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+          BBOX: ${{ inputs.bbox }}
       - uses: actions/upload-artifact@v4
         if: always() && (steps.done.outputs.today == '0' || github.event_name != 'schedule')
         with:

@@ -56,6 +56,11 @@ async function openApp(ctx) {
   for (let r = Math.floor(S0 / step); r * step < N0; r++)
     for (let q = Math.floor(W0 / ls); q * ls < E0; q++)
       cells.push({key: `${step}:${r}:${q}`, r, q, step, lonStep: ls, lat: +(r * step + step / 2).toFixed(4), lon: +(q * ls + ls / 2).toFixed(4)});
+  // Ireland is never sold, so don't spend weather requests on it (Kintyre, Islay and the Rhins stay; Cornwall
+  // and Pembrokeshire sit south of 51.3° or east of 5.35°W).
+  const inIreland = (lat, lon) => lat > 51.3 && lat < 55.45 && lon < -5.35 && !(lat > 55.25 && lon > -5.9);
+  const all = cells.length; cells.splice(0, cells.length, ...cells.filter(c => !inIreland(c.lat, c.lon)));
+  log(`grid: ${cells.length} squares (${all - cells.length} in Ireland skipped)`);
   const land = [];
   for (let i = 0; i < cells.length; i += 100) {
     const batch = cells.slice(i, i + 100);
@@ -85,10 +90,16 @@ async function openApp(ctx) {
           const m = __mf, h = m.fetchHabitat(lat, lon, {}).catch(m.habitatUnavailable);
           const [w, t] = await Promise.allSettled([m.fetchPointWeather(lat, lon, {}), m.analyseTerrain(lat, lon, {})]);
           const ha = await h, res = m.buildPointResult(lat, lon, w, t, ha, null, null), L = ha?.land || {};
+          if (w.status === 'rejected') return {weatherFailed: String(w.reason?.message || w.reason).slice(0, 80)};
           return {score: res.conditions?.score ?? null, cls: res.habitat?.cls || null, habitat: res.habitat?.label || null,
             nation: L.covered ? L.nation : null, accessLand: L.accessLand ?? null, commonLand: L.commonLand || null, grazing: L.grazing || null,
             rain14: res.weather?.rain14 ?? null, low: res.weather?.latestLow ?? null, elev: res.terrain?.elevation ?? null};
         }, pt);
+        // The weather API allows so many calls a minute; a square that hits the limit waits and goes round again.
+        if (r.weatherFailed) {
+          if ((pt.tries || 0) < 3) { log('weather limit, retrying', pt.lat, pt.lon, r.weatherFailed); pts.push({...pt, tries: (pt.tries || 0) + 1}); await sleep(61000); continue; }
+          log('point gave up (weather)', pt.lat, pt.lon); continue;
+        }
         scored.push({...pt, ...r});
       } catch (e) { log('point failed', pt.lat, pt.lon, String(e).slice(0, 80)); }
       if (scored.length % 50 === 0) log(`scored ${scored.length}/${pts.length}`);
