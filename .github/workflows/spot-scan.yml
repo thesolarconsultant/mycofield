@@ -3,23 +3,39 @@ name: Nightly spot scan
 on:
   schedule:
     - cron: '17 2 * * *'   # 02:17 UTC (03:17 UK summer time)
+    - cron: '43 4 * * *'   # backup: GitHub sometimes starts schedules hours late or not at all
   workflow_dispatch: {}
 concurrency: spot-scan
+permissions:
+  actions: read
+  contents: read
 jobs:
   scan:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
+      # A scheduled run stands down if today's scan already succeeded (manual runs always go).
+      - id: done
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh api "repos/${{ github.repository }}/actions/workflows/spot-scan.yml/runs?status=success&created=>=$(date -u +%F)" --jq '.total_count') || n=0   # can't tell → scan anyway
+          echo "today=$n" >> "$GITHUB_OUTPUT"; echo "successful scans today: $n"
       - uses: actions/checkout@v4
+        if: steps.done.outputs.today == '0' || github.event_name != 'schedule'
       - uses: actions/setup-node@v4
+        if: steps.done.outputs.today == '0' || github.event_name != 'schedule'
         with:
           node-version: 20
-      - run: npm install --no-save playwright@1.48.2 && npx playwright install --with-deps chromium
-      - run: node scanner/scan.cjs
+      - if: steps.done.outputs.today == '0' || github.event_name != 'schedule'
+        run: npm install --no-save playwright@1.48.2 && npx playwright install --with-deps chromium
+      - if: steps.done.outputs.today == '0' || github.event_name != 'schedule'
+        run: node scanner/scan.cjs
         env:
           SPOT_SCANNER_TOKEN: ${{ secrets.SPOT_SCANNER_TOKEN }}
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && (steps.done.outputs.today == '0' || github.event_name != 'schedule')
         with:
           name: spots
           path: spots.json
