@@ -3,7 +3,8 @@
 // answer back as plain text. The app sends a snapshot of the readings it already shows (scores, the parts
 // of each score, rain, soil, nights, terrain, habitat, the user's own finds); no coordinates.
 // Only signed-in accounts with access, and at most ASK_DAILY questions per account per day (supabase/ask.sql).
-// Secrets (Supabase → Edge Functions → Secrets): ANTHROPIC_API_KEY. Optional: ASK_DAILY (default 40).
+// Secrets (Supabase → Edge Functions → Secrets): ANTHROPIC_API_KEY. Optional: ASK_DAILY (default 40),
+//   ASK_MODEL (default claude-sonnet-5-5; claude-haiku-4-5 is cheaper, claude-opus-5-5 stronger).
 // Deploy with JWT verification OFF (browsers' pre-flight checks carry no token); the user's token is checked here.
 import Anthropic from 'npm:@anthropic-ai/sdk';
 import { createClient } from 'npm:@supabase/supabase-js@2';
@@ -11,6 +12,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 const SITE = (Deno.env.get('SITE_URL') || 'https://www.mycofield.com').replace(/\/$/, '');
 const ORIGINS = new Set([SITE, SITE.replace('://www.', '://'), 'https://mycofield.com', 'https://www.mycofield.com']);
 const DAILY = Number(Deno.env.get('ASK_DAILY') || 40);
+const MODEL = Deno.env.get('ASK_MODEL') || 'claude-sonnet-5-5';
+const HAIKU = MODEL.startsWith('claude-haiku');   // no effort setting or server-side fallback there
 const MAX_TURNS = 20, MAX_CHARS = 2000, MAX_CONTEXT = 60000;
 
 const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {auth: {persistSession: false}});
@@ -67,11 +70,13 @@ Deno.serve(async req => {
     async start(ctl) {
       try {
         const params = {
-          model: 'claude-opus-5-5', max_tokens: 8000,
-          output_config: {effort: 'low'},   // short chat answers; Opus 5.5 thinks adaptively at this level
+          model: MODEL, max_tokens: 8000,
           system: [{type: 'text', text: SYSTEM, cache_control: {type: 'ephemeral'}}],
           messages, cache_control: {type: 'ephemeral'},
-          betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default',   // a declined question is retried on Anthropic's pick
+          ...(HAIKU ? {} : {
+            output_config: {effort: 'low'},   // short chat answers
+            betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default',   // a declined question is retried on Anthropic's pick
+          }),
         };
         const s = claude.beta.messages.stream(params as any);
         for await (const ev of s) {
