@@ -121,7 +121,8 @@ async function openApp(ctx) {
   // 3. Keep only sellable spots, best first, at least SPACING_KM apart.
   const accessOf = s => s.nation === 'Scotland' ? 'Scottish access rights (Outdoor Access Code)'
     : s.accessLand ? 'Open access land (CRoW)' : s.commonLand ? `Registered common land${typeof s.commonLand === 'string' && s.commonLand !== 'Registered common land' ? `: ${s.commonLand}` : ''}` : null;
-  log('scored:', JSON.stringify(scored.map(s => [s.lat, s.lon, s.score, s.cls, s.nation, s.accessLand, s.commonLand ? 1 : 0])));
+  // Counts only: the Actions log is public, so it never lists where the strong squares are.
+  log('scored:', scored.length, 'squares;', scored.filter(s => s.score >= MIN_SCORE).length, `at ${MIN_SCORE}+`);
   const ok = scored.filter(s => s.score >= MIN_SCORE && GOOD.has(s.cls) && ['England', 'Wales', 'Scotland'].includes(s.nation) && accessOf(s))
     .sort((a, b) => b.score - a.score);
   const keep = [];

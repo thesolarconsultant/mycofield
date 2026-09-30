@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.40.0 — Free until 31 October
+- Every account gets full access until 31 October 2026 (`supabase/free-month.sql`: current accounts, plus a
+  sign-up trigger for new ones). Anyone already paid beyond that keeps their later date.
+- Until then the paywall shows no price: "Free until 31 October", then just an email and a code.
+- Security: after paying in the app you now sign in with a code emailed to the address you paid with. The
+  checkout no longer hands back a sign-in token, so typing someone else's email at Stripe can't open their account.
+- Security: "a spot near you" gives distance rounded up to the next 5 km and never shows a postcode someone else
+  entered. Promo codes no longer apply to spot credits. Checkout errors are generic.
+- Security: the site sends HSTS, nosniff, no-framing, referrer and permissions headers.
+- Scanner: the public Actions log shows counts only, and spots.json is uploaded only on dry runs.
+- Mascot subtitles are a small caption in the corner, shown on every screen size.
+
 ## 2.39.1 — Spots are grassland only; England habitat fixed
 - Sellable spots are now unimproved (semi-natural) grassland only: waxcap ground, never bog or heath.
   Wording on the paywall offer, Account and terms updated.

@@ -19,7 +19,6 @@ const PRODUCTS = {
 } as const;
 type Product = keyof typeof PRODUCTS;
 const ACCESS_DAYS = 365, WEEK_DAYS = 7, SPOT_CREDITS = 10, CREDIT_MONTHS = 12;
-const CLAIM_WINDOW_S = 48 * 3600;   // a return link signs in only within 2 days of paying
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const SITE = (Deno.env.get('SITE_URL') || 'https://www.mycofield.com').replace(/\/$/, '');
 const ORIGINS = new Set([SITE, SITE.replace('://www.', '://'), 'https://mycofield.com', 'https://www.mycofield.com']);
@@ -71,7 +70,7 @@ async function accountFor(email: string) {
     r = await db.auth.admin.generateLink({type: 'magiclink', email});
     if (r.error) throw r.error;
   }
-  return {userId: r.data.user.id, tokenHash: r.data.properties.hashed_token};
+  return {userId: r.data.user.id};   // never the sign-in token: Stripe doesn't prove the buyer owns this email
 }
 
 // Grant a paid session once. Returns what the buyer now has.
@@ -112,7 +111,7 @@ Deno.serve(async req => {
       const s = await stripe('checkout/sessions', {method: 'POST', body: {
         ui_mode: 'embedded', mode: 'payment', return_url: `${SITE}/?cs={CHECKOUT_SESSION_ID}`,
         line_items: {0: {quantity: 1, price_data: {currency: 'gbp', unit_amount: p.amount, product_data: {name: p.name, description: p.description}}}},
-        allow_promotion_codes: 'true', metadata: {product}, payment_intent_data: {description: p.name},
+        ...(product === 'spots' ? {} : {allow_promotion_codes: 'true'}), metadata: {product}, payment_intent_data: {description: p.name},
         ...(user ? {client_reference_id: user.id, customer_email: user.email} : {}),
       }});
       return json(req, {clientSecret: s.client_secret, publishableKey: Deno.env.get('STRIPE_PUBLISHABLE_KEY'), product});
@@ -128,12 +127,13 @@ Deno.serve(async req => {
       if (!email) return json(req, {error: 'no_email'}, 409);
       const acct = await accountFor(email);
       await fulfil(s, acct.userId, product);
-      const fresh = Date.now() / 1000 - s.created < CLAIM_WINDOW_S;
-      return json(req, {ok: true, product, email, ...(fresh ? {tokenHash: acct.tokenHash} : {})});
+      // The buyer signs in with a code sent to that inbox (the app asks for it), so typing someone else's
+      // email at checkout never opens their account.
+      return json(req, {ok: true, product, email});
     }
     return json(req, {error: 'bad_action'}, 400);
   } catch (e) {
     console.error('checkout', body?.action, e);
-    return json(req, {error: String((e as Error)?.message || e)}, 500);
+    return json(req, {error: 'server_error'}, 500);
   }
 });

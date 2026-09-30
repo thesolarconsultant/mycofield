@@ -279,9 +279,8 @@ html:has(body[data-view="map"]),body[data-view="map"]{height:100%;overflow:hidde
 .mb-video video{width:100%;height:100%;object-fit:cover;display:block}
 .mb-sound{position:absolute;right:10px;bottom:10px;min-height:40px;padding:8px 14px;border-radius:999px;border:0;background:rgba(11,61,46,.82);color:#fff;font:600 13px var(--body);cursor:pointer}
 .mb-sound:focus-visible{outline:2.5px solid var(--forest);outline-offset:2px;box-shadow:0 0 0 5px rgba(167,216,46,.6)}
-.mb-sub{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 20px);margin:0;padding:6px 11px;border-radius:12px;background:rgba(8,40,30,.66);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);color:#fff;font:600 14px/1.3 var(--body);text-align:center;pointer-events:none}
+.mb-sub{position:absolute;left:10px;bottom:14px;width:max-content;max-width:calc(100% - 72px);margin:0;padding:3px 8px;border-radius:8px;background:rgba(8,40,30,.55);color:#fff;font:600 11px/1.3 var(--body);text-align:left;pointer-events:none}
 .mb-sub:empty{display:none}
-@media(max-height:760px){.mascot-card .mb-sub{display:none}}
 .mb-caption{font-size:14px;color:var(--forest);font-style:italic;margin:0 0 12px}
 .ss-bal{font-size:15px;margin:0 0 6px}.ss-bal b{font-family:var(--head);font-size:22px;color:var(--forest)}
 .ss-nations{display:grid;gap:8px;margin:12px 0}
@@ -653,6 +652,8 @@ const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
 // £2 for 7 days: a second Stripe Payment Link (after payment → https://www.mycofield.com/?paid=1). Empty = option hidden.
 const WEEK_PAYMENT_LINK = 'https://buy.stripe.com/28E5kC7gFeOddyxa3HeAg06';
+// Free month (supabase/free-month.sql grants every account access until then): before sign-in the paywall just asks for an email.
+const FREE_MONTH_END = Date.parse('2026-10-31T23:59:59Z');
 const LEAD_OFFER_AT = 60;   // seconds left in the free look when "a spot near you" is offered (0 = off)
 const WALKTHROUGH_SECONDS = 15, TRIAL_SECONDS = 180;  // 3-minute free look
 // Spot credits: a second Stripe Payment Link (one-off £20 → SPOT_COUNT credits for 12 months).
@@ -784,7 +785,7 @@ async function postcodeCentre(raw) {
   return {postcode: x.postcode || x.outcode || pc, lat: x.latitude, lon: x.longitude};
 }
 const LEAD_ERRORS = {bad_postcode: 'We couldn’t find that postcode. Try the first half, like LL23.', bad_email: 'Check your email address.',
-  no_spots: 'No strong spots were found in today’s scan. Your sign-in code is on its way anyway.', busy: 'Lots of people asking right now. Try again in a minute.',
+  no_spots: 'No strong spots were found in today’s scan. Your sign-in code is on its way anyway.', busy: 'Lots of people asking right now. Try again in a minute.', already_pinned: 'This email already has a spot pinned this week. Sign in to see it.',
   offline: 'Couldn’t reach MycoField. Check your signal and try again.'};
 async function pinLeadSpot(email, where) {
   const got = await sbFetch('/rest/v1/rpc/lead_spot', {method: 'POST', auth: false, body: {p_email: email, p_postcode: where.postcode, p_lat: where.lat, p_lon: where.lon}});
@@ -806,12 +807,12 @@ async function submitLead(e) {
     if (x) writeJSON(LEAD_KEY, {email: sync.pendingEmail, postcode: x.postcode || where.postcode, score: x.score, km: x.km, region: x.region, at: Date.now()});
     $('leadAsk').hidden = true; $('leadDone').hidden = false; $('leadStep').textContent = x ? 'Pinned for you' : 'Check your email';
     $('leadTitle').textContent = x ? 'Found one near you.' : 'Nothing strong today.';
-    $('leadFound').innerHTML = x ? `Today it scores <b>${x.score}/100</b>, about <b>${Math.max(1, Math.round(x.km))} km</b> from ${esc(x.postcode || where.postcode)}${x.region ? `, in ${esc(String(x.region).split(',')[0])}` : ''}.`
+    $('leadFound').innerHTML = x ? `Today it scores <b>${x.score}/100</b>, within <b>${Math.max(5, Math.round(x.km))} km</b> of ${esc(x.postcode || where.postcode)}${x.region ? `, in ${esc(String(x.region).split(',')[0])}` : ''}.`
       : esc(LEAD_ERRORS.no_spots);
     $('leadSent').innerHTML = `We’ve emailed a 6-digit code to <b>${esc(sync.pendingEmail)}</b>. Sign up with it${x ? ' and we’ll show you how to unlock your spot. It opens straight onto your map.' : ' to carry on.'}`;
     $('leadCode').focus({preventScroll: true});
   } catch (er) {
-    const code = er.code || (/bad_email/.test(er.message) ? 'bad_email' : /bad_postcode/.test(er.message) ? 'bad_postcode' : /busy/.test(er.message) ? 'busy' : er.httpStatus === 404 ? 'off' : 'offline');
+    const code = er.code || (/bad_email/.test(er.message) ? 'bad_email' : /bad_postcode/.test(er.message) ? 'bad_postcode' : /busy/.test(er.message) ? 'busy' : /already_pinned/.test(er.message) ? 'already_pinned' : er.httpStatus === 404 ? 'off' : 'offline');
     if (code === 'off') { skipLead(); return; }             // not set up on the server yet: carry on with the free look
     err(LEAD_ERRORS[code] || LEAD_ERRORS.offline);
   } finally { btn.disabled = false; btn.textContent = 'Find my spot'; }
@@ -3082,17 +3083,19 @@ function renderPaywall() {
   // older two steps: verify an email, then pay with the Stripe link. Either way, anyone with an account
   // can log in from here (email → 6-digit code or one-tap link).
   const direct = pay.ready === true, verifying = !signedIn && !!sync.pendingEmail;
+  const free = !signedIn && !gate.checking && Date.now() < FREE_MONTH_END;
   const login = !signedIn && !gate.checking && (gate.login || (direct && verifying));   // the "log in" screen
-  const showSignIn = !signedIn && !gate.checking && (login || !direct || verifying);
+  const showSignIn = !signedIn && !gate.checking && (login || !direct || verifying || free);
   if (MASCOT.welcome.poster && !$('pwHeroImg').src) { const im = $('pwHeroImg'); im.onload = () => { im.hidden = false; }; im.src = MASCOT.welcome.poster; }
   $('pwEyebrow').textContent = login ? 'Log in' : 'Full access';
   $('pwTitle').textContent = gate.checking ? 'Thanks — nearly there.' : verifying ? 'Check your email.' : login ? 'Welcome back.'
-    : expired ? 'Your access has ended.' : signedIn ? '£8 to get in.' : 'That’s your free look.';
-  $('pwStep').textContent = gate.checking || expired || direct || login ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
+    : free ? 'Free until 31 October.' : expired ? 'Your access has ended.' : signedIn ? '£8 to get in.' : 'That’s your free look.';
+  $('pwStep').textContent = gate.checking || login ? '' : free ? (verifying ? 'Verify your email' : 'Just add your email') : expired || direct ? '' : signedIn ? 'Step 2 of 2 · you’re verified'
     : verifying ? 'Step 1 of 2 · verify your email' : 'Step 1 of 2 · start with your email';
   $('pwPrice').hidden = $('pwList').hidden = gate.checking || login;
+  if (free) $('pwPrice').hidden = true;
   // Before sign-in (older two-step flow) the week pass can't be bought yet, so it's named here and chosen at step 2.
-  $('pwAlt').hidden = gate.checking || login || signedIn || direct || !WEEK_PAYMENT_LINK;
+  $('pwAlt').hidden = gate.checking || login || signedIn || direct || free || !WEEK_PAYMENT_LINK;
   const li = leadInfo();
   $('pwLead').hidden = !li?.score || li.opened || gate.checking || login || (signedIn && hasAccess());
   if (li?.score) $('pwLead').textContent = `📍 Your spot near ${li.postcode} (${li.score} today) opens as soon as you’re in.`;
@@ -3107,8 +3110,9 @@ function renderPaywall() {
   $('pwCodeForm').hidden = $('pwChangeEmail').hidden = !sync.pendingEmail;
   $('pwSignInNote').textContent = sync.pendingEmail ? `We’ve emailed a 6-digit code to ${sync.pendingEmail}. Type it here, or tap the button in the email. (Check junk if it’s not there.)`
     : login ? 'Enter the email you use for MycoField. We’ll email you a 6-digit code and a one-tap link — no password.'
+    : free ? 'Everyone gets full access free until 31 October. No card needed: we’ll email you a code to sign in.'
     : 'We’ll send you a verification email. Your account holds your access and your records.';
-  $('pwPay').hidden = gate.checking || login || !(signedIn || direct);
+  $('pwPay').hidden = gate.checking || login || free || !(signedIn || direct);
   const btn = $('pwPayBtn');
   btn.textContent = expired ? 'Renew · £8 for another year' : direct ? 'Pay £8 · get in now' : 'Pay £8 securely with Stripe';
   // The week pass sits under the year as the smaller choice.
@@ -3180,14 +3184,17 @@ async function openCheckout(product) {
 }
 function closeCheckout() { try { pay.embed?.destroy(); } catch {} pay.embed = null; $('payBox').hidden = true; }
 // Back from the in-app checkout (?cs=…): the server checks the payment, makes the account for the Stripe
-// email if it's new, grants what was bought, and hands back a one-time sign-in — no email round trip.
+// email if it's new and grants what was bought. Signing in is still by a code sent to that email: paying
+// doesn't prove someone owns the address they typed.
 async function claimCheckout(cs) {
   gate.checking = true; showPaywall(); $('pwCheckingText').textContent = 'Payment received — setting up your account…';
   try {
     const d = await checkoutCall({action: 'claim', sessionId: cs});
-    if (d.tokenHash) {
-      setSession(await sbFetch('/auth/v1/verify', {method: 'POST', body: {type: 'magiclink', token_hash: d.tokenHash}, auth: false}));
-      sync.pendingEmail = null; renderSync(); runSync();
+    if (!session && d.email) {
+      gate.checking = false; gate.login = true;
+      await sendSignInEmail(d.email, $('pwEmailBtn'));
+      $('pwSignInNote').textContent = `Paid — thank you. We’ve emailed a 6-digit code to ${d.email}. Type it here to get in. (Check junk if it’s not there.)`;
+      return;
     }
     if (d.product === 'spots') {
       gate.checking = false;
@@ -3322,7 +3329,7 @@ function tickNumbers(root) {
 function subChunks(text) {
   const out = [];
   for (const p of String(text || '').replace(/[“”"]/g, '').split(/(?<=[.!?,—])\s+/).filter(Boolean))
-    if (out.length && out.at(-1).length + p.length < 44) out[out.length - 1] += ' ' + p; else out.push(p);
+    if (out.length && out.at(-1).length + p.length < 30) out[out.length - 1] += ' ' + p; else out.push(p);
   return out;
 }
 function playClip(id, clip) {

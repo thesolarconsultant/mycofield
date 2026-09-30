@@ -43,7 +43,7 @@ Deno.serve(async req => {
   if (event.type !== 'checkout.session.completed' && event.type !== 'checkout.session.async_payment_succeeded')
     return new Response('ignored', {status: 200});
   const s = event.data?.object ?? {};
-  // 'no_payment_required' = a 100%-off promo code (e.g. FREE4ALL); still a completed checkout.
+  // 'no_payment_required' = a 100%-off promo code; still a completed checkout.
   if (s.payment_status !== 'paid' && s.payment_status !== 'no_payment_required')
     return new Response('not paid yet', {status: 200});
   // What was bought comes from the session our checkout made (metadata) or, for the old Payment Links, the
