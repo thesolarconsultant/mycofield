@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.39.0 — Rain map with the week ahead, weather for any spot
+- The Rain view now runs from 14 days ago through today to 7 days ahead. Forecast days are dashed; "Last 7"
+  and "Next 7" show the totals. Tapping a day paints that day's (forecast) rain and says the temperature in
+  view, e.g. "Forecast · Tomorrow 1 · 15° / 10° in view". Same number of weather calls as before.
+- The spot card shows the weather there: today and the next 7 days, with a weather symbol, high/low and
+  rain. Always on in the Rain view; in the expanded card otherwise.
+
 ## 2.38.0 — Pick areas to compare
 - The assistant has a Compare row: every scored area (and the spot open on the map) with its score, best
   first. Tap two or more, then "Compare these two" asks why the leader is ahead and what holds the rest back.

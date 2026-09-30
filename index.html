@@ -346,12 +346,19 @@ button.earth .cp{width:13px;height:13px;stroke-width:2;opacity:.75}
 .rl-tabs button{border:0;background:transparent;border-radius:999px;padding:5px 11px;font:700 12px var(--body);color:var(--muted);cursor:pointer;min-height:30px}
 .rl-tabs button[aria-selected="true"]{background:var(--forest);color:#fff}
 .ready-legend .rbar.rain{background:linear-gradient(90deg,rgba(170,210,255,.6),rgba(90,160,245,.8),rgba(40,110,220,.9),rgba(25,60,170,1))}
-.rain-days{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-top:6px;padding-bottom:2px;overscroll-behavior-x:contain}
+.rain-days{position:relative;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-top:6px;padding-bottom:2px;overscroll-behavior-x:contain}
 .rain-days::-webkit-scrollbar{display:none}
 .rain-days button{flex:none;display:grid;justify-items:center;gap:2px;min-width:40px;border:1px solid var(--line-2);background:#fff;border-radius:10px;padding:4px 5px 3px;font:600 11px var(--body);color:var(--forest);cursor:pointer}
 .rain-days button[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:#fff}
 .rain-days button i{display:block;width:14px;height:22px;border-radius:3px;background:linear-gradient(0deg,rgba(40,110,220,.85) var(--h,0%),var(--stone-2) var(--h,0%))}
 .rain-days button[aria-pressed="true"] i{background:linear-gradient(0deg,#9fd0ff var(--h,0%),rgba(255,255,255,.2) var(--h,0%))}
+.rain-days button.fc{border-style:dashed}.rain-days button.fc i{background:linear-gradient(0deg,rgba(40,110,220,.45) var(--h,0%),var(--stone-2) var(--h,0%))}
+.rain-days button.fc[aria-pressed="true"] i{background:linear-gradient(0deg,#9fd0ff var(--h,0%),rgba(255,255,255,.2) var(--h,0%))}
+.pc-wx{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:8px 0 2px;padding-bottom:2px}.pc-wx::-webkit-scrollbar{display:none}
+.pc-wx div{flex:none;display:grid;justify-items:center;gap:1px;min-width:56px;padding:6px 6px 5px;border-radius:12px;background:var(--stone-2);font-size:12px;color:var(--text)}
+.pc-wx b{font-size:11.5px;color:var(--forest)}.pc-wx span{font-size:18px;line-height:1.1}.pc-wx em{font-style:normal;font-weight:700;color:var(--forest)}.pc-wx small{color:var(--sky-ink);font-weight:600}
+.sheet:not(.expanded) .pc-wx{display:none}body.layer-rain .sheet .pc-wx{display:flex}
+.rain-when{display:block;margin-top:4px;font-weight:600;color:var(--forest)}
 .rain-days button.wk{min-width:52px}.rain-days em{font-style:normal;font-size:10.5px;opacity:.8}
 .mapwrap.searching .ready-legend{display:none}
 .spots-fab{background:var(--forest);color:var(--lime);font-size:20px}
@@ -511,7 +518,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <section class="view active" id="view-map"><div class="mapwrap" id="mapwrap"><div id="map"></div>
 <div class="topbar"><form class="searchbar" id="searchRow" role="search"><img class="sb-logo" src="./assets/logo-mark.png" alt="" width="35" height="27"><input id="searchInput" type="search" placeholder="Search place or postcode" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search places"><button class="sb-btn" type="button" id="searchCancel" hidden aria-label="Cancel search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button class="sb-btn" type="button" id="savedBtn" aria-label="Saved areas" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button></form><div class="results" id="searchResults" hidden aria-live="polite"></div></div>
 <div class="fabs"><button class="fab" id="terrainBtn" type="button" aria-pressed="true" aria-label="3D terrain on — switch to flat">3D</button><button class="fab" id="locateBtn" type="button" aria-label="Analyse my location"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></button><button class="fab spots-fab" id="spotsFab" type="button" hidden aria-label="My spots">★</button><button class="fab" id="readyBtn" type="button" aria-pressed="false" aria-label="Show live ready ground"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></button><button class="fab" id="satBtn" type="button" hidden aria-pressed="false" aria-label="Satellite view">SAT</button></div>
-<div class="ready-legend" id="readyLegend" hidden><div class="rl-tabs" role="tablist" aria-label="Map layer"><button type="button" role="tab" id="modeReady" aria-selected="true">Ready ground</button><button type="button" role="tab" id="modeRain" aria-selected="false">Rain</button></div><div id="readyKey"><span class="k"><span class="rbar"></span></span><span class="rl"><span>Building</span><span>Good</span><span>Strong</span></span></div><div id="rainKey" hidden><span class="k"><span class="rbar rain"></span></span><span class="rl" id="rainScale"></span><div class="rain-days" id="rainDays" role="group" aria-label="Pick a day"></div></div><small id="readyNote">Live weather</small></div>
+<div class="ready-legend" id="readyLegend" hidden><div class="rl-tabs" role="tablist" aria-label="Map layer"><button type="button" role="tab" id="modeReady" aria-selected="true">Ready ground</button><button type="button" role="tab" id="modeRain" aria-selected="false">Rain</button></div><div id="readyKey"><span class="k"><span class="rbar"></span></span><span class="rl"><span>Building</span><span>Good</span><span>Strong</span></span></div><div id="rainKey" hidden><span class="k"><span class="rbar rain"></span></span><span class="rl" id="rainScale"></span><div class="rain-days" id="rainDays" role="group" aria-label="Pick a day"></div><small class="rain-when" id="rainWhen"></small></div><small id="readyNote">Live weather</small></div>
 <div class="sheet" id="areaCard" hidden role="region" aria-label="Area summary">
 <button class="handle" type="button" aria-label="Area summary — swipe down to close"></button>
 <div class="sh-head"><div class="ring sm" id="ring"><b id="scoreValue">…</b></div><div class="sh-title"><span class="kicker"><span id="areaKicker">Saved area</span><span id="areaStatus" class="chip loading">Loading</span></span><h2 id="areaName"></h2><p id="scoreTitle">Loading live conditions…</p></div><div class="sh-tools"><button class="iconbtn" id="areaClose" type="button" aria-label="Close area summary"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
@@ -523,7 +530,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <button class="handle" type="button" id="pcHandle" aria-label="Show more detail" aria-expanded="false"></button>
 <div class="sh-head"><div class="ring sm" id="pcRing"><b id="pcScore">…</b></div><div class="sh-title"><span class="kicker">Exact point <span id="pcStatus" class="chip loading">Loading</span></span><h2 id="pcLabel">Analysing this point…</h2><p id="pcCoords"></p></div><div class="sh-tools"><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
 <div id="pcLoading" class="loadingbar"></div>
-<div class="strip" id="pcStrip"></div>
+<div class="strip" id="pcStrip"></div><div class="pc-wx" id="pcWx" role="list" aria-label="Weather here, the next 8 days"></div>
 <div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcLand"></p><p class="sh-note" id="pcGrid"></p></div>
 <div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcShare" type="button" aria-label="Share this spot" title="Share this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="btn secondary icon" id="pcAsk" type="button" aria-label="Ask how this spot compares with your areas" title="Ask about this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg></button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
@@ -1610,12 +1617,13 @@ const READY_KEY = 'mycofield-ready', READY_MAX_CELLS = 120, READY_TTL = 3 * 60 *
 const ready = {on: pref(READY_KEY, true), cells: new Map(), timer: null, token: 0, step: null, pausedUntil: 0,
   mode: (() => { try { return localStorage.getItem('mycofield-layer-mode') === 'rain' ? 'rain' : 'ready'; } catch { return 'ready'; } })(), day: 'week'};
 const RAIN_DAYS = 15;   // today and the 14 days before it
+const READY_AHEAD = 7;  // and the forecast for the week ahead: [mm, high, low, weather code] for today … +7
 // Scores are kept on the phone for READY_TTL, so reopening the app paints the layer at once, with no calls.
 const READY_STORE = 'mycofield-ready-cells-v1';
-try { for (const [k, [score, at, rain]] of Object.entries(JSON.parse(localStorage.getItem(READY_STORE) || '{}'))) if (Date.now() - at < READY_TTL) ready.cells.set(k, {score, at, rain}); } catch {}
+try { for (const [k, [score, at, rain, fut]] of Object.entries(JSON.parse(localStorage.getItem(READY_STORE) || '{}'))) if (Date.now() - at < READY_TTL) ready.cells.set(k, {score, at, rain, fut}); } catch {}
 function saveReady() {
   const o = {};
-  for (const [k, d] of ready.cells) { if (Date.now() - d.at >= READY_TTL) ready.cells.delete(k); else o[k] = [d.score, d.at, d.rain]; }
+  for (const [k, d] of ready.cells) { if (Date.now() - d.at >= READY_TTL) ready.cells.delete(k); else o[k] = [d.score, d.at, d.rain, d.fut]; }
   try { localStorage.setItem(READY_STORE, JSON.stringify(o)); } catch {}
 }
 // The finest square size (0.025° ≈ 2.5 km, about the UK weather model's own resolution) that keeps
@@ -1644,21 +1652,23 @@ function readyCellsInView() {
   return out.sort((a, b2) => distanceKm([a.lon, a.lat], [c.lng, c.lat]) - distanceKm([b2.lon, b2.lat], [c.lng, c.lat])).slice(0, Math.round(READY_MAX_CELLS * 1.3));
 }
 async function fetchReadyBatch(cells) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${cells.map(c => c.lat).join(',')}&longitude=${cells.map(c => c.lon).join(',')}&daily=${DAILY_VARS}&current=${SOIL_VARS_FORECAST.join(',')}&past_days=${READY_PAST_DAYS}&forecast_days=1&timezone=${encodeURIComponent(TZ)}`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${cells.map(c => c.lat).join(',')}&longitude=${cells.map(c => c.lon).join(',')}&daily=${DAILY_VARS}&current=${SOIL_VARS_FORECAST.join(',')}&past_days=${READY_PAST_DAYS}&forecast_days=${READY_AHEAD + 1}&timezone=${encodeURIComponent(TZ)}`;
   const data = await fetchJSON(url), rows = Array.isArray(data) ? data : [data], today = todayISO();
   cells.forEach((c, i) => {
     const r = rows[i];
-    let score = null, rain = null;
+    let score = null, rain = null, fut = null;
     // Sea squares come back at elevation 0: leave them uncoloured.
     if (r?.daily?.time && r.elevation > 0.5) {
       const t0 = r.daily.time.indexOf(today), mm = r.daily.precipitation_sum || [];
       if (t0 >= 0) rain = Array.from({length: RAIN_DAYS}, (_, k) => { const v = mm[t0 - k]; return Number.isFinite(v) ? Math.round(v * 10) / 10 : null; });
+      const n1 = v => Number.isFinite(v) ? Math.round(v * 10) / 10 : null, D = r.daily;
+      if (t0 >= 0) fut = Array.from({length: READY_AHEAD + 1}, (_, j) => [n1(mm[t0 + j]), n1(D.temperature_2m_max?.[t0 + j]), n1(D.temperature_2m_min?.[t0 + j]), D.weather_code?.[t0 + j] ?? null]);
       const soil = SOIL_VARS_FORECAST.map(v => r.current?.[v]).filter(Number.isFinite);
       const days = enrichDays(toDays(r.daily, soil.length ? {[today]: soil.reduce((a, b) => a + b, 0) / soil.length} : {}));
       const t = days.findIndex(d => d.date === today);
       if (t >= 13) score = calculateConditionsIndex(envAt(days, t)).score;
     }
-    ready.cells.set(c.key, {...c, score, rain, at: Date.now()});
+    ready.cells.set(c.key, {...c, score, rain, fut, at: Date.now()});
   });
 }
 // Score → colour: amber (building, faint) → lime (good) → bright green (strong). Kept light and
@@ -1674,31 +1684,49 @@ function readyColour(score) {
 const RAIN_STOPS = [[0.5, [170, 210, 255, 0.30]], [2, [130, 190, 250, 0.42]], [5, [90, 160, 245, 0.52]], [10, [40, 110, 220, 0.62]], [20, [25, 60, 170, 0.72]]];
 function rainOf(d) {
   if (!d?.rain) return null;
-  if (ready.day === 'week') { const w = d.rain.slice(0, 7).filter(Number.isFinite); return w.length ? w.reduce((a, b) => a + b, 0) : null; }
-  return d.rain[ready.day] ?? null;
+  const sum = a => { const w = a.filter(Number.isFinite); return w.length ? w.reduce((x, y) => x + y, 0) : null; };
+  if (ready.day === 'week') return sum(d.rain.slice(0, 7));
+  if (ready.day === 'next') return d.fut ? sum(d.fut.slice(1).map(x => x[0])) : null;
+  return ready.day < 0 ? d.fut?.[-ready.day]?.[0] ?? null : d.rain[ready.day] ?? null;
 }
 function rainColour(mm) {
-  const f = ready.day === 'week' ? 4 : 1;
+  const f = ready.day === 'week' || ready.day === 'next' ? 4 : 1;
   if (!(mm >= RAIN_STOPS[0][0] * f)) return [0, 0, 0, 0];
   const i = RAIN_STOPS.findIndex(([v]) => mm <= v * f), [v1, a] = RAIN_STOPS[Math.max(0, i === -1 ? RAIN_STOPS.length - 1 : i - 1)], [v2, b] = RAIN_STOPS[i === -1 ? RAIN_STOPS.length - 1 : i];
   const t = v2 === v1 ? 0 : Math.min(1, (mm - v1 * f) / ((v2 - v1) * f));
   return a.map((x, k) => x + (b[k] - x) * t);
 }
-const dayLabel = k => { const d = new Date(Date.now() - k * 864e5); return k === 0 ? 'Today' : k === 1 ? 'Yest.' : d.toLocaleDateString('en-GB', {weekday: 'short', timeZone: TZ}); };
+const dayLabel = k => { const d = new Date(Date.now() - k * 864e5); return k === 0 ? 'Today' : k === 1 ? 'Yest.' : k === -1 ? 'Tmrw' : d.toLocaleDateString('en-GB', {weekday: 'short', timeZone: TZ}); };
 const dayNum = k => new Date(Date.now() - k * 864e5).toLocaleDateString('en-GB', {day: 'numeric', timeZone: TZ});
-// The day strip: each chip's bar is the average rain over the squares in view that day.
+// The day strip, oldest on the left to the week ahead on the right: each chip's bar is the average rain over
+// the squares in view that day. Past days are measured; days ahead are the forecast (dashed).
 function renderRainDays(cells) {
-  const ds = cells.map(c => ready.cells.get(c.key)?.rain).filter(Boolean);
-  const mean = k => { const v = ds.map(r => r[k]).filter(Number.isFinite); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0; };
-  const means = Array.from({length: RAIN_DAYS}, (_, k) => mean(k)), wk = means.slice(0, 7).reduce((a, b) => a + b, 0), top = Math.max(4, ...means);
-  const f = ready.day === 'week' ? 4 : 1;
+  const ds = cells.map(c => ready.cells.get(c.key)).filter(d => d?.rain);
+  const avg = v => { v = v.filter(Number.isFinite); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const at = k => k < 0 ? avg(ds.map(d => d.fut?.[-k]?.[0])) : avg(ds.map(d => d.rain[k]));
+  const temp = k => { const i = Math.max(0, -k); return k > 0 ? null : [avg(ds.map(d => d.fut?.[i]?.[1])), avg(ds.map(d => d.fut?.[i]?.[2]))]; };
+  const ks = [...Array.from({length: RAIN_DAYS}, (_, i) => RAIN_DAYS - 1 - i), ...Array.from({length: READY_AHEAD}, (_, i) => -(i + 1))];
+  const hasAhead = ds.some(d => d.fut);
+  const days = ks.filter(k => k >= 0 || hasAhead).map(k => ({k, mm: at(k)}));
+  const wk = days.filter(x => x.k >= 0 && x.k < 7).reduce((a, x) => a + (x.mm || 0), 0), nx = days.filter(x => x.k < 0).reduce((a, x) => a + (x.mm || 0), 0);
+  const top = Math.max(4, ...days.map(x => x.mm || 0)), f = ready.day === 'week' || ready.day === 'next' ? 4 : 1;
   $('rainScale').innerHTML = `<span>${0.5 * f} mm</span><span>${5 * f} mm</span><span>${20 * f} mm+</span>`;
-  $('rainDays').innerHTML = `<button type="button" class="wk" data-day="week" aria-pressed="${ready.day === 'week'}" title="Rain over the last 7 days"><i style="--h:${Math.min(100, wk / (top * 4) * 100)}%"></i>7 days<em>${Math.round(wk)} mm</em></button>`
-    + means.map((m, k) => `<button type="button" data-day="${k}" aria-pressed="${ready.day === k}" title="${dayLabel(k)} ${dayNum(k)}: ${m.toFixed(1)} mm average in view" aria-label="${dayLabel(k)} ${dayNum(k)}, ${m.toFixed(1)} millimetres"><i style="--h:${Math.min(100, m / top * 100)}%"></i>${dayLabel(k)}<em>${dayNum(k)}</em></button>`).join('');
-  $('rainDays').querySelectorAll('button').forEach(b => b.onclick = () => { ready.day = b.dataset.day === 'week' ? 'week' : +b.dataset.day; renderReady(readyCellsInView()); });
+  const chip = x => { const [hi, lo] = temp(x.k) || [], mm = x.mm == null ? '—' : `${x.mm.toFixed(1)} mm`, t = Number.isFinite(hi) ? ` · ${Math.round(hi)}°/${Math.round(lo)}°` : '';
+    return `<button type="button" data-day="${x.k}" class="${x.k < 0 ? 'fc' : ''}" aria-pressed="${ready.day === x.k}" title="${dayLabel(x.k)} ${dayNum(x.k)}${x.k < 0 ? ' (forecast)' : ''}: ${mm}${t} average in view" aria-label="${dayLabel(x.k)} ${dayNum(x.k)}${x.k < 0 ? ', forecast' : ''}, ${mm}"><i style="--h:${Math.min(100, (x.mm || 0) / top * 100)}%"></i>${dayLabel(x.k)}<em>${dayNum(x.k)}</em></button>`; };
+  $('rainDays').innerHTML = `<button type="button" class="wk" data-day="week" aria-pressed="${ready.day === 'week'}" title="Rain over the last 7 days"><i style="--h:${Math.min(100, wk / (top * 4) * 100)}%"></i>Last 7<em>${Math.round(wk)} mm</em></button>`
+    + (hasAhead ? `<button type="button" class="wk fc" data-day="next" aria-pressed="${ready.day === 'next'}" title="Forecast rain for the next 7 days"><i style="--h:${Math.min(100, nx / (top * 4) * 100)}%"></i>Next 7<em>${Math.round(nx)} mm</em></button>` : '')
+    + days.map(chip).join('');
+  $('rainDays').querySelectorAll('button').forEach(b => b.onclick = () => { const v = b.dataset.day; ready.day = v === 'week' || v === 'next' ? v : +v; renderReady(readyCellsInView()); });
+  // What the map is showing, in words.
+  const sel = ready.day, [hi, lo] = typeof sel === 'number' ? temp(sel) || [] : [];
+  $('rainWhen').textContent = sel === 'week' ? 'Rain over the last 7 days' : sel === 'next' ? 'Forecast rain, next 7 days' : `${sel < 0 ? 'Forecast · ' : ''}${dayLabel(sel) === 'Tmrw' ? 'Tomorrow' : dayLabel(sel)} ${dayNum(sel)}${Number.isFinite(hi) ? ` · ${Math.round(hi)}° / ${Math.round(lo)}° in view` : ''}`;
+  // Keep the chosen day (or today, for the totals) in view, centred, whenever it's off-screen.
+  const strip = $('rainDays'), focus = strip.querySelector(`[data-day="${typeof sel === 'number' ? sel : sel === 'next' ? -1 : 0}"]`);
+  if (focus && strip.clientWidth && (focus.offsetLeft < strip.scrollLeft || focus.offsetLeft + focus.offsetWidth > strip.scrollLeft + strip.clientWidth))
+    strip.scrollLeft = focus.offsetLeft - (strip.clientWidth - focus.offsetWidth) / 2;
 }
 function setLayerMode(mode) {
-  ready.mode = mode; try { localStorage.setItem('mycofield-layer-mode', mode); } catch {}
+  ready.mode = mode; document.body.classList.toggle('layer-rain', mode === 'rain'); try { localStorage.setItem('mycofield-layer-mode', mode); } catch {}
   $('modeReady').setAttribute('aria-selected', mode === 'ready'); $('modeRain').setAttribute('aria-selected', mode === 'rain');
   $('readyKey').hidden = mode !== 'ready'; $('rainKey').hidden = mode !== 'rain';
   if (mapLoaded && ready.on) updateReady();
@@ -1727,7 +1755,7 @@ async function updateReady() {
   if (!ready.on || !mapLoaded) return;
   const token = ++ready.token, cells = readyCellsInView(), note = $('readyNote');
   if (map.getZoom() < 5.5 || !cells.length) { renderReady([]); note.textContent = 'Zoom in over Britain to see live ready ground'; return; }
-  const missing = cells.filter(c => { const d = ready.cells.get(c.key); return !(Date.now() - (d?.at || 0) < READY_TTL) || (ready.mode === 'rain' && d.score != null && !d.rain); });
+  const missing = cells.filter(c => { const d = ready.cells.get(c.key); return !(Date.now() - (d?.at || 0) < READY_TTL) || (ready.mode === 'rain' && d.score != null && (!d.rain || !d.fut)); });
   renderReady(cells);
   // Rate-limited by the weather service: leave it alone for a couple of minutes rather than pile on.
   if (missing.length && Date.now() < ready.pausedUntil) { note.textContent = 'Live weather is busy — trying again in a couple of minutes'; return; }
@@ -2311,9 +2339,21 @@ function habitatOptions(auto, override) {
   return `<option value="">${esc(autoText)}</option>` + Object.entries(HABITAT_CLASSES).map(([k, h]) => `<option value="${k}"${k === override ? ' selected' : ''}>${esc(h.label)}</option>`).join('');
 }
 function habitatKind(h) { return !h ? 'Unavailable' : h.pending ? 'Loading' : h.source === 'Field-set' ? 'Field-set' : h.kind ? h.kind : h.cls ? 'OSM mapped' : 'Unavailable'; }
+// A small picture for the WMO weather code Open-Meteo gives each day.
+function weatherIcon(code) {
+  if (code == null) return '·';
+  return code === 0 ? '☀️' : code <= 2 ? '🌤️' : code === 3 ? '☁️' : code <= 48 ? '🌫️' : code <= 57 ? '🌦️' : code <= 67 ? '🌧️' : code <= 77 ? '🌨️' : code <= 82 ? '🌦️' : code <= 86 ? '🌨️' : '⛈️';
+}
+// The week's weather at the spot: today and the next 7 days (from the forecast the reading already fetched).
+function renderPointWeather(r) {
+  const w = r?._w?.status === 'fulfilled' ? r._w.value : null;
+  const days = w?.days ? w.days.slice(w.todayIdx, w.todayIdx + 8) : [];
+  $('pcWx').innerHTML = days.map((d, j) => `<div role="listitem" title="${esc(weatherText(d.code))}"><b>${j === 0 ? 'Today' : j === 1 ? 'Tmrw' : new Date(d.date + 'T12:00:00Z').toLocaleDateString('en-GB', {weekday: 'short', timeZone: 'UTC'})}</b><span aria-hidden="true">${weatherIcon(d.code)}</span><em>${Number.isFinite(d.high) ? Math.round(d.high) + '°' : '—'}<span class="sr"> high, </span></em>${Number.isFinite(d.low) ? Math.round(d.low) + '°' : '—'}<span class="sr"> low, ${esc(weatherText(d.code))}, </span><small>${round1(d.rain || 0)} mm</small></div>`).join('');
+  $('pcWx').hidden = !days.length;
+}
 function renderPointAnalysis(r) {
   const {weather: w, terrain: t, habitat: h, conditions: c, errors} = r;
-  $('pcLoading').hidden = true;
+  $('pcLoading').hidden = true; renderPointWeather(r);
   $('pcUse').disabled = false; $('pcSave').disabled = false;
   const statuses = [w?.status, t?.status].filter(Boolean);
   const overall = !w && !t ? (errors.weather === 'offline' ? 'offline' : 'error') : (!w || !t) ? 'partial' : statuses.includes('offline') ? 'offline' : statuses.includes('cached') ? 'cached' : 'live';
