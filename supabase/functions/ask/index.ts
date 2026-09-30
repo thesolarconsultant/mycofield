@@ -66,29 +66,41 @@ Deno.serve(async req => {
   if (used == null) return json(req, {error: 'daily_limit', daily: DAILY}, 429);
 
   const enc = new TextEncoder();
+  // Plain request first-choice extras (effort, server-side fallback) are dropped if Claude rejects them.
+  const plain = {model: MODEL, max_tokens: 8000, system: [{type: 'text', text: SYSTEM, cache_control: {type: 'ephemeral'}}], messages};
+  const full = HAIKU ? plain : {...plain, output_config: {effort: 'low'}, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default'};
+  // Why a call failed, in words the owner can act on (no secrets are ever in these messages).
+  const why = (e: unknown) => {
+    if (e instanceof Anthropic.AuthenticationError) return 'the ANTHROPIC_API_KEY secret was rejected — check it’s pasted in full';
+    if (e instanceof Anthropic.PermissionDeniedError) return 'this API key isn’t allowed to use ' + MODEL;
+    if (e instanceof Anthropic.NotFoundError) return 'model ' + MODEL + ' isn’t available to this key';
+    const m = String((e as any)?.error?.error?.message || (e as Error)?.message || e);
+    return /credit/i.test(m) ? 'the Anthropic account needs credit — console.anthropic.com → Billing' : m.slice(0, 160);
+  };
   const stream = new ReadableStream({
     async start(ctl) {
-      try {
-        const params = {
-          model: MODEL, max_tokens: 8000,
-          system: [{type: 'text', text: SYSTEM, cache_control: {type: 'ephemeral'}}],
-          messages, cache_control: {type: 'ephemeral'},
-          ...(HAIKU ? {} : {
-            output_config: {effort: 'low'},   // short chat answers
-            betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default',   // a declined question is retried on Anthropic's pick
-          }),
-        };
-        const s = claude.beta.messages.stream(params as any);
+      let sent = false;
+      const run = async (params: unknown) => {
+        const s = (params as any).betas ? claude.beta.messages.stream(params as any) : claude.messages.stream(params as any);
         for await (const ev of s) {
-          if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') ctl.enqueue(enc.encode(ev.delta.text));
+          if (ev.type === 'content_block_delta' && ev.delta.type === 'text_delta') { sent = true; ctl.enqueue(enc.encode(ev.delta.text)); }
         }
-        const final = await s.finalMessage();
+        return s.finalMessage();
+      };
+      try {
+        let final;
+        try { final = await run(full); }
+        catch (e) {
+          if (sent || full === plain || !(e instanceof Anthropic.BadRequestError)) throw e;
+          console.error('ask: retrying without extras', why(e));
+          final = await run(plain);
+        }
         if (final.stop_reason === 'refusal') ctl.enqueue(enc.encode('\n\nSorry, I can’t help with that one. Try asking about your areas’ readings.'));
         else if (final.stop_reason === 'max_tokens') ctl.enqueue(enc.encode('…'));
       } catch (e) {
-        console.error('ask', e);
+        console.error('ask', why(e), e);
         const busy = e instanceof Anthropic.RateLimitError || (e instanceof Anthropic.APIError && (e.status ?? 0) >= 500);
-        ctl.enqueue(enc.encode(busy ? '\n\nThe assistant is busy right now. Try again in a minute.' : '\n\nSomething went wrong answering that. Try again.'));
+        ctl.enqueue(enc.encode(busy ? '\n\nThe assistant is busy right now. Try again in a minute.' : `\n\nSomething went wrong answering that. (${why(e)})`));
       }
       ctl.close();
     },

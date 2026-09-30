@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.38.0 — Pick areas to compare
+- The assistant has a Compare row: every scored area (and the spot open on the map) with its score, best
+  first. Tap two or more, then "Compare these two" asks why the leader is ahead and what holds the rest back.
+- The ask function retries once with a plain request if Claude rejects the extra settings, and a failed
+  answer now says why (no credit, key rejected, model not available).
+
 ## 2.37.0 — A spot near you
 - A minute before the free look ends: "Want a spot near you?" Email + postcode (postcodes.io turns it into
   a position) pins today's nearest scanned spot to that email and sends the usual sign-in code. The pop-up

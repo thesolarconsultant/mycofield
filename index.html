@@ -490,6 +490,13 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 @keyframes askdot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 .askp-chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
 .askp-chips button{flex:none;border:1px solid var(--line-2);background:var(--white);color:var(--forest);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;min-height:40px;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.askp-pick{border-top:1px solid var(--line);padding:8px 0 6px}
+.askp-pick-h{display:flex;gap:8px;align-items:baseline;font-size:13px;color:var(--forest);margin:0 2px 6px}.askp-pick-h span{color:var(--muted)}
+.askp-pick-list{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.askp-pick-list button{flex:none;display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line-2);background:var(--white);color:var(--forest);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;min-height:40px;max-width:220px}
+.askp-pick-list button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.askp-pick-list button i{font-style:normal;font-weight:700;color:var(--moss-ink)}
+.askp-pick-list button[aria-pressed="true"]{background:var(--forest);color:#fff;border-color:var(--forest)}.askp-pick-list button[aria-pressed="true"] i{color:var(--lime)}
+.askp-go{width:100%;min-height:44px;margin-top:6px}
 .askp-form{display:flex;gap:8px;align-items:flex-end}
 .askp-form textarea.field{flex:1;min-height:48px;height:48px;max-height:120px;resize:none;padding-top:12px}
 .askp-form .btn{width:48px;padding:0;flex:none}
@@ -606,6 +613,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="askp-head"><div><span class="kicker">Assistant · experimental</span><h2 id="askPTitle">Ask about your areas</h2></div><button class="iconbtn" id="askPNew" type="button" aria-label="Start a new chat" title="New chat"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button class="iconbtn" id="askPClose" type="button" aria-label="Close the assistant"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 <div class="askp-log" id="askLog" aria-live="polite"></div>
 <div class="askp-chips" id="askChips"></div>
+<div class="askp-pick" id="askPick" hidden><div class="askp-pick-h"><b>Compare</b><span id="askPickHint">tap two or more</span></div><div class="askp-pick-list" id="askPickList" role="group" aria-label="Areas to compare"></div><button class="btn lime askp-go" id="askPickGo" type="button" hidden></button></div>
 <form class="askp-form" id="askForm"><textarea class="field" id="askInput" rows="1" maxlength="600" placeholder="Ask about your areas…" aria-label="Your question" enterkeyhint="send"></textarea><button class="btn lime" type="submit" id="askSend" aria-label="Send"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button></form>
 <p class="askp-fine">Answers come from your areas’ readings and can be wrong. The index is experimental, not a promise anything is fruiting.</p>
 </div></div>
@@ -880,7 +888,33 @@ function askChips() {
   $('askChips').innerHTML = ask.turns.length ? '' : q.map(x => `<button type="button">${esc(x)}</button>`).join('');
   $('askChips').hidden = !!ask.turns.length;
 }
-function askReset() { ask.turns = []; ask.context = null; $('askLog').innerHTML = ''; askIntro(); askChips(); }
+// Pick the areas to compare: every scored area (and the spot open on the map) as a toggle, best first.
+const askPick = new Set();
+function askPickItems() {
+  const items = Object.keys(areas).filter(k => state.areaData[k]?.conditions).sort((a, b) => state.areaData[b].conditions.score - state.areaData[a].conditions.score)
+    .map(k => ({id: k, short: areas[k].name, full: areaLabel(k), score: state.areaData[k].conditions.score}));
+  const p = state.pointAnalysis;
+  if (p?.conditions) items.unshift({id: '@point', short: 'This spot', full: p.place && p.place !== 'My location' ? `this spot (${p.place})` : 'the spot open on the map', score: p.conditions.score});
+  return items;
+}
+function renderAskPick() {
+  const items = askPickItems();
+  for (const id of [...askPick]) if (!items.some(x => x.id === id)) askPick.delete(id);
+  $('askPick').hidden = items.length < 2;
+  $('askPickList').innerHTML = items.map(x => `<button type="button" data-pick="${esc(x.id)}" aria-pressed="${askPick.has(x.id)}" title="${esc(x.full)}"><span>${esc(x.short)}</span><i>${x.score}</i></button>`).join('');
+  const n = askPick.size;
+  $('askPickGo').hidden = n < 2; $('askPickGo').textContent = `Compare ${n === 2 ? 'these two' : `these ${n}`}`;
+  $('askPickHint').textContent = n === 1 ? 'pick at least one more' : n ? `${n} picked` : 'tap two or more';
+}
+function askCompare() {
+  const chosen = askPickItems().filter(x => askPick.has(x.id)).sort((a, b) => b.score - a.score);
+  if (chosen.length < 2) return;
+  const names = chosen.map(x => `${x.full} (${x.score})`);
+  const list = names.length === 2 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+  askPick.clear(); renderAskPick();
+  sendAsk(`Compare ${list}. Why is ${chosen[0].id === '@point' ? 'this spot' : chosen[0].short} ahead, and what's holding the ${chosen.length === 2 ? 'other' : 'others'} back?`);
+}
+function askReset() { ask.turns = []; ask.context = null; askPick.clear(); $('askLog').innerHTML = ''; askIntro(); askChips(); renderAskPick(); }
 function askIntro() {
   const n = Object.keys(areas).length;
   askBubble('a', n ? `<p>Ask me why one of your areas is scoring better than another, or what’s holding one back. I’ll compare the rain, soil, nights, terrain and habitat behind each score.</p>`
@@ -889,7 +923,7 @@ function askIntro() {
 function openAsk(question) {
   ensureAreasLoaded();
   if (Date.now() - ask.lastAt > ASK_IDLE_MS || !$('askLog').children.length) askReset();
-  else askChips();
+  else { askChips(); renderAskPick(); }
   $('askPanel').hidden = false;
   if (!session) askBubble('a', '<p>Sign in to use the assistant.</p><button class="btn" type="button" data-go="account">Go to Account</button>', 'note');
   else if (paywallOn() && !hasAccess()) askBubble('a', '<p>The assistant comes with full access.</p><button class="btn" type="button" data-go="account">Go to Account</button>', 'note');
@@ -925,12 +959,12 @@ async function sendAsk(q) {
     }
     if (!text.trim()) throw new Error('empty');
     // The function reports a failed answer as text in the stream: don't keep it as part of the conversation.
-    if (/^\s*(Something went wrong answering that|The assistant is busy right now)/.test(text)) throw Object.assign(new Error('failed'), {code: /busy/.test(text) ? 'busy' : 'failed'});
+    if (/^\s*(Something went wrong answering that|The assistant is busy right now)/.test(text)) throw Object.assign(new Error('failed'), {code: /busy/.test(text) ? 'busy' : 'failed', reason: (text.match(/\(([^)]*)\)\s*$/) || [])[1]});
     ask.turns.push({role: 'assistant', content: text});
   } catch (err) {
     ask.turns.pop();   // the question goes unanswered, so it leaves the history and can simply be asked again
     out.classList.add('note');
-    out.innerHTML = `<p>${esc(ASK_ERRORS[err.code] || (navigator.onLine === false ? 'You’re offline. Ask again when you have signal.' : 'Couldn’t reach the assistant. Try again in a moment.'))}</p>`;
+    out.innerHTML = `<p>${esc(ASK_ERRORS[err.code] || (navigator.onLine === false ? 'You’re offline. Ask again when you have signal.' : 'Couldn’t reach the assistant. Try again in a moment.'))}</p>${err.reason ? `<p class="small">${esc(err.reason)}</p>` : ''}`;
     if (err.code === 'sign_in_required' || err.code === 'access_required') out.insertAdjacentHTML('beforeend', '<button class="btn" type="button" data-go="account">Go to Account</button>');
     askChips();
   } finally {
@@ -946,6 +980,8 @@ function initAsk() {
   $('askPanel').addEventListener('click', e => {
     if (e.target === $('askPanel')) return closeAsk();
     const chip = e.target.closest('#askChips button'); if (chip) return sendAsk(chip.textContent);
+    const pick = e.target.closest('[data-pick]'); if (pick) { const id = pick.dataset.pick; askPick.has(id) ? askPick.delete(id) : askPick.add(id); return renderAskPick(); }
+    if (e.target.closest('#askPickGo')) return askCompare();
     const go = e.target.closest('[data-go="account"]'); if (go) { closeAsk(); switchView('account'); }
   });
   $('askForm').onsubmit = e => { e.preventDefault(); sendAsk($('askInput').value); };
@@ -1864,6 +1900,7 @@ function scoreArea(k, d) {
 }
 function refreshAreaViews(k) {
   compareTrackedAreas(); renderAreaMarkers();
+  if (!$('askPanel').hidden) renderAskPick();
   if (k === state.selectedArea) renderSelectedArea();
   renderSignal();
 }
