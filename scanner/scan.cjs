@@ -1,7 +1,8 @@
 // MycoField nightly spot scanner.
 // Drives the live app (www.mycofield.com) in a headless browser so every spot is scored by exactly the
 // code users see, then loads the day's sellable spots into Supabase (supabase/credits.sql).
-// A sellable spot: Conditions Index 90+, confirmed grassland / heath / bog, and on land the public can
+// A sellable spot: Conditions Index 90+, confirmed unimproved (semi-natural) grassland only — grassland fungi
+// ground, never bog or heath — and on land the public can
 // walk (open-access or registered common land in England and Wales; Scotland's access rights).
 // Needs SPOT_SCANNER_TOKEN (make one with supabase/scanner-token.sql). DRY_RUN=1 skips the upload.
 const {chromium} = require('playwright');
@@ -12,7 +13,7 @@ const SUPABASE_URL = 'https://abgbzdairkgakmqscvyo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';  // public by design
 const TOKEN = process.env.SPOT_SCANNER_TOKEN, DRY = process.env.DRY_RUN === '1';
 const MIN_SCORE = 90, SHORTLIST = Number(process.env.SHORTLIST || 85);  // squares whose weather is 85+ get the full index
-const GOOD = new Set(['semi-natural-grassland', 'heath-moor', 'wetland']);
+const GOOD = new Set(['semi-natural-grassland']);
 const WORKERS = 4, SPACING_KM = 3;
 const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -81,7 +82,7 @@ async function openApp(ctx) {
   for (const c of strong) for (const [fy, fx] of [[0.25, 0.25], [0.25, 0.75], [0.75, 0.25], [0.75, 0.75]])
     pts.push({lat: +(c.r * step + step * fy).toFixed(4), lon: +(c.q * ls + ls * fx).toFixed(4)});
   const pages = [main, ...await Promise.all(Array.from({length: WORKERS - 1}, () => openApp(ctx)))];
-  const scored = []; let next = 0;
+  const scored = [], retried = {habitat: 0}; let next = 0;
   await Promise.all(pages.map(async p => {
     while (next < pts.length) {
       const pt = pts[next++];
@@ -89,17 +90,26 @@ async function openApp(ctx) {
         const r = await p.evaluate(async ({lat, lon}) => {
           const m = __mf, h = m.fetchHabitat(lat, lon, {}).catch(m.habitatUnavailable);
           const [w, t] = await Promise.allSettled([m.fetchPointWeather(lat, lon, {}), m.analyseTerrain(lat, lon, {})]);
-          const ha = await h, res = m.buildPointResult(lat, lon, w, t, ha, null, null), L = ha?.land || {};
+          let ha = await h, res = m.buildPointResult(lat, lon, w, t, ha, null, null), L = ha?.land || {}, habitatRetries = 0;
+          // A strong square whose habitat maps didn't answer (busy servers) gets two more goes; answers already
+          // received are cached, so only the layers that failed are asked again.
+          while (habitatRetries < 2 && (res.conditions?.score ?? 0) >= 85 && (ha?.unavailable || L.unavailable || L.partial || (!res.habitat?.cls && L.covered))) {
+            habitatRetries++;
+            await new Promise(r => setTimeout(r, 4000 * habitatRetries));
+            ha = await m.fetchHabitat(lat, lon, {}).catch(m.habitatUnavailable);
+            res = m.buildPointResult(lat, lon, w, t, ha, null, null); L = ha?.land || {};
+          }
           if (w.status === 'rejected') return {weatherFailed: String(w.reason?.message || w.reason).slice(0, 80)};
           return {score: res.conditions?.score ?? null, cls: res.habitat?.cls || null, habitat: res.habitat?.label || null,
             nation: L.covered ? L.nation : null, accessLand: L.accessLand ?? null, commonLand: L.commonLand || null, grazing: L.grazing || null,
-            rain14: res.weather?.rain14 ?? null, low: res.weather?.latestLow ?? null, elev: res.terrain?.elevation ?? null};
+            rain14: res.weather?.rain14 ?? null, low: res.weather?.latestLow ?? null, elev: res.terrain?.elevation ?? null, habitatRetries};
         }, pt);
         // The weather API allows so many calls a minute; a square that hits the limit waits and goes round again.
         if (r.weatherFailed) {
           if ((pt.tries || 0) < 3) { log('weather limit, retrying', pt.lat, pt.lon, r.weatherFailed); pts.push({...pt, tries: (pt.tries || 0) + 1}); await sleep(61000); continue; }
           log('point gave up (weather)', pt.lat, pt.lon); continue;
         }
+        if (r.habitatRetries) retried.habitat++;
         scored.push({...pt, ...r});
       } catch (e) { log('point failed', pt.lat, pt.lon, String(e).slice(0, 80)); }
       if (scored.length % 50 === 0) log(`scored ${scored.length}/${pts.length}`);
@@ -115,6 +125,7 @@ async function openApp(ctx) {
     .sort((a, b) => b.score - a.score);
   const keep = [];
   for (const s of ok) if (keep.every(k => km(k, s) >= SPACING_KM)) keep.push(s);
+  log(`habitat retried at ${retried.habitat} strong points`);
   log(`sellable: ${keep.length} (of ${scored.length} scored)`, Object.entries(keep.reduce((m, s) => (m[s.nation] = (m[s.nation] || 0) + 1, m), {})));
 
   // 4. Name each spot after its nearest place (OpenStreetMap Nominatim, 1 request a second).

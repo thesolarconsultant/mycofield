@@ -1,5 +1,5 @@
 // Bump CACHE on every release so old index.html versions are dropped.
-const CACHE = 'mycofield-v2.39.0';
+const CACHE = 'mycofield-v2.39.1';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon.png', './assets/logo-mark.png', './assets/logo-dark.png', './assets/logo-light.png',
   './vendor/maplibre-gl-6.10.0/maplibre-gl.mjs', './vendor/maplibre-gl-6.10.0/maplibre-gl-shared.mjs', './vendor/maplibre-gl-6.10.0/maplibre-gl-worker.mjs', './vendor/maplibre-gl-6.10.0/maplibre-gl.css'];
 const MAX_ENTRIES = 1500;   // map tiles pile up as people pan; the oldest go past this

@@ -567,7 +567,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="card" style="margin-top:12px"><h3>Export your data</h3><div class="pc-actions"><button class="btn secondary" id="exportCsv" type="button">CSV</button><button class="btn secondary" id="exportJson" type="button">JSON</button><button class="btn secondary" id="exportGeo" type="button">GeoJSON</button></div><div class="small" style="margin-top:10px">Exports include your private coordinates — share them carefully.</div><div class="small legal-links" style="margin-top:10px"><a href="/terms">Terms &amp; refunds</a> · <a href="/privacy">Privacy</a></div></div></div></section>
 <section class="view" id="view-account"><div class="page"><div class="eyebrow">Account</div><h2 class="title" id="acTitle">Your MycoField.</h2><div class="sub" id="acSub">Your access, your spot credits and every spot you’ve revealed, kept with your account.</div>
 <div class="ac-top"><div class="card ac-wallet" id="acWallet"></div><div class="card ac-access" id="acAccess"></div></div>
-<div class="card" id="acPick" hidden><h3>Reveal a spot <span class="chip" id="acScan"></span></h3><p class="small" id="acPickSub">One credit reveals today’s best available spot in the nation you choose: a score of 90+, confirmed grassland, heath or bog, on land the public can walk. None in a nation today? Keep your credits for a better week.</p><div class="ac-nations" id="acNations"></div></div>
+<div class="card" id="acPick" hidden><h3>Reveal a spot <span class="chip" id="acScan"></span></h3><p class="small" id="acPickSub">One credit reveals today’s best available spot in the nation you choose: a score of 90+, on confirmed unimproved grassland (waxcap ground, never bog or heath), on land the public can walk. None in a nation today? Keep your credits for a better week.</p><div class="ac-nations" id="acNations"></div></div>
 <div class="card" id="acSpots" hidden><h3>Your spots <span class="chip" id="acSpotCount"></span></h3><div class="spot-list" id="acSpotList"></div><p class="small">Scores are from the day each spot was revealed. Tap Show on map to see today’s conditions.</p></div>
 <div class="card" id="syncCard"><h3>Sign-in &amp; sync <span class="chip" id="syncChip">Off</span></h3><div class="small" id="syncSub"></div><form id="syncEmailForm" class="sync-form"><input class="field" id="syncEmail" type="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address"><button class="btn" id="syncEmailBtn" type="submit">Email me a sign-in link</button></form><div id="syncPending" class="sync-form" hidden><button class="btn secondary" type="button" id="syncCodeBack">Use a different email</button><button class="btn secondary" type="button" id="syncShowCode">I have a code</button></div><form id="syncCodeForm" class="sync-form" hidden><input class="field" id="syncCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from the email" maxlength="10" aria-label="Sign-in code"><button class="btn" type="submit">Sign in</button></form><div class="sync-form" id="syncSignedIn" hidden><button class="btn" id="syncNow" type="button">Sync now</button><button class="btn secondary" id="syncSignOut" type="button">Sign out</button></div></div>
 <p class="pw-fine ac-fine">Spots are picked by MycoField’s experimental Conditions Index from weather, terrain and official habitat and access maps. A strong score is not a promise that anything is fruiting. Follow the Countryside Code (or the Scottish Outdoor Access Code), keep to access land, don’t pick on nature reserves or Sites of Special Scientific Interest, and never eat a wild mushroom because of an app. <a href="/terms" target="_blank" rel="noopener">Terms &amp; refunds</a> · <a href="/privacy" target="_blank" rel="noopener">Privacy</a> · <a href="mailto:help@mycofield.com">help@mycofield.com</a></p></div></section>
@@ -612,7 +612,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <p class="pw-step">Before you get started</p>
 <h2 id="soTitle">Want to go straight to the best ground?</h2>
 <p>Every night MycoField scores England, Wales, Scotland and Northern Ireland and keeps the strongest spots. <b id="soCount">10</b> spot credits cost a one-off <b>£20</b>, and each one reveals today’s best spot in the nation you pick.</p>
-<ul class="pw-list"><li>Only spots scoring 90+ on confirmed grassland, heath or bog</li><li>Only ground you can legally walk: open-access land, commons, or Scotland’s access rights</li><li>Spend them when the weather’s right. No strong spots in a nation? Your credits wait</li></ul>
+<ul class="pw-list"><li>Only spots scoring 90+ on confirmed unimproved grassland: waxcap ground, never bog or heath</li><li>Only ground you can legally walk: open-access land, commons, or Scotland’s access rights</li><li>Spend them when the weather’s right. No strong spots in a nation? Your credits wait</li></ul>
 <a class="btn lime" id="soBuy" href="#" rel="noopener">Get 10 credits · £20</a>
 <button class="pw-link" id="soSkip" type="button">No thanks, I’ll explore myself</button>
 <p class="pw-fine">One payment. Credits last 12 months from purchase. Unused credits can be refunded within 14 days of buying. See the <a href="/terms" target="_blank" rel="noopener">terms</a>.</p></div></div>
@@ -1408,12 +1408,17 @@ async function landEngland(lat, lon, k, opts) {
     survey = {source: 'Crop Map of England', kind: 'RPA mapped', habitat: crop.label, habitats: [], management: [], surveyed: '2023', cls: crop.group === 'ley' ? 'improved-grassland' : 'arable'};
   } else if (le && /improved grassland/i.test(le.A_pred) && Number(le.A_prob) >= 50) {
     survey = {source: 'Living England', kind: 'Satellite-mapped', habitat: `Improved grassland (${Math.round(le.A_prob)}% model confidence)`, habitats: [], management: [], surveyed: '2020–22', cls: 'improved-grassland'};
+  } else if (le && Number(le.A_prob) >= 50 && !/improved/i.test(le.A_pred) && surveyClass(le.A_pred)) {
+    // Not on the Priority Habitat Inventory, but the satellite map sees acid/calcareous/neutral grassland, heath, bog…:
+    // that's the rough upland ground waxcaps like, so use it rather than leave the habitat unknown.
+    survey = {source: 'Living England', kind: 'Satellite-mapped', habitat: `${le.A_pred} (${Math.round(le.A_prob)}% model confidence)`, habitats: [], management: [], surveyed: '2020–22', cls: surveyClass(le.A_pred)};
   }
   return {hit: true, land: {
     covered: true, nation: 'England', status: liveOrCached(rs), source: 'Natural England / Rural Payments Agency',
     survey, grazing: null, fungiZone: null, accessLand: rs[4].status === 'fulfilled' ? !!settledFeatures(rs[4])?.length : null,
     commonLand: rs[3].status === 'fulfilled' ? (cl ? (cl.name || 'Registered common land') : false) : null, crop,
-    livingEngland: le ? {pred: le.A_pred, prob: Math.round(Number(le.A_prob))} : null
+    livingEngland: le ? {pred: le.A_pred, prob: Math.round(Number(le.A_prob))} : null,
+    partial: rs.slice(0, 3).some(r => r.status === 'rejected')   // a habitat layer didn't answer this time
   }};
 }
 async function landScotland(lat, lon, k, opts) {

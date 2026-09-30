@@ -68,8 +68,8 @@ Cloud backup uses Supabase (free tier is enough). One-time setup:
 
 ## Spot credits (£20 = 10 credits, 12 months)
 Buyers spend one credit to reveal today's best available spot in the nation they pick (England,
-Wales, Scotland, Northern Ireland). A sellable spot scores 90+, sits on confirmed grassland, heath
-or bog, and is on land the public can walk (CRoW open-access or registered common land in England
+Wales, Scotland, Northern Ireland). A sellable spot scores 90+, sits on confirmed unimproved
+(semi-natural) grassland only (no bog or heath), and is on land the public can walk (CRoW open-access or registered common land in England
 and Wales, or Scotland's access rights). Each spot goes to at most 5 buyers a week and never twice
 to the same buyer; a failed reveal costs nothing. Northern Ireland has no access-land data yet, so
 it shows none.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.39.1 — Spots are grassland only; England habitat fixed
+- Sellable spots are now unimproved (semi-natural) grassland only: waxcap ground, never bog or heath.
+  Wording on the paywall offer, Account and terms updated.
+- England: a spot not on the Priority Habitat Inventory now takes its habitat from Living England's
+  satellite map (acid/calcareous/neutral grassland, heath, bog, woodland…) at 50%+ confidence, instead of
+  being left unknown. That's why England had no spots on 30 Sep.
+- Scanner: strong squares whose habitat maps didn't answer get two more tries.
+
 ## 2.39.0 — Rain map with the week ahead, weather for any spot
 - The Rain view now runs from 14 days ago through today to 7 days ahead. Forecast days are dashed; "Last 7"
   and "Next 7" show the totals. Tapping a day paints that day's (forecast) rain and says the temperature in
