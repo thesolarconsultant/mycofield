@@ -897,7 +897,8 @@ function openAsk(question) {
 }
 function closeAsk() { $('askPanel').hidden = true; }
 const ASK_ERRORS = {sign_in_required: 'Sign in (Account tab) to use the assistant.', access_required: 'The assistant comes with full access.',
-  daily_limit: 'That’s today’s questions used up. Ask again tomorrow.', not_configured: 'The assistant isn’t switched on yet.'};
+  daily_limit: 'That’s today’s questions used up. Ask again tomorrow.', not_configured: 'The assistant isn’t switched on yet.',
+  busy: 'The assistant is busy right now. Try again in a minute.', failed: 'The assistant couldn’t answer just now. Try again in a moment.'};
 // Areas load their weather in the background; give them a moment so the first answer sees their scores.
 async function askAreasReady(ms = 8000) {
   const t0 = Date.now();
@@ -923,6 +924,8 @@ async function sendAsk(q) {
       text += dec.decode(value, {stream: true}); out.innerHTML = askMd(text); $('askLog').scrollTop = $('askLog').scrollHeight;
     }
     if (!text.trim()) throw new Error('empty');
+    // The function reports a failed answer as text in the stream: don't keep it as part of the conversation.
+    if (/^\s*(Something went wrong answering that|The assistant is busy right now)/.test(text)) throw Object.assign(new Error('failed'), {code: /busy/.test(text) ? 'busy' : 'failed'});
     ask.turns.push({role: 'assistant', content: text});
   } catch (err) {
     ask.turns.pop();   // the question goes unanswered, so it leaves the history and can simply be asked again
