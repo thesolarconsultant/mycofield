@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- MycoField daily data card, 1080×1350 (4:5). Rendered headless by the content engine: open with
+     #<url-encoded JSON> = {"date":"Wed 1 Oct","headline":"…","sub":"…","nations":[{"name":"Scotland","n":8,"best":99},…],
+     "total":14,"foot":"…"} and screenshot at 1080×1350. Only counts and scores, never places. -->
+<html><head><meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Montserrat:wght@800;900&display=swap');
+*{box-sizing:border-box}html,body{margin:0;width:1080px;height:1350px;overflow:hidden}
+body{font-family:Inter,sans-serif;color:#EAF3EC;background:radial-gradient(900px 700px at 90% 0%,rgba(167,216,46,.28),transparent 60%),radial-gradient(800px 600px at 0% 100%,rgba(110,184,232,.14),transparent 60%),linear-gradient(180deg,#0B3D2E,#06140F);padding:84px 80px;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top img{height:62px}.date{font:700 30px Inter;color:#A7D82E;border:2px solid rgba(167,216,46,.5);border-radius:999px;padding:10px 24px}
+h1{font:900 92px/1.02 Montserrat,sans-serif;margin:70px 0 22px;letter-spacing:-1.5px}
+h1 em{font-style:normal;color:#A7D82E}
+.sub{font:500 34px/1.35 Inter;color:#BFD0C4;margin:0 0 56px}
+.rows{display:flex;flex-direction:column;gap:26px}
+.row{display:grid;grid-template-columns:230px 1fr 150px;align-items:center;gap:26px;background:rgba(255,255,255,.05);border:2px solid rgba(167,216,46,.16);border-radius:28px;padding:26px 30px}
+.row b{font:800 38px Montserrat}.bar{height:22px;border-radius:12px;background:rgba(255,255,255,.08);overflow:hidden}.bar i{display:block;height:100%;background:#A7D82E;border-radius:12px}
+.row span{font:700 30px Inter;text-align:right;color:#EAF3EC}.row span small{display:block;font:600 22px Inter;color:#9FB3A6}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:30px}
+.cta{font:800 40px Montserrat;color:#0B3D2E;background:#A7D82E;border-radius:999px;padding:22px 40px}
+.fine{font:500 20px/1.4 Inter;color:#8FA597;max-width:560px}
+</style></head><body>
+<div class="top"><img src="https://www.mycofield.com/assets/logo-light.png" alt=""><div class="date" id="date"></div></div>
+<h1 id="headline"></h1><p class="sub" id="sub"></p>
+<div class="rows" id="rows"></div>
+<div class="foot"><div class="fine" id="foot"></div><div class="cta">mycofield.com</div></div>
+<script>
+const d = JSON.parse(decodeURIComponent(location.hash.slice(1)) || '{}'), esc = s => String(s ?? '').replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
+document.getElementById('date').textContent = d.date || '';
+document.getElementById('headline').innerHTML = esc(d.headline).replace(/\*(.+?)\*/g, '<em>$1</em>');
+document.getElementById('sub').textContent = d.sub || '';
+const max = Math.max(1, ...(d.nations || []).map(n => n.n));
+document.getElementById('rows').innerHTML = (d.nations || []).map(n => `<div class="row"><b>${esc(n.name)}</b><div class="bar"><i style="width:${Math.max(n.n ? 4 : 0, n.n / max * 100)}%"></i></div><span>${n.n} spot${n.n === 1 ? '' : 's'}<small>${n.best ? 'best ' + n.best + '/100' : 'none today'}</small></span></div>`).join('');
+document.getElementById('foot').textContent = d.foot || 'Experimental Conditions Index from recent weather, terrain and habitat maps. Not a promise that anything is fruiting. Weather: Open-Meteo (CC BY 4.0).';
+</script></body></html>

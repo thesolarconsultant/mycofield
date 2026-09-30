@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en-GB"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MycoField Console</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap">
+<style>
+:root{--bg:#06130E;--s1:#0B1F17;--s2:#10291F;--s3:#163628;--line:rgba(167,216,46,.11);--line-2:rgba(167,216,46,.22);--text:#E6EFE8;--muted:#90A597;--dim:#62776A;
+  --lime:#A7D82E;--lime-2:#C6EE5A;--lime-ink:#0B3D2E;--good:#7FD36B;--warn:#F0B34E;--bad:#F07A5C;--sky:#6EB8E8;
+  --head:"Montserrat",system-ui,sans-serif;--body:"Inter",system-ui,sans-serif;--r:16px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 var(--body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;background:radial-gradient(1200px 600px at 85% -10%,rgba(167,216,46,.10),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(110,184,232,.06),transparent 60%),var(--bg)}
+button,input,textarea,select{font:inherit;color:inherit}button{cursor:pointer}[hidden]{display:none!important}
+a{color:var(--lime)}
+:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 60px}
+header{position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(6,19,14,.78);border-bottom:1px solid var(--line)}
+.bar{max-width:1180px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:800 17px var(--head);letter-spacing:.2px}
+.brand img{height:26px}.brand small{font:600 11px var(--body);color:var(--lime);border:1px solid var(--line-2);border-radius:999px;padding:2px 8px;letter-spacing:.8px;text-transform:uppercase}
+.live{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13px;margin-left:auto}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 0 rgba(167,216,46,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(167,216,46,0)}100%{box-shadow:0 0 0 0 rgba(167,216,46,0)}}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}}
+.tabs{display:flex;gap:4px;background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:4px;overflow-x:auto;max-width:100%}
+.tabs button{border:0;background:none;padding:7px 14px;border-radius:999px;color:var(--muted);font-weight:600;white-space:nowrap}
+.tabs button[aria-selected=true]{background:var(--lime);color:var(--lime-ink)}
+.seg{display:flex;gap:2px;background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;padding:5px 10px;border-radius:7px;color:var(--muted);font-weight:600;font-size:13px}
+.seg button[aria-pressed=true]{background:var(--s3);color:var(--text)}
+.icon-btn{border:1px solid var(--line);background:var(--s1);border-radius:10px;width:36px;height:34px;display:grid;place-items:center;color:var(--muted)}
+.icon-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font:800 26px/1.15 var(--head);margin:26px 0 4px}h2{font:700 15px var(--head);margin:0 0 12px;letter-spacing:.2px}
+.sub{color:var(--muted);margin:0 0 18px}
+.grid{display:grid;gap:14px}.g6{grid-template-columns:repeat(6,1fr)}.g2{grid-template-columns:1.4fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:980px){.g6{grid-template-columns:repeat(3,1fr)}.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:560px){.g6{grid-template-columns:repeat(2,1fr)}.tabs{order:5;flex:1 1 100%;justify-content:space-between}.tabs button{padding:7px 10px;font-size:13px}.hbar{grid-template-columns:110px 1fr 56px}}
+.card{background:linear-gradient(180deg,var(--s1),rgba(11,31,23,.7));border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.tile .k{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.7px}
+.tile .v{font:800 30px/1.1 var(--head);margin-top:8px;font-variant-numeric:tabular-nums}
+.tile .d{color:var(--dim);font-size:12px;margin-top:4px}
+.tile.hero{background:linear-gradient(135deg,rgba(167,216,46,.18),rgba(167,216,46,.04) 60%),var(--s1);border-color:var(--line-2)}
+.tile.hero .v{color:var(--lime-2)}
+.chart{position:relative;height:190px}
+.chart svg{width:100%;height:100%;overflow:visible;display:block}
+.tip{position:absolute;pointer-events:none;background:#E6EFE8;color:#0B1F17;border-radius:8px;padding:6px 9px;font-size:12px;font-weight:600;white-space:nowrap;transform:translate(-50%,-110%);box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.tip b{font-weight:800}
+.axis{fill:var(--dim);font-size:10.5px}
+.hbar{display:grid;grid-template-columns:130px 1fr 64px;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+.hbar .t{height:10px;background:var(--s3);border-radius:6px;overflow:hidden}.hbar .t i{display:block;height:100%;background:var(--lime);border-radius:6px}
+.hbar .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--text);font-weight:600}.hbar .n small{color:var(--dim);font-weight:500;margin-left:4px}
+.hbar .l{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feed{list-style:none;margin:0;padding:0;max-height:330px;overflow:auto}
+.feed li{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.feed time{color:var(--dim);font-variant-numeric:tabular-nums;min-width:46px}.feed code{color:var(--dim);font-size:11px;margin-left:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}th{color:var(--dim);text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.6px;padding:8px 10px;border-bottom:1px solid var(--line-2)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}.tbl{overflow-x:auto}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:700;letter-spacing:.3px;border:1px solid var(--line-2);color:var(--muted)}
+.chip.good{color:var(--good);border-color:rgba(127,211,107,.35)}.chip.warn{color:var(--warn);border-color:rgba(240,179,78,.35)}.chip.bad{color:var(--bad);border-color:rgba(240,122,92,.35)}.chip.lime{background:var(--lime);color:var(--lime-ink);border-color:var(--lime)}
+.btn{text-decoration:none;display:inline-flex;align-items:center;border:0;border-radius:10px;padding:9px 14px;font-weight:700;background:var(--s3);color:var(--text)}
+.btn.lime{background:var(--lime);color:var(--lime-ink)}.btn.ghost{background:none;border:1px solid var(--line-2)}.btn.bad{background:none;border:1px solid rgba(240,122,92,.4);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:default}
+.posts{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.post{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.media{position:relative;background:#000;aspect-ratio:4/5;display:flex;overflow-x:auto;scroll-snap-type:x mandatory}
+.media>*{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.media .count{position:absolute;right:10px;top:10px;flex:none;width:auto;height:auto;background:rgba(0,0,0,.6);border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700}
+.post .body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1}
+.post h3{margin:0;font:700 15px/1.3 var(--head)}
+.post textarea{width:100%;min-height:130px;resize:vertical;background:var(--bg);border:1px solid var(--line-2);border-radius:10px;padding:10px;font-size:13px;line-height:1.45}
+.plats{display:flex;gap:6px;flex-wrap:wrap}
+.plats label{display:flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.plats input{accent-color:var(--lime)}
+.plats label:has(input:checked){color:var(--text);border-color:var(--lime)}
+.meta{color:var(--dim);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.empty{color:var(--muted);text-align:center;padding:40px 16px;border:1px dashed var(--line-2);border-radius:var(--r)}
+.gate{min-height:80vh;display:grid;place-items:center}
+.gate .card{max-width:400px;width:100%;padding:28px}
+.field{width:100%;background:var(--bg);border:1px solid var(--line-2);border-radius:10px;padding:11px 12px;margin:10px 0}
+.note{color:var(--muted);font-size:13px}
+.toggle{display:flex;align-items:center;gap:12px}
+.switch{width:46px;height:26px;border-radius:999px;background:var(--s3);border:1px solid var(--line-2);position:relative;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:.2s}
+.switch[aria-checked=true]{background:var(--lime)}.switch[aria-checked=true]::after{left:23px;background:var(--lime-ink)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.check b{display:block}
+.skel{background:linear-gradient(90deg,var(--s1),var(--s2),var(--s1));background-size:200% 100%;animation:sk 1.4s infinite;border-radius:10px}
+@keyframes sk{to{background-position:-200% 0}}
+</style>
+</head><body>
+<header><div class="bar">
+  <div class="brand"><img src="/assets/logo-light.png" alt="MycoField"><small>Console</small></div>
+  <nav class="tabs" role="tablist" id="tabs" hidden>
+    <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+    <button role="tab" data-tab="content" aria-selected="false">Content <span id="draftCount"></span></button>
+    <button role="tab" data-tab="people" aria-selected="false">People</button>
+    <button role="tab" data-tab="settings" aria-selected="false">Settings</button>
+  </nav>
+  <div class="live" id="live" hidden><span class="dot"></span><span id="liveN">0</span> on the site now</div>
+  <button class="icon-btn" id="refresh" title="Refresh" hidden><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg></button>
+</div></header>
+
+<main class="wrap">
+  <section class="gate" id="gate"><div class="card">
+    <h1 style="margin-top:0">Owner sign-in</h1>
+    <p class="note" id="gateNote">Sign in with an owner email. We’ll email you a 6-digit code.</p>
+    <form id="emailForm"><input class="field" id="email" type="email" placeholder="Your email" autocomplete="email" required><button class="btn lime" style="width:100%">Send code</button></form>
+    <form id="codeForm" hidden><input class="field" id="code" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit code" maxlength="10" required><button class="btn lime" style="width:100%">Sign in</button></form>
+  </div></section>
+
+  <section id="v-overview" hidden>
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><h1>What’s happening</h1><p class="sub" id="asOf">Loading…</p></div>
+      <div class="seg" id="range"><button data-d="7">7 days</button><button data-d="14" aria-pressed="true">14 days</button><button data-d="30">30 days</button><button data-d="90">90 days</button></div>
+    </div>
+    <div class="grid g6" id="tiles"></div>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card"><h2>Visitors a day</h2><div class="chart" id="cVisitors"></div></div>
+      <div class="card"><h2>Journey <span class="note" style="font-weight:500">· visits that got this far</span></h2><div id="funnel"></div></div>
+    </div>
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card"><h2>New accounts a day</h2><div class="chart" id="cSignups" style="height:150px"></div></div>
+      <div class="card"><h2>Where they came from</h2><div id="sources"></div></div>
+      <div class="card"><h2>What they did</h2><div id="actions"></div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h2>Live feed</h2><ul class="feed" id="feed"></ul></div>
+  </section>
+
+  <section id="v-content" hidden>
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><h1>Content</h1><p class="sub">Each morning the engine makes a video and two images from the day’s best conditions. Check the words, pick where it goes, and approve: it posts straight away.</p></div>
+      <div class="toggle card" style="padding:10px 14px"><button class="switch" id="auto" role="switch" aria-checked="true" aria-label="Autopilot"></button><div><b id="autoLabel">Autopilot on</b><div class="note" style="font-size:12px">Makes new drafts every morning</div></div></div>
+    </div>
+    <div class="seg" id="filter" style="width:max-content;margin-bottom:16px"><button data-f="todo" aria-pressed="true">To review</button><button data-f="posted">Posted</button><button data-f="all">All</button></div>
+    <div class="posts" id="posts"></div>
+  </section>
+
+  <section id="v-people" hidden>
+    <h1>People</h1><p class="sub" id="peopleSub">The newest 40 accounts.</p>
+    <div class="card tbl"><table><thead><tr><th>Email</th><th>Joined</th><th>Last sign-in</th><th>Access until</th><th>Payments</th></tr></thead><tbody id="people"></tbody></table></div>
+  </section>
+
+  <section id="v-settings" hidden>
+    <h1>Settings</h1><p class="sub">Connections the console needs, and this device.</p>
+    <div class="grid g2">
+      <div class="card"><h2>Posting</h2><div id="checks"><div class="skel" style="height:120px"></div></div></div>
+      <div class="card"><h2>This device</h2>
+        <div class="check"><div><b>Your own visits aren’t counted</b><span class="note">Opening the console marks this browser so your own browsing of MycoField stays out of the numbers.</span></div></div>
+        <div class="check"><div><b id="who"></b><span class="note">Signed in as an owner.</span></div><button class="btn ghost" id="signOut" style="margin-left:auto">Sign out</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const SUPABASE_URL = 'https://abgbzdairkgakmqscvyo.supabase.co';
+const KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
+const AUTH_KEY = 'mycofield-auth-v1';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const nf = new Intl.NumberFormat('en-GB');
+let session = null, pendingEmail = null, days = 14, stats = null, posts = [], filter = 'todo', pollTimer = null;
+try { localStorage.setItem('mf-notrack', '1'); } catch {}
+try { session = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); } catch {}
+
+function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200); }
+async function sb(path, {method = 'GET', body, auth = true} = {}) {
+  if (auth) await fresh();
+  const r = await fetch(SUPABASE_URL + path, {method, headers: {apikey: KEY, 'Content-Type': 'application/json', ...(auth && session ? {Authorization: 'Bearer ' + session.access_token} : {})}, body: body ? JSON.stringify(body) : undefined});
+  const txt = await r.text(); let d = null; try { d = txt ? JSON.parse(txt) : null; } catch { d = txt; }
+  if (!r.ok) throw Object.assign(new Error(d?.message || d?.msg || d?.error_description || d?.error || r.statusText), {status: r.status, data: d});
+  return d;
+}
+function save(s) {
+  session = s ? {access_token: s.access_token, refresh_token: s.refresh_token, expires_at: s.expires_at || Math.floor(Date.now() / 1000) + (s.expires_in || 3600), user: s.user ? {id: s.user.id, email: s.user.email} : session?.user} : null;
+  if (session) localStorage.setItem(AUTH_KEY, JSON.stringify(session)); else localStorage.removeItem(AUTH_KEY);
+}
+async function fresh() {
+  if (!session?.refresh_token || session.expires_at * 1000 > Date.now() + 60000) return;
+  try { save(await sb('/auth/v1/token?grant_type=refresh_token', {method: 'POST', body: {refresh_token: session.refresh_token}, auth: false})); }
+  catch (e) { if (e.status === 400 || e.status === 401) save(null); }
+}
+const rpc = (fn, args = {}) => sb('/rest/v1/rpc/' + fn, {method: 'POST', body: args});
+const fnCall = (name, body) => sb('/functions/v1/' + name, {method: 'POST', body});
+
+// ---------- sign-in ----------
+$('emailForm').onsubmit = async e => { e.preventDefault(); pendingEmail = $('email').value.trim().toLowerCase();
+  try { await sb('/auth/v1/otp', {method: 'POST', body: {email: pendingEmail, create_user: false}, auth: false}); $('emailForm').hidden = true; $('codeForm').hidden = false; $('gateNote').textContent = `Code sent to ${pendingEmail}. Check junk if it’s not there.`; $('code').focus(); }
+  catch (err) { $('gateNote').textContent = 'Couldn’t send the code: ' + err.message; } };
+$('codeForm').onsubmit = async e => { e.preventDefault();
+  try { save(await sb('/auth/v1/verify', {method: 'POST', body: {type: 'email', email: pendingEmail, token: $('code').value.replace(/\s/g, '')}, auth: false})); start(); }
+  catch (err) { $('gateNote').textContent = 'That code didn’t work: ' + err.message; } };
+$('signOut').onclick = () => { save(null); location.reload(); };
+
+async function start() {
+  if (!session) return showGate();
+  try { if (!(await rpc('is_admin'))) return showGate(`${session.user?.email || 'This account'} isn’t an owner account. Sign in with an owner email.`); }
+  catch (e) { return showGate(e.status === 401 ? 'Please sign in again.' : 'Couldn’t reach the database: ' + e.message + '. Has console.sql been run?'); }
+  $('gate').hidden = true; $('tabs').hidden = $('live').hidden = $('refresh').hidden = false; $('who').textContent = session.user?.email || '';
+  tab(location.hash.slice(1) || 'overview'); loadStats(); loadPosts(); loadAuto();
+  setInterval(() => { if (!document.hidden) loadStats(true); }, 30000);
+}
+function showGate(msg) { $('gate').hidden = false; if (msg) $('gateNote').textContent = msg; if (msg && /again|owner/.test(msg)) save(null); }
+
+function tab(t) {
+  if (!['overview', 'content', 'people', 'settings'].includes(t)) t = 'overview';
+  for (const b of $('tabs').children) b.setAttribute('aria-selected', b.dataset.tab === t);
+  for (const v of ['overview', 'content', 'people', 'settings']) $('v-' + v).hidden = v !== t;
+  history.replaceState(null, '', '#' + t);
+  if (t === 'settings') loadChecks();
+}
+$('tabs').onclick = e => { const b = e.target.closest('button'); if (b) tab(b.dataset.tab); };
+$('refresh').onclick = () => { loadStats(); loadPosts(); };
+$('range').onclick = e => { const b = e.target.closest('button'); if (!b) return; days = +b.dataset.d; for (const x of $('range').children) x.setAttribute('aria-pressed', x === b); loadStats(); };
+
+// ---------- overview ----------
+async function loadStats(quiet) {
+  try { stats = await rpc('admin_stats', {p_days: days}); renderStats(); }
+  catch (e) { if (!quiet) toast('Couldn’t load the numbers: ' + e.message); }
+}
+const ago = t => { const s = (Date.now() - Date.parse(t)) / 1000; return s < 60 ? 'now' : s < 3600 ? Math.floor(s / 60) + 'm' : s < 86400 ? Math.floor(s / 3600) + 'h' : Math.floor(s / 86400) + 'd'; };
+const dfmt = d => new Date(d).toLocaleDateString('en-GB', {day: 'numeric', month: 'short'});
+const STEP = {open: 'Opened MycoField', spot_open: 'Tapped a spot', paywall: 'Saw the paywall', signin_sent: 'Asked for a code', signed_in: 'Signed in', pay_click: 'Clicked pay', paid: 'Came back paid', lead_offer: 'Offered “spot near you”', lead: 'Sent email + postcode', ask: 'Asked the assistant', share: 'Shared a spot', area_saved: 'Saved an area', reveal: 'Revealed a spot', install: 'Installed the app'};
+function renderStats() {
+  const s = stats, t = s.totals, sum = k => s.days.reduce((n, d) => n + d[k], 0);
+  $('liveN').textContent = t.live_now;
+  $('asOf').textContent = `Last ${days} days · updated ${new Date().toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})} · refreshes every 30 s`;
+  const tiles = [['Visitors', nf.format(t.visitors), `${days} days`, true], ['New accounts', nf.format(sum('signups')), `${nf.format(t.accounts)} in total`], ['With access now', nf.format(t.with_access), 'free month included'],
+    ['Payments', nf.format(t.payments), '£' + (t.revenue_p / 100).toFixed(2) + ' all time'], ['Spot-near-you', nf.format(sum('leads')), `${nf.format(t.leads)} in total`], ['Assistant questions', nf.format(t.questions), `${days} days`]];
+  $('tiles').innerHTML = tiles.map(([k, v, d, hero]) => `<div class="card tile${hero ? ' hero' : ''}"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+  bars($('cVisitors'), s.days.map(d => ({x: d.day, y: d.visitors})), 'visitors');
+  bars($('cSignups'), s.days.map(d => ({x: d.day, y: d.signups})), 'new accounts');
+  const top = Math.max(1, s.funnel[0]?.n || 0);
+  $('funnel').innerHTML = s.funnel.map(f => `<div class="hbar"><span class="l" title="${STEP[f.step]}">${STEP[f.step] || f.step}</span><span class="t"><i style="width:${Math.max(f.n ? 2 : 0, f.n / top * 100)}%"></i></span><span class="n">${nf.format(f.n)}<small>${Math.round(f.n / top * 100)}%</small></span></div>`).join('');
+  const smax = Math.max(1, ...s.sources.map(x => x.n));
+  $('sources').innerHTML = s.sources.length ? s.sources.map(x => `<div class="hbar"><span class="l">${esc(x.src)}</span><span class="t"><i style="width:${x.n / smax * 100}%"></i></span><span class="n">${nf.format(x.n)}</span></div>`).join('')
+    + `<p class="note" style="margin:10px 0 0">${Object.entries(s.devices).map(([k, v]) => `${esc(k)} ${v}`).join(' · ')}</p>` : '<p class="note">No visits recorded yet. They appear here as soon as people open the site.</p>';
+  const acts = Object.entries(s.actions).filter(([k]) => k !== 'open').sort((a, b) => b[1] - a[1]), amax = Math.max(1, ...acts.map(a => a[1]));
+  $('actions').innerHTML = acts.length ? acts.map(([k, v]) => `<div class="hbar"><span class="l">${STEP[k] || esc(k)}</span><span class="t"><i style="width:${v / amax * 100}%"></i></span><span class="n">${nf.format(v)}</span></div>`).join('') : '<p class="note">Nothing yet.</p>';
+  $('feed').innerHTML = s.recent.length ? s.recent.map(e => `<li><time>${ago(e.at)}</time><span>${STEP[e.name] || esc(e.name)}${e.props?.src && e.props.src !== 'direct' ? ` <span class="chip">${esc(e.props.src)}</span>` : ''}${e.props?.what ? ` <span class="chip">${esc(e.props.what)}</span>` : ''}${e.props?.nation ? ` <span class="chip">${esc(e.props.nation)}</span>` : ''}</span><code>visit ${esc(e.sid)}</code></li>`).join('') : '<li class="note">Nothing yet.</li>';
+  $('people').innerHTML = s.people.map(p => { const until = p.paid_until && Date.parse(p.paid_until) > Date.now(); return `<tr><td>${esc(p.email)}</td><td>${dfmt(p.created_at)}</td><td>${p.last_sign_in_at ? ago(p.last_sign_in_at) + ' ago' : '<span class="note">never</span>'}</td><td>${p.paid_until ? `<span class="chip ${until ? 'good' : 'bad'}">${dfmt(p.paid_until)}</span>` : '<span class="note">—</span>'}</td><td>${p.paid || ''}</td></tr>`; }).join('');
+  $('peopleSub').textContent = `The newest ${s.people.length} of ${nf.format(t.accounts)} accounts.`;
+}
+// One-series bar chart: thin rounded bars, a value on the biggest bar only, hover for every day.
+function bars(el, pts, unit) {
+  const W = el.clientWidth || 600, H = el.clientHeight || 190, pad = {l: 28, r: 6, t: 14, b: 22}, n = pts.length, max = Math.max(1, ...pts.map(p => p.y));
+  const nice = max <= 4 ? 4 : max <= 10 ? Math.ceil(max / 2) * 2 : Math.ceil(max / 10) * 10, iw = W - pad.l - pad.r, ih = H - pad.t - pad.b, bw = Math.max(3, Math.min(26, iw / n - 4));
+  const x = i => pad.l + (i + .5) * iw / n, y = v => pad.t + ih - v / nice * ih, peak = pts.reduce((b, p, i) => p.y > pts[b].y ? i : b, 0);
+  let g = '';
+  for (const v of [0, nice / 2, nice]) g += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(167,216,46,.10)"/><text class="axis" x="${pad.l - 6}" y="${y(v) + 3}" text-anchor="end">${v}</text>`;
+  const every = Math.ceil(n / Math.max(2, Math.min(7, Math.floor(iw / 56))));
+  pts.forEach((p, i) => {
+    const h = Math.max(p.y ? 2 : 0, ih - (y(p.y) - pad.t)), bx = x(i) - bw / 2, by = pad.t + ih - h, r = Math.min(4, bw / 2, h);
+    if (h) g += `<path d="M${bx},${pad.t + ih} V${by + r} Q${bx},${by} ${bx + r},${by} H${bx + bw - r} Q${bx + bw},${by} ${bx + bw},${by + r} V${pad.t + ih} Z" fill="#A7D82E" opacity="${i === n - 1 ? 1 : .82}"/>`;
+    if (i % every === (n - 1) % every) g += `<text class="axis" x="${x(i)}" y="${H - 6}" text-anchor="middle">${new Date(p.x).toLocaleDateString('en-GB', {day: 'numeric', month: 'short'})}</text>`;
+    g += `<rect x="${x(i) - iw / n / 2}" y="${pad.t}" width="${iw / n}" height="${ih}" fill="transparent" data-i="${i}"/>`;
+  });
+  if (pts[peak].y) g += `<text x="${x(peak)}" y="${y(pts[peak].y) - 5}" text-anchor="middle" fill="#E6EFE8" font-size="11" font-weight="700">${pts[peak].y}</text>`;
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${unit} per day">${g}</svg><div class="tip" hidden></div>`;
+  const tip = el.querySelector('.tip');
+  el.querySelector('svg').onpointermove = e => { const i = e.target.dataset?.i; if (i == null) return (tip.hidden = true); const p = pts[i]; tip.hidden = false; tip.innerHTML = `${dfmt(p.x)} · <b>${p.y}</b> ${unit}`; tip.style.left = x(+i) / W * 100 + '%'; tip.style.top = y(p.y) / H * 100 + '%'; };
+  el.querySelector('svg').onpointerleave = () => tip.hidden = true;
+}
+addEventListener('resize', () => { if (stats) renderStats(); });
+
+// ---------- content ----------
+async function loadPosts() {
+  try { posts = await rpc('admin_content', {p_limit: 80}); renderPosts(); }
+  catch (e) { $('posts').innerHTML = `<div class="empty">Couldn’t load content: ${esc(e.message)}</div>`; }
+}
+const STATUS = {draft: ['Draft', 'warn'], approved: ['Approved', 'good'], posting: ['Posting…', 'lime'], posted: ['Posted', 'good'], failed: ['Failed', 'bad'], rejected: ['Rejected', '']};
+function renderPosts() {
+  const todo = posts.filter(p => ['draft', 'approved', 'failed', 'posting'].includes(p.status));
+  $('draftCount').textContent = todo.length ? `(${todo.length})` : '';
+  const list = filter === 'todo' ? todo : filter === 'posted' ? posts.filter(p => p.status === 'posted') : posts;
+  $('posts').innerHTML = list.length ? list.map(postCard).join('') : `<div class="empty">${filter === 'todo' ? 'Nothing to review. New drafts arrive each morning.' : 'Nothing here yet.'}</div>`;
+  clearTimeout(pollTimer); if (posts.some(p => p.status === 'posting')) pollTimer = setTimeout(pollPosting, 10000);
+}
+function postCard(p) {
+  const [label, cls] = STATUS[p.status] || [p.status, ''], locked = ['posting', 'posted'].includes(p.status), m = p.media || [];
+  const media = m.map(x => x.type === 'video' ? `<video src="${esc(x.url)}" ${x.poster ? `poster="${esc(x.poster)}"` : ''} controls playsinline preload="metadata" muted></video>` : `<img src="${esc(x.url)}" alt="" loading="lazy">`).join('');
+  const links = Object.values(p.results?.results || {}).map(r => r?.url || r?.post_url).filter(u => /^https:/.test(u || ''));
+  return `<article class="card post" data-id="${p.id}"><div class="media">${media}${m.length > 1 ? `<span class="count">${m.length} · swipe</span>` : ''}</div><div class="body">
+    <div class="meta"><span class="chip ${cls}">${label}</span><span>${p.kind}</span><span>· ${dfmt(p.for_date)}</span>${p.ai ? '<span class="chip">AI-labelled</span>' : ''}</div>
+    <h3>${esc(p.title || 'Untitled')}</h3>
+    <textarea aria-label="Caption" ${locked ? 'readonly' : ''}>${esc(p.caption)}</textarea>
+    <div class="meta"><span class="cc">${p.caption.length} characters</span></div>
+    <div class="plats">${['tiktok', 'instagram', 'facebook'].map(k => `<label><input type="checkbox" value="${k}" ${p.platforms.includes(k) ? 'checked' : ''} ${locked ? 'disabled' : ''}>${{tiktok: 'TikTok', instagram: 'Instagram', facebook: 'Facebook'}[k]}</label>`).join('')}</div>
+    ${p.error ? `<p class="note" style="color:var(--bad);margin:0">${esc(p.error)}</p>` : ''}${links.length ? `<p class="note" style="margin:0">${links.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">View post ${i + 1}</a>`).join(' · ')}</p>` : ''}
+    <div class="actions">${locked ? (p.status === 'posting' ? '<button class="btn" data-act="check">Check progress</button>' : '') : `<button class="btn lime" data-act="post">${p.status === 'failed' ? 'Try again' : 'Approve & post'}</button><button class="btn ghost" data-act="save">Save</button>${p.status !== 'rejected' ? '<button class="btn bad" data-act="reject">Reject</button>' : ''}`}
+    ${m.map((x, i) => `<a class="btn ghost" href="${esc(x.url)}" download target="_blank" rel="noopener">Download${m.length > 1 ? ' ' + (i + 1) : ''}</a>`).join('')}</div></div></article>`;
+}
+$('filter').onclick = e => { const b = e.target.closest('button'); if (!b) return; filter = b.dataset.f; for (const x of $('filter').children) x.setAttribute('aria-pressed', x === b); renderPosts(); };
+$('posts').oninput = e => { if (e.target.tagName === 'TEXTAREA') e.target.closest('.post').querySelector('.cc').textContent = e.target.value.length + ' characters'; };
+$('posts').onclick = async e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const card = b.closest('.post'), id = card.dataset.id, act = b.dataset.act;
+  const caption = card.querySelector('textarea').value, platforms = [...card.querySelectorAll('.plats input:checked')].map(i => i.value);
+  b.disabled = true;
+  try {
+    if (act === 'check') { await fnCall('publish', {action: 'status', id}); }
+    else if (act === 'reject') { await rpc('admin_content_edit', {p_id: id, p_status: 'rejected'}); toast('Rejected.'); }
+    else if (act === 'save') { await rpc('admin_content_edit', {p_id: id, p_caption: caption, p_platforms: platforms}); toast('Saved.'); }
+    else if (act === 'post') {
+      if (!platforms.length) { toast('Pick at least one platform.'); b.disabled = false; return; }
+      if (!confirm(`Post this to ${platforms.join(', ')} now?`)) { b.disabled = false; return; }
+      await rpc('admin_content_edit', {p_id: id, p_caption: caption, p_platforms: platforms, p_status: 'approved'});
+      await fnCall('publish', {action: 'post', id}); toast('Sent — posting now.');
+    }
+  } catch (err) { toast(err.data?.error === 'not_configured' ? 'Posting isn’t connected yet — see Settings.' : 'That didn’t work: ' + (err.data?.detail || err.message)); }
+  loadPosts();
+};
+async function pollPosting() { for (const p of posts.filter(p => p.status === 'posting')) { try { await fnCall('publish', {action: 'status', id: p.id}); } catch {} } loadPosts(); }
+async function loadAuto(p) { try { const v = await rpc('admin_autopilot', p == null ? {} : {p_paused: p}); const on = !v?.paused; $('auto').setAttribute('aria-checked', on); $('autoLabel').textContent = on ? 'Autopilot on' : 'Autopilot paused'; } catch {} }
+$('auto').onclick = () => loadAuto($('auto').getAttribute('aria-checked') === 'true');
+
+// ---------- settings ----------
+async function loadChecks() {
+  let c = null, err = null; try { c = await fnCall('publish', {action: 'check'}); } catch (e) { err = e; }
+  const row = (ok, title, how) => `<div class="check"><span class="chip ${ok ? 'good' : 'warn'}">${ok ? 'Ready' : 'To do'}</span><div><b>${title}</b>${ok ? '' : `<span class="note">${how}</span>`}</div></div>`;
+  $('checks').innerHTML = err ? row(false, 'Publish function', 'Deploy the <b>publish</b> Edge Function in Supabase (Verify JWT off).')
+    : row(c.uploadPost, 'Upload-Post API key', 'Supabase → Edge Functions → Secrets → add UPLOAD_POST_API_KEY.') + row(c.profile, 'Upload-Post profile', 'Add UPLOAD_POST_USER: the profile name you connected TikTok, Instagram and Facebook to.')
+      + row(c.facebookPage, 'Facebook Page (optional)', 'Only needed if more than one Page is connected: add UPLOAD_POST_FB_PAGE with the Page id.');
+}
+start();
+</script>
+</body></html>

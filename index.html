@@ -648,6 +648,19 @@ const RECORDS_KEY = 'mycofield-history-v2';
 const SUPABASE_URL = 'https://abgbzdairkgakmqscvyo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_6Gjfyb4Q61ew6ym-22YSQw_NF-KuxSv';
 const AUTH_KEY = 'mycofield-auth-v1', SYNC_KEY = 'mycofield-sync-v1';
+// ---------- visit stats (for the owner's /console): no cookies, no IP — a random id per visit and a few named
+// steps (opened, tapped a spot, saw the paywall, signed in…). Only on the live site, never for automated
+// browsers, and not on devices where the owner has opened the console.
+const TRACK_SID = (() => { try { let s = sessionStorage.getItem('mf-sid'); if (!s) sessionStorage.setItem('mf-sid', s = Math.random().toString(36).slice(2, 12) + Date.now().toString(36)); return s; } catch { return Math.random().toString(36).slice(2, 14); } })();
+const tracked = new Set();
+function track(name, props = {}, once = true) {
+  try {
+    if (navigator.webdriver || !/^(www\.)?mycofield\.com$/.test(location.hostname) || localStorage.getItem('mf-notrack')) return;
+    if (once) { if (tracked.has(name)) return; tracked.add(name); }
+    fetch(`${SUPABASE_URL}/rest/v1/rpc/track`, {method: 'POST', keepalive: true, headers: {apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json'},
+      body: JSON.stringify({p_name: name, p_sid: TRACK_SID, p_props: props})}).catch(() => {});
+  } catch {}
+}
 // Paid access: a Stripe Payment Link (one-off £8 → a year). Empty = paywall off, app fully open.
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/3cI6oG7gFeOdeCB4JneAg01';
 // £2 for 7 days: a second Stripe Payment Link (after payment → https://www.mycofield.com/?paid=1). Empty = option hidden.
@@ -761,6 +774,7 @@ const leadWaiting = () => { const li = leadInfo(); return !!li?.score && !li.ope
 function offerLead(left) {
   if (!LEAD_OFFER_AT || left > LEAD_OFFER_AT * 1000 || session || leadInfo() || !$('leadBox').hidden || !$('paywall').hidden || !$('walkthrough').hidden) return;
   writeJSON(LEAD_KEY, {asked: Date.now()});   // offered once per device
+  track('lead_offer');
   clearInterval(gate.trialTimer);             // the free look waits while they fill it in
   closeSearch?.(); $('leadAsk').hidden = false; $('leadDone').hidden = true; $('leadErr').hidden = true;
   $('leadStep').textContent = 'Before your free look ends'; $('leadTitle').textContent = 'Want a spot near you?';
@@ -949,6 +963,7 @@ async function askAreasReady(ms = 8000) {
 async function sendAsk(q) {
   q = String(q || '').trim().slice(0, 600);
   if (!q || ask.busy) return;
+  track('ask', {}, false);
   ask.busy = true; ask.lastAt = Date.now(); $('askSend').disabled = true; $('askInput').value = ''; askFit();
   ask.turns.push({role: 'user', content: q}); askBubble('u', esc(q)); askChips();
   const out = askBubble('a', '<span class="askp-dots" aria-label="Thinking"><i></i><i></i><i></i></span>');
@@ -1000,6 +1015,7 @@ function initAsk() {
 // (no coordinates, no place name); it opens in their app once they're signed in with access.
 async function shareSpot() {
   const r = state.pointAnalysis; if (!r?.coordinates) return;
+  track('share', {}, false);
   if (!session) { toast('Sign in to share spots with other MycoField users.'); switchView('account'); return; }
   const btn = $('pcShare'); btn.disabled = true;
   let code;
@@ -2229,6 +2245,7 @@ function saveAreaFromPoint(e) {
   e.preventDefault();
   const r = state.pointAnalysis, name = $('saveName').value.trim(), parentId = $('saveParent').value || null;
   if (!r || !name) return;
+  track('area_saved', {}, false);
   const id = newAreaId();
   areas[id] = {name, center: [round6(r.coordinates.lon), round6(r.coordinates.lat)], zoom: parentId ? 14.5 : 13, pitch: 60, parentId,
     elev: r.terrain ? `${r.terrain.elevation} m` : null, habitatOverride: r.habitatOverride || null, createdAt: new Date().toISOString(), private: true};
@@ -2277,6 +2294,7 @@ async function deleteArea() {
 let pointToken = 0;
 async function analysePoint(lat, lon, {force = false, zoom = null, place = null} = {}) {
   const token = ++pointToken;
+  track('spot_open');
   state.mapMode = 'point';
   state.pointAnalysis = {coordinates: {lat, lon}, place, loading: true};
   closeAreaCard(); closeSaved(); setPointExpanded(false);
@@ -2819,6 +2837,7 @@ function tokenUser(t) {
   try { const p = JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); return p?.sub ? {id: p.sub, email: p.email} : null; } catch { return null; }
 }
 function setSession(s) {
+  if (s && !session) track('signed_in');
   // Never carry the previous person's account over: the user comes from the response or the new token.
   session = s ? {access_token: s.access_token, refresh_token: s.refresh_token, expires_at: s.expires_at || Math.floor(Date.now() / 1000) + (s.expires_in || 3600), user: s.user ? {id: s.user.id, email: s.user.email} : tokenUser(s.access_token)} : null;
   if (session) writeJSON(AUTH_KEY, session); else { try { localStorage.removeItem(AUTH_KEY); } catch {} }
@@ -2860,7 +2879,7 @@ async function sendSignInEmail(email, btn) {
   const label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
   try {
     await sbFetch(`/auth/v1/otp?redirect_to=${encodeURIComponent(location.origin + location.pathname)}`, {method: 'POST', body: {email, create_user: true}, auth: false});
-    sync.pendingEmail = email; renderSync(); renderPaywall();
+    sync.pendingEmail = email; renderSync(); renderPaywall(); track('signin_sent');
     toast('Email sent — check your inbox.');
   } catch (err) { toast(`Could not send the email: ${err.message}`); }
   finally { btn.disabled = false; btn.textContent = label; }
@@ -3069,6 +3088,7 @@ function startTrial() {
 }
 function showPaywall() {
   closeSearch?.();
+  track('paywall');
   document.body.classList.add('gated'); $('paywall').hidden = false; $('walkthrough').hidden = $('leadBox').hidden = true; renderPaywall();
 }
 function weekBuyHref() {
@@ -3526,6 +3546,7 @@ function renderSpots() {
 }
 async function revealSpot(nation) {
   if (spots.busy) return;
+  track('reveal', {nation}, false);
   const c = spotsCache(), r = (spots.counts || []).find(x => x.nation === nation);
   if (!await askConfirm(`Reveal a spot in ${nation}?`, `This uses 1 of your ${c?.balance || 0} credits on today’s best available ${nation} spot${r?.best ? ` (scoring ${r.best})` : ''}. If none is left by the time you confirm, no credit is taken.`, {ok: 'Reveal it', cancel: 'Not now'})) return;
   spots.busy = true;
@@ -3688,6 +3709,18 @@ function init() {
   initGate();
 }
 init();
+
+// Visit stats: where people came from, then the pay buttons and the lead form wherever they are.
+{ const q = new URLSearchParams(location.search), ref = (() => { try { return new URL(document.referrer).hostname.replace(/^www\./, ''); } catch { return ''; } })();
+  const src = (q.get('utm_source') || (ref && !/mycofield\.com$/.test(ref) ? ref.replace(/^(l|m|lm)\.facebook\.com$/, 'facebook.com') : '') || (q.get('s') ? 'shared-spot' : q.get('at') ? 'spot-link' : 'direct')).slice(0, 40);
+  let seen = false; try { seen = !!localStorage.getItem('mf-seen'); localStorage.setItem('mf-seen', '1'); } catch {}
+  track('open', {src, camp: (q.get('utm_campaign') || '').slice(0, 40) || undefined, dev: matchMedia('(pointer:coarse)').matches ? 'mobile' : 'desktop',
+    app: matchMedia('(display-mode: standalone)').matches || undefined, back: seen || undefined, signed: !!session || undefined});
+  if (q.get('paid') === '1' || q.get('spots') === '1' || q.get('cs')) track('paid');
+  document.addEventListener('click', e => { const b = e.target.closest?.('#pwPayBtn,#pwWeekBtn,[data-go="pay"],[data-go="week"],#soBuy,a[data-buy]');
+    if (b) track('pay_click', {what: b.id === 'pwWeekBtn' || b.dataset.go === 'week' ? 'week' : b.id === 'soBuy' || b.dataset.buy ? 'spots' : 'year'}, false); }, true);
+  document.addEventListener('submit', e => { if (e.target.id === 'leadForm') track('lead', {}, false); }, true);
+  window.addEventListener('appinstalled', () => track('install')); }
 
 // Dev aid: window.mycofield exposes state for inspection in the console (no UI).
 window.mycofield = {state, cacheStats, MODEL_VERSION, map, ready, labels, get areas() { return areas; }};
