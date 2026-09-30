@@ -92,8 +92,9 @@ async function openApp(ctx) {
           const [w, t] = await Promise.allSettled([m.fetchPointWeather(lat, lon, {}), m.analyseTerrain(lat, lon, {})]);
           let ha = await h, res = m.buildPointResult(lat, lon, w, t, ha, null, null), L = ha?.land || {}, habitatRetries = 0;
           // A strong square whose habitat maps didn't answer (busy servers) gets two more goes; answers already
-          // received are cached, so only the layers that failed are asked again.
-          while (habitatRetries < 2 && (res.conditions?.score ?? 0) >= 85 && (ha?.unavailable || L.unavailable || L.partial || (!res.habitat?.cls && L.covered))) {
+          // received are cached, so only the layers that failed are asked again. Ground the maps simply don't
+          // record isn't retried: that's an answer, not a failure.
+          while (habitatRetries < 2 && (res.conditions?.score ?? 0) >= 85 && (ha?.unavailable || L.unavailable || L.partial)) {
             habitatRetries++;
             await new Promise(r => setTimeout(r, 4000 * habitatRetries));
             ha = await m.fetchHabitat(lat, lon, {}).catch(m.habitatUnavailable);
