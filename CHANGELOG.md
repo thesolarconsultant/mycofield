@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.41.0 — Owner console + visit tracking live
+- /console: owner-only dashboard (visitors, sign-up journey, sources, people, payments, content queue).
+- Cookieless visit tracking on the live site feeds the console; UTM links (?utm_source=…) split out sources.
+
 ## 2.40.0 — Free until 31 October
 - Every account gets full access until 31 October 2026 (`supabase/free-month.sql`: current accounts, plus a
   sign-up trigger for new ones). Anyone already paid beyond that keeps their later date.
