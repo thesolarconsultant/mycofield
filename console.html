@@ -27,6 +27,8 @@ header{position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);-webkit-backdr
 .tabs{display:flex;gap:4px;background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:4px;overflow-x:auto;max-width:100%}
 .tabs button{border:0;background:none;padding:7px 14px;border-radius:999px;color:var(--muted);font-weight:600;white-space:nowrap}
 .tabs button[aria-selected=true]{background:var(--lime);color:var(--lime-ink)}
+.tabs a.tglink{display:inline-flex;align-items:center;padding:7px 14px;border-radius:999px;color:var(--muted);font-weight:600;white-space:nowrap;text-decoration:none}
+.tabs a.tglink:hover{color:var(--text)}
 .seg{display:flex;gap:2px;background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:3px}
 .seg button{border:0;background:none;padding:5px 10px;border-radius:7px;color:var(--muted);font-weight:600;font-size:13px}
 .seg button[aria-pressed=true]{background:var(--s3);color:var(--text)}
@@ -100,6 +102,7 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}.tbl{
     <button role="tab" data-tab="content" aria-selected="false">Content <span id="draftCount"></span></button>
     <button role="tab" data-tab="people" aria-selected="false">People</button>
     <button role="tab" data-tab="settings" aria-selected="false">Settings</button>
+    <a class="tglink" href="/topground">Top Ground ↗</a>
   </nav>
   <div class="live" id="live" hidden><span class="dot"></span><span id="liveN">0</span> on the site now</div>
   <button class="icon-btn" id="refresh" title="Refresh" hidden><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg></button>

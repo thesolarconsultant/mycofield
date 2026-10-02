@@ -82,4 +82,17 @@ grant execute on function public.engine_brief(text) to anon;
 create or replace function public.engine_add(p_token text, p_rows jsonb) returns int language plpgsql security definer set search_path = public as $$ declare n int; begin if p_token is null or not exists (select 1 from public.content_tokens where token_hash = encode(sha256(convert_to(p_token, 'UTF8')), 'hex')) then raise exception 'bad_token' using errcode = '42501'; end if; if jsonb_typeof(p_rows) <> 'array' or jsonb_array_length(p_rows) > 6 then raise exception 'bad_rows'; end if; if (select count(*) from public.content_posts where created_at > now() - interval '20 hours') >= 12 then raise exception 'daily_limit'; end if; insert into public.content_posts (kind, media, title, caption, platforms, ai, brief) select r.kind, r.media, left(r.title, 120), left(r.caption, 2200), coalesce(r.platforms, '{tiktok,instagram,facebook}'), coalesce(r.ai, true), r.brief from jsonb_to_recordset(p_rows) as r(kind text, media jsonb, title text, caption text, platforms text[], ai boolean, brief jsonb); get diagnostics n = row_count; return n; end $$;
 revoke all on function public.engine_add(text, jsonb) from public;
 grant execute on function public.engine_add(text, jsonb) to anon;
+
+-- Top Ground: the live ranked leaderboard the owner views at /topground. Owner-only, so unlike
+-- engine_brief it DOES return exact coordinates — these are the paid product and must never reach anon.
+create or replace function public.admin_top_ground(p_limit int default 48) returns jsonb language plpgsql stable security definer set search_path = public as $$ declare d date := public.current_scan(); r jsonb; begin if not public.is_admin() then raise exception 'not_admin' using errcode = '42501'; end if;
+select jsonb_build_object(
+ 'scan', d,
+ 'today', (now() at time zone 'Europe/London')::date,
+ 'by_nation', (select coalesce(jsonb_object_agg(t.nation, t.n), '{}') from (select ls.nation, count(*) as n from public.live_spots ls where ls.scanned_on = d group by 1) t),
+ 'spots', (select coalesce(jsonb_agg(t order by t.score desc), '[]') from (select ls.name, ls.region, ls.nation, ls.habitat, ls.access, ls.lat, ls.lon, ls.score, ls.rain14, ls.low, round(ls.elev) as elev from public.live_spots ls where ls.scanned_on = d order by ls.score desc limit least(greatest(coalesce(p_limit, 48), 1), 200)) t)
+) into r; return r; end $$;
+revoke all on function public.admin_top_ground(int) from public, anon;
+grant execute on function public.admin_top_ground(int) to authenticated;
+
 select 'console ready' as status;
