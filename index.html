@@ -525,12 +525,40 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <p class="sh-note" id="scoreCopy"></p>
 <div class="pc-actions"><button class="btn" id="areaDetails" type="button">Conditions <span aria-hidden="true">→</span></button><button class="btn secondary" id="areaAnalyse" type="button">Analyse centre</button></div>
 </div>
+<style>
+.survey{margin-top:12px;border-top:1px solid rgba(128,128,128,.18);padding-top:10px}
+.survey-toggle{background:none;border:1px dashed rgba(128,128,128,.4);border-radius:10px;padding:8px 12px;font-weight:600;color:inherit;cursor:pointer;width:100%}
+.survey-form{display:grid;gap:10px;margin-top:10px}
+.survey .srow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.survey .srow>span,.survey .srow>label{font-size:13px;opacity:.82}
+.survey .seg{display:inline-flex;gap:4px;background:rgba(128,128,128,.14);border-radius:999px;padding:3px}
+.survey .seg button{border:0;background:none;border-radius:999px;padding:6px 12px;font-weight:600;color:inherit;cursor:pointer;min-height:36px}
+.survey .seg button[aria-pressed=true]{background:#A7D82E;color:#0B3D2E}
+.survey .survey-save{background:#A7D82E;color:#0B3D2E;border:0;border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer;min-height:40px}
+.survey .survey-save:disabled{opacity:.5;cursor:default}
+.survey .survey-cancel{background:none;border:1px solid rgba(128,128,128,.4);border-radius:10px;padding:9px 16px;font-weight:600;color:inherit;cursor:pointer;min-height:40px}
+.survey textarea.field{width:100%}
+</style>
 <div class="sheet" id="pointCard" hidden role="region" aria-label="Exact point intelligence" aria-live="polite">
 <button class="handle" type="button" id="pcHandle" aria-label="Show more detail" aria-expanded="false"></button>
 <div class="sh-head"><div class="ring sm" id="pcRing"><b id="pcScore">…</b></div><div class="sh-title"><span class="kicker">Exact point <span id="pcStatus" class="chip loading">Loading</span></span><h2 id="pcLabel">Analysing this point…</h2><p id="pcCoords"></p></div><div class="sh-tools"><button class="iconbtn" id="pcRefresh" type="button" aria-label="Refresh analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><button class="iconbtn" id="pcClose" type="button" aria-label="Close analysis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
 <div id="pcLoading" class="loadingbar"></div>
 <div class="strip" id="pcStrip"></div><div class="pc-wx" id="pcWx" role="list" aria-label="Weather here, the next 8 days"></div>
-<div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcLand"></p><p class="sh-note" id="pcGrid"></p></div>
+<div class="pc-more" id="pcMore"><p class="sh-note" id="pcSub"></p><div class="metrics" id="pcMetrics"></div><div class="pc-explain" id="pcExplain"></div><div class="habrow"><label for="pcHabitat">Habitat at this spot</label><select class="field" id="pcHabitat"></select></div><p class="sh-note" id="pcLand"></p><p class="sh-note" id="pcGrid"></p>
+<div class="survey" id="pcSurvey">
+  <button type="button" class="survey-toggle" id="pcSurveyOpen">＋ Survey this spot</button>
+  <div class="survey-form" id="pcSurveyForm" hidden>
+    <p class="sh-note">What did you actually find here? Ground-truth tunes the score at this spot for everyone.</p>
+    <div class="srow"><span>Grassland fungi found?</span><div class="seg" data-k="found"><button type="button" data-v="yes">Yes</button><button type="button" data-v="no">No</button></div></div>
+    <div class="srow" id="svSpeciesRow" hidden><label for="svSpecies">Species / colours</label><input class="field" id="svSpecies" type="number" inputmode="numeric" min="0" max="50" placeholder="e.g. 4"></div>
+    <div class="srow"><span>Sward</span><div class="seg" data-k="sward"><button type="button" data-v="short">Short</button><button type="button" data-v="medium">Medium</button><button type="button" data-v="rank">Rank</button></div></div>
+    <div class="srow"><span>Mossy turf?</span><div class="seg" data-k="moss"><button type="button" data-v="yes">Yes</button><button type="button" data-v="no">No</button></div></div>
+    <div class="srow"><span>Grazing</span><div class="seg" data-k="grazing"><button type="button" data-v="grazed">Grazed</button><button type="button" data-v="light">Light</button><button type="button" data-v="ungrazed">None</button></div></div>
+    <textarea class="field" id="svNotes" rows="2" maxlength="500" placeholder="Notes (optional)"></textarea>
+    <div class="srow"><button type="button" class="survey-save" id="svSubmit">Save survey</button><button type="button" class="survey-cancel" id="svCancel">Cancel</button></div>
+    <p class="sh-note" id="svMsg"></p>
+  </div>
+</div></div>
 <div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcShare" type="button" aria-label="Share this spot" title="Share this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="btn secondary icon" id="pcAsk" type="button" aria-label="Ask how this spot compares with your areas" title="Ask about this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg></button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
 </div>
@@ -629,7 +657,7 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 import * as maplibregl from './vendor/maplibre-gl-6.10.0/maplibre-gl.mjs';
 
 // ---------- constants ----------
-const MODEL_VERSION = 'conditions-v0.5';
+const MODEL_VERSION = 'conditions-v0.6';
 const TZ = 'Europe/London';
 const TERRAIN_RADIUS_M = 60;
 const FLAT_SLOPE_DEG = 2;
@@ -1544,7 +1572,10 @@ function calculateConditionsIndex(env) {
   for (const m of avail) { components[m.key] = Math.round(m.weight / wsum * m.s); max[m.key] = Math.round(m.weight / wsum * 100); }
   const frost = Math.min(FROST_PENALTY_MAX, (env.frost7 || 0) * FROST_PENALTY_PER_NIGHT);
   if (frost) components.frost = -frost;
-  const score = Math.round(clamp(avail.reduce((a, m) => a + m.weight / wsum * m.s, 0) - frost));
+  // Ground truth: a capped nudge (±15) from what people actually found here on the ground (ground_truth RPC).
+  const ground = Math.max(-15, Math.min(15, Math.round(env.groundTruth || 0)));
+  if (ground) components.ground = ground;
+  const score = Math.round(clamp(avail.reduce((a, m) => a + m.weight / wsum * m.s, 0) - frost + ground));
   return {
     score, label: conditionsLabel(score), components, max,
     missing: scored.filter(m => m.s == null).map(m => m.key),
@@ -1554,9 +1585,9 @@ function calculateConditionsIndex(env) {
   };
 }
 // Index for every day with a full 14-day window, plus trend (today vs next 3 days).
-function scoreSeries(weather, terrainScore, habitatScore) {
+function scoreSeries(weather, terrainScore, habitatScore, groundTruth = 0) {
   const {days, todayIdx} = weather;
-  const series = days.map((d, i) => i < 13 ? null : calculateConditionsIndex({...envAt(days, i), terrain: terrainScore, habitat: habitatScore}).score);
+  const series = days.map((d, i) => i < 13 ? null : calculateConditionsIndex({...envAt(days, i), terrain: terrainScore, habitat: habitatScore, groundTruth}).score);
   const ahead = series.slice(todayIdx + 1, todayIdx + 4).filter(Number.isFinite);
   const avg = ahead.reduce((a, b) => a + b, 0) / (ahead.length || 1);
   const delta = ahead.length ? avg - series[todayIdx] : 0;
@@ -1565,7 +1596,7 @@ function scoreSeries(weather, terrainScore, habitatScore) {
 }
 const TREND_TEXT = {rising: '↑ rising', stable: '→ stable', falling: '↓ falling'};
 function explainParts(c) {
-  return MODEL.filter(m => c.components[m.key] != null).map(m => [m.short, c.components[m.key]]).concat(c.components.frost ? [['Frost', c.components.frost]] : []);
+  return MODEL.filter(m => c.components[m.key] != null).map(m => [m.short, c.components[m.key]]).concat(c.components.frost ? [['Frost', c.components.frost]] : []).concat(c.components.ground ? [['Ground truth', c.components.ground]] : []);
 }
 const fmtSigned = v => (v < 0 ? '−' : '+') + Math.abs(v);
 const MISSING_TEXT = {rain: 'rainfall', soil: 'soil moisture', balance: 'water balance', nights: 'night temperatures', terrain: 'terrain', habitat: 'habitat'};
@@ -1688,7 +1719,7 @@ async function fetchReadyBatch(cells) {
       const soil = SOIL_VARS_FORECAST.map(v => r.current?.[v]).filter(Number.isFinite);
       const days = enrichDays(toDays(r.daily, soil.length ? {[today]: soil.reduce((a, b) => a + b, 0) / soil.length} : {}));
       const t = days.findIndex(d => d.date === today);
-      if (t >= 13) score = calculateConditionsIndex(envAt(days, t)).score;
+      if (t >= 13) score = calculateConditionsIndex({...envAt(days, t), groundTruth: groundTruthAdj(c.lat, c.lon)}).score;
     }
     ready.cells.set(c.key, {...c, score, rain, fut, at: Date.now()});
   });
@@ -1945,8 +1976,9 @@ function habitatUnavailable(err) { return {cls: null, label: 'Habitat lookup una
 function scoreArea(k, d) {
   d.habitat = effectiveHabitat(d.habitatAuto, areas[k]?.habitatOverride);
   if (!d.weather) return;
-  d.conditions = calculateConditionsIndex({...envAt(d.weather.days, d.weather.todayIdx), terrain: d.terrain?.score, habitat: d.habitat?.score});
-  Object.assign(d, scoreSeries(d.weather, d.terrain?.score, d.habitat?.score));
+  const gt = areas[k]?.center ? groundTruthAdj(areas[k].center[1], areas[k].center[0]) : 0;
+  d.conditions = calculateConditionsIndex({...envAt(d.weather.days, d.weather.todayIdx), terrain: d.terrain?.score, habitat: d.habitat?.score, groundTruth: gt});
+  Object.assign(d, scoreSeries(d.weather, d.terrain?.score, d.habitat?.score, gt));
 }
 function refreshAreaViews(k) {
   compareTrackedAreas(); renderAreaMarkers();
@@ -2300,6 +2332,7 @@ async function analysePoint(lat, lon, {force = false, zoom = null, place = null}
   closeAreaCard(); closeSaved(); setPointExpanded(false);
   placePointMarker(lat, lon);
   renderPointLoading(lat, lon, place);
+  resetSurvey();
   revealPoint(lat, lon, zoom);
   const habitatP = fetchHabitat(lat, lon, {force}).catch(habitatUnavailable);
   const [w, t] = await Promise.allSettled([fetchPointWeather(lat, lon, {force}), analyseTerrain(lat, lon, {force})]);
@@ -2318,7 +2351,7 @@ function buildPointResult(lat, lon, w, t, habitatAuto, habitatOverride = null, p
   const weather = w.status === 'fulfilled' ? w.value : null;
   const terrain = t.status === 'fulfilled' ? t.value : null;
   const habitat = habitatAuto?.pending && !habitatOverride ? {pending: true} : effectiveHabitat(habitatAuto?.pending ? null : habitatAuto, habitatOverride);
-  const conditions = weather ? calculateConditionsIndex({...envAt(weather.days, weather.todayIdx), terrain: terrain?.score, habitat: habitat?.score}) : null;
+  const conditions = weather ? calculateConditionsIndex({...envAt(weather.days, weather.todayIdx), terrain: terrain?.score, habitat: habitat?.score, groundTruth: groundTruthAdj(lat, lon)}) : null;
   return {
     coordinates: {lat, lon}, place, _w: w, _t: t, _habitatAuto: habitatAuto, habitatOverride,
     weather: weather && {...weatherSummary(weather.days, weather.todayIdx), status: weather.status, cell: weather.cell},
@@ -2337,6 +2370,37 @@ function setPointHabitat(cls) {
   const next = buildPointResult(r.coordinates.lat, r.coordinates.lon, r._w, r._t, r._habitatAuto, cls || null, r.place);
   state.pointAnalysis = next;
   renderPointAnalysis(next);
+}
+// ---------- on-the-ground survey (feeds ground_truth) ----------
+let svState = {found: null, sward: null, moss: null, grazing: null};
+function resetSurvey() {
+  svState = {found: null, sward: null, moss: null, grazing: null};
+  const f = $('pcSurveyForm'); if (!f) return;
+  f.hidden = true; $('svSpeciesRow').hidden = true; $('svSpecies').value = ''; $('svNotes').value = ''; $('svMsg').textContent = '';
+  for (const b of $('pcSurvey').querySelectorAll('.seg button')) b.setAttribute('aria-pressed', 'false');
+}
+function pickSeg(k, v, btn) {
+  svState[k] = svState[k] === v ? null : v;
+  for (const b of btn.parentNode.children) b.setAttribute('aria-pressed', String(b === btn && svState[k] === v));
+  if (k === 'found') $('svSpeciesRow').hidden = svState.found !== 'yes';
+}
+async function saveSurvey() {
+  const r = state.pointAnalysis; if (!r || r.loading) return;
+  if (svState.found == null) { $('svMsg').textContent = 'Tap Yes or No for “grassland fungi found?” first.'; return; }
+  if (!session) { $('svMsg').textContent = 'Sign in on the Account tab to save a survey.'; return; }
+  const btn = $('svSubmit'); btn.disabled = true; $('svMsg').textContent = 'Saving…';
+  try {
+    await submitSurvey({p_lat: r.coordinates.lat, p_lon: r.coordinates.lon, p_found: svState.found === 'yes',
+      p_sward: svState.sward, p_moss: svState.moss == null ? null : svState.moss === 'yes', p_grazing: svState.grazing,
+      p_species: svState.found === 'yes' ? Math.max(0, Math.min(50, parseInt($('svSpecies').value, 10) || 0)) : 0,
+      p_notes: $('svNotes').value.trim() || null});
+    await loadGroundTruth();
+    const n = buildPointResult(r.coordinates.lat, r.coordinates.lon, r._w, r._t, r._habitatAuto, r.habitatOverride, r.place);
+    state.pointAnalysis = n; renderPointAnalysis(n); resetSurvey();
+    toast('Survey saved — ground truth updated.');
+  } catch (e) {
+    $('svMsg').textContent = e.httpStatus === 401 ? 'Please sign in again to save.' : 'Couldn’t save: ' + (e.message || 'try again');
+  } finally { btn.disabled = false; }
 }
 function metricHTML(value, label, kind) {
   const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : kind === 'Live' ? 'live' : '';
@@ -2832,6 +2896,18 @@ async function sbFetch(path, {method = 'GET', body, headers = {}, auth = true} =
   if (!r.ok) throw Object.assign(new Error(data?.msg || data?.message || data?.error_description || data?.error || `HTTP ${r.status}`), {httpStatus: r.status});
   return data;
 }
+// ---------- ground truth ----------
+// Adjustments from on-the-ground surveys (supabase/surveys.sql), keyed by the ~1 km cell (lat/lon 2 dp).
+// Loaded once at startup (and by the scanner) and added to the Conditions Index; defaults to 0 when absent.
+let GROUND_TRUTH = {};
+function groundTruthAdj(lat, lon) { const v = GROUND_TRUTH[`${lat.toFixed(2)},${lon.toFixed(2)}`]; return Number.isFinite(v) ? v : 0; }
+async function loadGroundTruth() {
+  if (!syncEnabled()) return;
+  try { const rows = await sbFetch('/rest/v1/rpc/ground_truth', {method: 'POST', body: {}, auth: false}); const m = {}; for (const r of rows || []) if (r && r.k) m[r.k] = r.adj; GROUND_TRUTH = m; }
+  catch {}
+}
+async function submitSurvey(p) { return sbFetch('/rest/v1/rpc/submit_survey', {method: 'POST', body: p}); }
+
 // Who a login token belongs to, read from the token itself (the sign-in link carries no user object).
 function tokenUser(t) {
   try { const p = JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); return p?.sub ? {id: p.sub, email: p.email} : null; } catch { return null; }
@@ -3665,6 +3741,11 @@ function init() {
   $('areaDetails').onclick = () => { switchView('dashboard'); focusArea(state.selectedArea); };
   $('areaAnalyse').onclick = () => { const a = areas[state.selectedArea]; if (a) analysePoint(a.center[1], a.center[0], {place: a.name}); };
   $('pcHabitat').onchange = e => setPointHabitat(e.target.value);
+  $('pcSurveyOpen').onclick = () => { const f = $('pcSurveyForm'); f.hidden = !f.hidden; if (!f.hidden && !session) $('svMsg').textContent = 'Sign in on the Account tab to save.'; };
+  $('svCancel').onclick = resetSurvey;
+  $('svSubmit').onclick = saveSurvey;
+  for (const seg of $('pcSurvey').querySelectorAll('.seg')) seg.onclick = e => { const b = e.target.closest('button'); if (b) pickSeg(seg.dataset.k, b.dataset.v, b); };
+  loadGroundTruth();
   $('analyseAll').onclick = analyseAllRecords;
   $('exportCsv').onclick = () => exportData('csv');
   $('exportJson').onclick = () => exportData('json');

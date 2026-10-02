@@ -37,7 +37,7 @@ async function openApp(ctx) {
   await ctx.route(/^https:\/\/www\.mycofield\.com\/(\?.*)?$/, async r => {
     const res = await r.fetch(); let t = await res.text();
     t = t.replace(/const STRIPE_PAYMENT_LINK = '[^']*';/, "const STRIPE_PAYMENT_LINK = '';")
-         .replace('window.mycofield = {', 'window.__mf = {fetchReadyBatch, ready, fetchPointWeather, analyseTerrain, fetchHabitat, habitatUnavailable, buildPointResult}; window.mycofield = {');
+         .replace('window.mycofield = {', 'window.__mf = {fetchReadyBatch, ready, fetchPointWeather, analyseTerrain, fetchHabitat, habitatUnavailable, buildPointResult, loadGroundTruth}; window.mycofield = {');
     if (!t.includes('window.__mf')) throw new Error('App changed: scanner hook not found');
     r.fulfill({response: res, body: t, headers: {...res.headers(), 'content-type': 'text/html'}});
   });
@@ -49,6 +49,8 @@ async function openApp(ctx) {
   });
   const main = await openApp(ctx);
   log('app loaded');
+  // Pull ground-truth adjustments (supabase/surveys.sql) so scores match the live app's.
+  await main.evaluate(() => window.__mf.loadGroundTruth && window.__mf.loadGroundTruth()).catch(() => {});
 
   // 1. Weather across the UK on the app's own 0.2° grid (the ready-ground overlay's scoring).
   // BBOX="south,west,north,east" limits a test run to one area.
@@ -82,6 +84,7 @@ async function openApp(ctx) {
   for (const c of strong) for (const [fy, fx] of [[0.25, 0.25], [0.25, 0.75], [0.75, 0.25], [0.75, 0.75]])
     pts.push({lat: +(c.r * step + step * fy).toFixed(4), lon: +(c.q * ls + ls * fx).toFixed(4)});
   const pages = [main, ...await Promise.all(Array.from({length: WORKERS - 1}, () => openApp(ctx)))];
+  await Promise.all(pages.map(p => p.evaluate(() => window.__mf.loadGroundTruth && window.__mf.loadGroundTruth()).catch(() => {})));
   const scored = [], retried = {habitat: 0}; let next = 0;
   await Promise.all(pages.map(async p => {
     while (next < pts.length) {

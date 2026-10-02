@@ -1,4 +1,4 @@
-# MycoField Conditions Index — methodology (conditions-v0.5)
+# MycoField Conditions Index — methodology (conditions-v0.6)
 
 The Conditions Index is an **experimental** 0–100 summary of whether recent environmental
 conditions look favourable for grassland fungi in general. It is not a probability, it does
@@ -16,6 +16,7 @@ says exactly what goes in, where it comes from, how precise it is, and how to te
 | Terrain context | Open-Meteo Elevation (Copernicus DEM, 90 m); slope/aspect from 5 samples 60 m apart | 90 m — small banks/hollows invisible | 10% | Heuristic: elevation 150–600 m, slope 2–15°, N/NE/NW aspects favoured |
 | Habitat | OpenStreetMap land-use/natural tags via Overpass `is_in`, refined by official habitat data in Wales, England and Scotland (see below); or set by the user in the field | OSM mapping is uneven; official surveys vary in scale and age; unmapped = unknown | 10% | Semi-natural grassland 100, amenity grass 70, heath/moor 60, farmland 55, scrub 35, wetland 35, improved grassland 30, woodland 25, arable 10, bare 10, built-up 10, water 0 |
 | Frost | Calculated: nights ≤ 0 °C in the last 7 days | Model grid | penalty | −5 per frost night, max −15 |
+| Ground truth | What people recorded on the ground, by ~1 km cell (lat/lon 2 dp) | On-the-ground surveys submitted in the app (`supabase/surveys.sql`) | adjustment | A confirmed find (short, mossy, species-rich turf pays most) pushes the cell up; a blank visit pushes it down. Recent surveys count for more (1-year half-life, nothing older than 3 years). Capped −15…+15, added after the weighted score and frost |
 
 ## Land & grazing (Great Britain)
 Each point is checked against official open habitat data for its nation (point-in-polygon
