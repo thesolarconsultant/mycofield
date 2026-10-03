@@ -526,6 +526,23 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
 <div class="pc-actions"><button class="btn" id="areaDetails" type="button">Conditions <span aria-hidden="true">→</span></button><button class="btn secondary" id="areaAnalyse" type="button">Analyse centre</button></div>
 </div>
 <style>
+/* three.js 3D spot view overlay */
+#terra{position:fixed;inset:0;z-index:60;background:#0b1511}
+#terra canvas{display:block;width:100%;height:100%;touch-action:none}
+.terra-top{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;right:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;pointer-events:none}
+.terra-card{pointer-events:auto;background:rgba(255,255,255,.9);border-radius:12px;padding:9px 13px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:72vw}
+.terra-card b{display:block;font:800 16px/1.1 var(--head,sans-serif);color:var(--forest,#0B3D2E)}
+.terra-card span{font-size:12px;color:var(--muted,#5d6b62);font-variant-numeric:tabular-nums}
+.terra-x{pointer-events:auto;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 6px 20px rgba(0,0,0,.25);display:grid;place-items:center;cursor:pointer}
+.terra-x svg{width:20px;height:20px;fill:none;stroke:var(--forest,#0B3D2E);stroke-width:2.2;stroke-linecap:round}
+.terra-ctrl{position:absolute;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.9);border-radius:12px;padding:9px 13px;box-shadow:0 6px 20px rgba(0,0,0,.25);flex-wrap:wrap}
+.terra-ctrl label{font:600 12px var(--body,sans-serif);color:var(--muted,#5d6b62);display:flex;gap:6px;align-items:center}
+.terra-ctrl label span{color:var(--forest,#0B3D2E);font-variant-numeric:tabular-nums}
+.terra-ctrl input[type=range]{flex:1;min-width:120px;accent-color:var(--moss,#6DAA2C)}
+.terra-ctrl button{border:1px solid rgba(11,61,46,.2);background:#fff;color:var(--forest,#0B3D2E);border-radius:9px;padding:8px 14px;font:600 13px var(--body,sans-serif);min-height:40px;cursor:pointer}
+.terra-ctrl button[aria-pressed=true]{background:var(--lime,#A7D82E);border-color:var(--lime,#A7D82E)}
+.terra-state{position:absolute;inset:0;display:grid;place-items:center;color:#cfe;font:600 15px var(--body,sans-serif);text-align:center;padding:24px;pointer-events:none}
+.terra-state[hidden]{display:none!important}
 .survey{margin-top:12px;border-top:1px solid rgba(128,128,128,.18);padding-top:10px}
 .survey-toggle{background:none;border:1px dashed rgba(128,128,128,.4);border-radius:10px;padding:8px 12px;font-weight:600;color:inherit;cursor:pointer;width:100%}
 .survey-form{display:grid;gap:10px;margin-top:10px}
@@ -559,8 +576,22 @@ nav button.active svg.i{background:var(--lime);color:var(--forest)}
     <p class="sh-note" id="svMsg"></p>
   </div>
 </div></div>
-<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcShare" type="button" aria-label="Share this spot" title="Share this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="btn secondary icon" id="pcAsk" type="button" aria-label="Ask how this spot compares with your areas" title="Ask about this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg></button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
+<div class="pc-actions" id="pcActions"><button class="btn" id="pcUse" type="button">Field log <span aria-hidden="true">→</span></button><button class="btn secondary" id="pcSave" type="button">Save area</button><button class="btn secondary icon" id="pcShare" type="button" aria-label="Share this spot" title="Share this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="btn secondary icon" id="pcAsk" type="button" aria-label="Ask how this spot compares with your areas" title="Ask about this spot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg></button><button class="btn secondary icon" id="pc3d" type="button" aria-label="See this spot in 3D" title="See this spot in 3D"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5"/><path d="M12 12v10"/></svg></button><button class="btn secondary icon" id="pcMoreBtn" type="button" aria-label="Show more detail">▴</button></div>
 <form class="savearea" id="saveForm" hidden><label for="saveName">Name</label><input class="field" id="saveName" maxlength="60" required placeholder="e.g. North slope" autocomplete="off"><label for="saveParent">Save as</label><select class="field" id="saveParent"></select><div class="pc-actions"><button class="btn lime" type="submit">Save</button><button class="btn secondary" type="button" id="saveCancel">Cancel</button></div><div class="small">Saved spots stay private on this device.</div></form>
+</div>
+<div id="terra" hidden role="dialog" aria-label="Spot in 3D" aria-modal="true">
+  <canvas id="terraCanvas"></canvas>
+  <div class="terra-top">
+    <div class="terra-card"><b id="terraName">This spot</b><span id="terraSub">Real terrain · ~4 km across</span></div>
+    <button class="terra-x" id="terraClose" type="button" aria-label="Close 3D view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="terra-ctrl">
+    <label for="terraVex">Height ×<span id="terraVexV">1.6</span></label>
+    <input id="terraVex" type="range" min="1" max="4" step="0.1" value="1.6">
+    <button id="terraSpin" type="button" aria-pressed="true">Spin</button>
+    <button id="terraReset" type="button">Reset</button>
+  </div>
+  <div class="terra-state" id="terraState">Loading terrain…</div>
 </div>
 <div class="sheet tall" id="savedSheet" hidden role="dialog" aria-label="Saved areas">
 <button class="handle" type="button" aria-label="Saved areas — swipe down to close"></button>
@@ -2402,6 +2433,116 @@ async function saveSurvey() {
     $('svMsg').textContent = e.httpStatus === 401 ? 'Please sign in again to save.' : 'Couldn’t save: ' + (e.message || 'try again');
   } finally { btn.disabled = false; }
 }
+
+// ---------- three.js 3D spot view (lazy; DEM from the terrarium tiles the map already uses) ----------
+let _threeP = null;
+function loadThree() {
+  if (_threeP) return _threeP;
+  _threeP = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.onload = () => res(window.THREE); s.onerror = () => rej(new Error('three')); document.head.appendChild(s); });
+  return _threeP;
+}
+function loadTileImg(url) { return new Promise((res, rej) => { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => res(im); im.onerror = () => rej(new Error('tile')); im.src = url; }); }
+// A square DEM grid around a point, decoded from the Mapzen/AWS terrarium tiles (same source as the map terrain).
+async function demGrid(lat, lon, {z = 13, k = 1, halfM = 2000, N = 128} = {}) {
+  const n = 2 ** z, rad = lat * Math.PI / 180, worldPx = 256 * n;
+  const xt = Math.floor((lon + 180) / 360 * n);
+  const yt = Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * n);
+  const S = 2 * k + 1, cv = document.createElement('canvas'); cv.width = cv.height = 256 * S;
+  const cx = cv.getContext('2d', {willReadFrequently: true}); let got = 0;
+  await Promise.all(Array.from({length: S * S}, (_, i) => {
+    const dx = i % S, dy = (i / S) | 0, tx = xt - k + dx, ty = yt - k + dy;
+    return loadTileImg(`https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${tx}/${ty}.png`).then(im => { cx.drawImage(im, dx * 256, dy * 256); got++; }).catch(() => {});
+  }));
+  if (!got) throw new Error('no_tiles');
+  const d = cx.getImageData(0, 0, cv.width, cv.height).data, W = cv.width, ox = (xt - k) * 256, oy = (yt - k) * 256;
+  const px = (la, lo) => { const r = la * Math.PI / 180; return [(lo + 180) / 360 * worldPx - ox, (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * worldPx - oy]; };
+  const dLat = halfM / 111190, dLon = halfM / (111320 * Math.cos(rad));
+  const grid = new Float32Array(N * N); let mn = Infinity, mx = -Infinity;
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    const la = (lat + dLat) - 2 * dLat * r / (N - 1), lo = (lon - dLon) + 2 * dLon * c / (N - 1);
+    let [X, Y] = px(la, lo); X = Math.max(0, Math.min(W - 1, X | 0)); Y = Math.max(0, Math.min(W - 1, Y | 0));
+    const i = (Y * W + X) * 4, h = (d[i] * 256 + d[i + 1] + d[i + 2] / 256) - 32768;
+    grid[r * N + c] = h; if (h < mn) mn = h; if (h > mx) mx = h;
+  }
+  return {grid, N, min: mn, max: mx, halfM};
+}
+const GL3D = {raf: 0, renderer: null, onResize: null};
+function terraColor(t) {
+  const s = [[0,[82,118,60]],[0.3,[107,143,58]],[0.55,[150,140,88]],[0.78,[139,126,96]],[1,[190,185,173]]];
+  for (let i = 1; i < s.length; i++) if (t <= s[i][0]) { const a = s[i-1], b = s[i], k = (t-a[0])/(b[0]-a[0]) || 0; return [0,1,2].map(j => (a[1][j]+(b[1][j]-a[1][j])*k)/255); }
+  return s[4][1].map(v => v/255);
+}
+async function openTerrain3D() {
+  const r = state.pointAnalysis; if (!r || r.loading) return;
+  const {lat, lon} = r.coordinates;
+  $('terra').hidden = false; document.body.style.overflow = 'hidden';
+  $('terraName').textContent = r.place && r.place !== 'My location' ? r.place : 'This spot';
+  const st = $('terraState'); st.hidden = false; st.textContent = 'Loading terrain…';
+  let THREE, dem;
+  try { [THREE, dem] = await Promise.all([loadThree(), demGrid(lat, lon)]); }
+  catch (e) { st.hidden = false; st.textContent = e.message === 'three' ? 'Couldn’t load the 3D engine — check your connection and try again.' : 'Couldn’t load terrain here — try again in a moment.'; return; }
+  if ($('terra').hidden) { closeGL3D(); return; }
+  st.hidden = true;
+  $('terraSub').textContent = `Real terrain · ${Math.round(dem.halfM * 2 / 100) / 10} km across · ${Math.round(dem.min)}–${Math.round(dem.max)} m`;
+  runTerrain(THREE, dem);
+}
+function runTerrain(THREE, dem) {
+  closeGL3D();
+  const canvas = $('terraCanvas'), W = () => canvas.clientWidth || innerWidth, H = () => canvas.clientHeight || innerHeight;
+  const renderer = new THREE.WebGLRenderer({canvas, antialias: true}); GL3D.renderer = renderer;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(W(), H(), false);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0b1511); scene.fog = new THREE.Fog(0x0b1511, 150, 320);
+  const camera = new THREE.PerspectiveCamera(48, W() / H(), 0.5, 2000);
+  scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x46402f, 0.8));
+  const sun = new THREE.DirectionalLight(0xfff3d8, 1.15); sun.position.set(-70, 120, 60); scene.add(sun);
+  const N = dem.N, SIZE = 60, span = Math.max(1, dem.max - dem.min), HSCALE = SIZE / (dem.halfM * 2);
+  const centreH = dem.grid[((N / 2) | 0) * N + ((N / 2) | 0)];
+  let vex = +$('terraVex').value, mesh, pinG;
+  function build() {
+    if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); }
+    const pos = [], col = [], idx = [];
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const hh = dem.grid[r * N + c];
+      pos.push((c / (N - 1) - 0.5) * SIZE, (hh - dem.min) * HSCALE * vex, (r / (N - 1) - 0.5) * SIZE);
+      const cc = terraColor((hh - dem.min) / span); col.push(cc[0], cc[1], cc[2]);
+    }
+    for (let r = 0; r < N - 1; r++) for (let c = 0; c < N - 1; c++) { const a = r * N + c, b = a + 1, dd = a + N, e = dd + 1; idx.push(a, dd, b, b, dd, e); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    g.setIndex(idx); g.computeVertexNormals();
+    mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({vertexColors: true, roughness: 0.96, metalness: 0})); scene.add(mesh);
+    if (pinG) pinG.position.y = (centreH - dem.min) * HSCALE * vex;
+  }
+  build();
+  const slab = new THREE.Mesh(new THREE.BoxGeometry(SIZE, 2, SIZE), new THREE.MeshStandardMaterial({color: 0x5f7350, roughness: 1})); slab.position.y = -1.2; scene.add(slab);
+  pinG = new THREE.Group();
+  const pm = new THREE.MeshStandardMaterial({color: 0xA7D82E, emissive: 0x3a5a0a, emissiveIntensity: 0.4, roughness: 0.5});
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(1.2, 4, 18), pm); cone.position.y = 4.5; cone.rotation.x = Math.PI;
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(1.1, 18, 14), pm); ball.position.y = 7;
+  pinG.add(cone, ball); pinG.position.set(0, (centreH - dem.min) * HSCALE * vex, 0); scene.add(pinG);
+  let theta = -0.7, phi = 0.95, radius = 104, spin = true, drag = false, px = 0, py = 0, pinchD = 0;
+  const cam = () => { camera.position.set(radius * Math.sin(phi) * Math.sin(theta), radius * Math.cos(phi), radius * Math.sin(phi) * Math.cos(theta)); camera.lookAt(0, 6, 0); };
+  canvas.onpointerdown = e => { canvas.setPointerCapture(e.pointerId); drag = true; px = e.clientX; py = e.clientY; spin = false; $('terraSpin').setAttribute('aria-pressed', 'false'); };
+  canvas.onpointermove = e => { if (!drag) return; theta -= (e.clientX - px) * 0.006; phi = Math.max(0.12, Math.min(1.52, phi - (e.clientY - py) * 0.006)); px = e.clientX; py = e.clientY; };
+  canvas.onpointerup = canvas.onpointercancel = () => drag = false;
+  canvas.onwheel = e => { e.preventDefault(); radius = Math.max(44, Math.min(240, radius + e.deltaY * 0.08)); };
+  canvas.ontouchmove = e => { if (e.touches.length === 2) { e.preventDefault(); const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); if (pinchD) radius = Math.max(44, Math.min(240, radius - (d - pinchD) * 0.25)); pinchD = d; drag = false; } };
+  canvas.ontouchend = () => pinchD = 0;
+  $('terraVex').oninput = e => { vex = +e.target.value; $('terraVexV').textContent = vex.toFixed(1); build(); };
+  $('terraSpin').onclick = e => { spin = !spin; e.currentTarget.setAttribute('aria-pressed', spin); };
+  $('terraReset').onclick = () => { theta = -0.7; phi = 0.95; radius = 104; };
+  GL3D.onResize = () => { renderer.setSize(W(), H(), false); camera.aspect = W() / H(); camera.updateProjectionMatrix(); };
+  addEventListener('resize', GL3D.onResize);
+  const tick = () => { GL3D.raf = requestAnimationFrame(tick); if (spin) theta += 0.0022; cam(); renderer.render(scene, camera); };
+  tick();
+}
+function closeGL3D() {
+  if (GL3D.raf) cancelAnimationFrame(GL3D.raf); GL3D.raf = 0;
+  if (GL3D.onResize) { removeEventListener('resize', GL3D.onResize); GL3D.onResize = null; }
+  if (GL3D.renderer) { try { GL3D.renderer.dispose(); GL3D.renderer.forceContextLoss(); } catch {} GL3D.renderer = null; }
+}
+function closeTerrain3D() { closeGL3D(); $('terra').hidden = true; document.body.style.overflow = ''; }
 function metricHTML(value, label, kind) {
   const cls = kind === 'Experimental' ? 'exp' : kind === 'Unavailable' ? 'err' : kind === 'Live' ? 'live' : '';
   return `<div class="metric"><b>${value}</b><span>${label}</span><em class="${cls}">${kind}</em></div>`;
@@ -3752,6 +3893,9 @@ function init() {
   $('exportGeo').onclick = () => exportData('geojson');
   $('pcMoreBtn').onclick = () => setPointExpanded(!$('pointCard').classList.contains('expanded'));
   $('pcShare').onclick = shareSpot;
+  $('pc3d').onclick = openTerrain3D;
+  $('terraClose').onclick = closeTerrain3D;
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !$('terra').hidden) { e.stopPropagation(); closeTerrain3D(); } }, true);
   initAsk(); initLead();
   sheetGestures($('pointCard'), {tap: () => setPointExpanded(!$('pointCard').classList.contains('expanded')), up: () => setPointExpanded(true), down: () => $('pointCard').classList.contains('expanded') ? setPointExpanded(false) : clearPointAnalysis()});
   sheetGestures($('areaCard'), {down: closeAreaCard});
