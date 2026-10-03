@@ -1,0 +1,44 @@
+# One-off: fetch a real elevation grid (Copernicus DEM via Open-Meteo) around a point and print it,
+# so a 3D terrain map can be built from an egress-locked environment. Read-only, no secrets.
+name: Heightmap
+on:
+  workflow_dispatch:
+    inputs:
+      lat:   { description: 'Centre latitude',  type: string, default: '52.8500' }
+      lon:   { description: 'Centre longitude', type: string, default: '-3.7600' }
+      km:    { description: 'Half-size (km each way from centre)', type: string, default: '3' }
+      n:     { description: 'Grid samples per side', type: string, default: '64' }
+permissions:
+  contents: read
+jobs:
+  grid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch elevation grid
+        run: |
+          node <<'EOF'
+          const LAT=+'${{ inputs.lat }}', LON=+'${{ inputs.lon }}', KM=+'${{ inputs.km }}', N=+'${{ inputs.n }}';
+          const dLat = KM/111.19, dLon = KM/(111.32*Math.cos(LAT*Math.PI/180));
+          const S=LAT-dLat, Nn=LAT+dLat, W=LON-dLon, E=LON+dLon;
+          // build the grid, row-major from north (row 0) to south
+          const lats=[], lons=[];
+          for (let r=0;r<N;r++) for (let c=0;c<N;c++){ lats.push(Nn - (Nn-S)*r/(N-1)); lons.push(W + (E-W)*c/(N-1)); }
+          const heights=new Array(lats.length).fill(0);
+          const B=100;
+          (async()=>{
+            for (let i=0;i<lats.length;i+=B){
+              const la=lats.slice(i,i+B), lo=lons.slice(i,i+B);
+              const url=`https://api.open-meteo.com/v1/elevation?latitude=${la.join(',')}&longitude=${lo.join(',')}`;
+              let ok=false;
+              for (let a=0;a<4 && !ok;a++){
+                try{ const r=await fetch(url); const d=await r.json(); if(Array.isArray(d.elevation)){ d.elevation.forEach((v,k)=>heights[i+k]=v); ok=true; } }catch(e){}
+                if(!ok) await new Promise(r=>setTimeout(r,2000*(a+1)));
+              }
+              if(!ok){ console.log('FAILED batch at',i); process.exit(1); }
+              await new Promise(r=>setTimeout(r,300));
+            }
+            const mn=Math.min(...heights), mx=Math.max(...heights);
+            console.log(JSON.stringify({lat:LAT,lon:LON,km:KM,n:N,south:S,north:Nn,west:W,east:E,min:mn,max:mx}));
+            console.log('HEIGHTS:'+heights.map(h=>Math.round(h)).join(','));
+          })();
+          EOF
